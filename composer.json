@@ -12,7 +12,6 @@
         {
             "name": "Dariusz Korsak",
             "email": "dkorsak@gmail.com",
-            "homepage": "",
             "role": "Developer"
         }
     ],
@@ -26,12 +25,12 @@
     },
     "autoload": {
         "psr-4": {
-            "darkorsa\\shop\\": "src"
+            "Plane\\Shop\\": "src"
         }
     },
     "autoload-dev": {
         "psr-4": {
-            "darkorsa\\shop\\": "tests"
+            "Plane\\Shop\\": "tests"
         }
     },
     "scripts": {
