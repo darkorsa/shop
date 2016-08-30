@@ -23,4 +23,16 @@ interface CartItemInterface
     public function increaseQuantity($quantity);
     
     public function decreaseQuantity($quantity);
+    
+    public function getTax();
+    
+    public function getTaxTotal();
+    
+    public function getPrice();
+    
+    public function getPriceWithTax();
+    
+    public function getPriceTotal();
+    
+    public function getPriceTotalWithTax();
 }

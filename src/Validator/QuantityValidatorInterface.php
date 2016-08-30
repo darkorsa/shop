@@ -2,7 +2,7 @@
 
 namespace Plane\Shop\Validator;
 
-use Plane\Shop\ProductInterface as Product;
+use Plane\Shop\ProductInterface;
 
 /**
  * Interface for QuantityValidators
@@ -12,5 +12,5 @@ use Plane\Shop\ProductInterface as Product;
  */
 interface QuantityValidatorInterface
 {
-    public function validate(Product $product, $quantity);
+    public function validate(ProductInterface $product, $quantity);
 }

@@ -2,7 +2,7 @@
 
 namespace Plane\Shop;
 
-use Plane\Shop\CartItemInterface as CartItem;
+use Plane\Shop\CartItemInterface;
 
 /**
  * Interface for Cart classes
@@ -12,7 +12,7 @@ use Plane\Shop\CartItemInterface as CartItem;
  */
 interface CartInterface
 {
-    public function add(CartItem $item);
+    public function add(CartItemInterface $item);
     
     public function remove($itemId);
     

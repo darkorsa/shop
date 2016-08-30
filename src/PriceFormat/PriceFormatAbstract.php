@@ -2,7 +2,7 @@
 
 namespace Plane\Shop\PriceFormat;
 
-use BadMethodCallException;
+use Plane\Shop\CartItemInterface;
 
 /**
  * Abstract class for price format
@@ -10,52 +10,78 @@ use BadMethodCallException;
  * @author Dariusz Korsak <dkorsak@gmail.com>
  * @package Plane\Shop;
  */
-abstract class PriceFormatAbstract implements PriceInterface
+abstract class PriceFormatAbstract implements CartItemInterface
 {
-    protected $price;
+    protected $cartItem;
     
-    public function __construct(PriceInterace $price)
+    public function __construct(CartItemInterface $cartItem)
     {
-        $this->price = $price;
+        $this->cartItem = $cartItem;
+    }
+    
+    public function getId()
+    {
+        return  $this->cartItem->getId();
+    }
+        
+    public function getName()
+    {
+        return  $this->cartItem->getName();
+    }
+    
+    public function getImagePath()
+    {
+        return  $this->cartItem->getImagePath();
+    }
+    
+    public function getQuantity()
+    {
+        return  $this->cartItem->getQuantity();
+    }
+    
+    public function setQuantity($quantity)
+    {
+        $this->cartItem->setQuantity($quantity);
+    }
+    
+    public function increaseQuantity($quantity)
+    {
+        $this->cartItem->increaseQuantity($quantity);
+    }
+    
+    public function decreaseQuantity($quantity)
+    {
+        $this->cartItem->decreaseQuantity($quantity);
     }
     
     public function getTax()
     {
-        return $this->formatPrice($this->price->getTax());
+        return $this->formatPrice($this->cartItem->getTax());
     }
     
     public function getTaxTotal()
     {
-        return $this->formatPrice($this->price->getTaxTotal());
+        return $this->formatPrice($this->cartItem->getTaxTotal());
     }
     
     public function getPrice()
     {
-        return $this->formatPrice($this->price->getPrice());
+        return $this->formatPrice($this->cartItem->getPrice());
     }
     
     public function getPriceWithTax()
     {
-        return $this->formatPrice($this->price->getPriceWithTax());
+        return $this->formatPrice($this->cartItem->getPriceWithTax());
     }
     
     public function getPriceTotal()
     {
-        return $this->formatPrice($this->price->getPriceTotal());
+        return $this->formatPrice($this->cartItem->getPriceTotal());
     }
     
     public function getPriceTotalWithTax()
     {
-        return $this->formatPrice($this->price->getPriceTotalWithTax());
-    }
-    
-    public function __call($method, $args)
-    {
-        if (is_callable(array($this->price, $method))) {
-            return call_user_func_array(array($this->price, $method), $args);
-        } else {
-            throw new BadMethodCallException('Undefined method ' .get_class($this->price) . '::' . $method . '() called');
-        }
+        return $this->formatPrice($this->cartItem->getPriceTotalWithTax());
     }
     
     abstract protected function formatPrice($price);

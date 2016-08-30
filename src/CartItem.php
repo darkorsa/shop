@@ -12,7 +12,7 @@ use Plane\Shop\QuantityValidatorInterface as QuantityValidator;
  * @author Dariusz Korsak <dkorsak@gmail.com>
  * @package Plane\Shop
  */
-class CartItem implements CartItemInterface, PriceInterface
+class CartItem implements CartItemInterface
 {
     protected $product;
     
@@ -41,7 +41,7 @@ class CartItem implements CartItemInterface, PriceInterface
     
     public function getId()
     {
-        return sha1((string($this->product)));
+        return $this->product->getId();
     }
         
     public function getName()
@@ -104,7 +104,7 @@ class CartItem implements CartItemInterface, PriceInterface
     
     public function getPriceTotal()
     {
-        return (float) $this->getPrice() * $this->quantity();
+        return (float) $this->getPrice() * $this->quantity;
     }
     
     public function getPriceTotalWithTax()
@@ -119,5 +119,5 @@ class CartItem implements CartItemInterface, PriceInterface
         }
         
         return $this->quantityValidator->validate($this->product, $quantity);
-    }    
+    }
 }

@@ -8,7 +8,7 @@ namespace Plane\Shop\Discount;
  * @author Dariusz Korsak <dkorsak@gmail.com>
  * @package Plane\Shop
  */
-class NullDiscount implements PriceInterface
+class NullDiscount
 {
     protected $product;
     

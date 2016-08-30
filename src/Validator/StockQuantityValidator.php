@@ -2,7 +2,7 @@
 
 namespace Plane\Shop\Validator;
 
-use Plane\Shop\ProductInterface as Product;
+use Plane\Shop\ProductInterface;
 
 /**
  * Description of StockQuantityValidator
@@ -12,7 +12,7 @@ use Plane\Shop\ProductInterface as Product;
  */
 class StockQuantityValidator implements QuantityValidatorInterface
 {
-    public function validate(Product $product, $quantity)
+    public function validate(ProductInterface $product, $quantity)
     {
         if ($product->getQuantity() < (int) $quantity) {
             return false;

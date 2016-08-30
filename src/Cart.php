@@ -3,7 +3,7 @@
 namespace Plane\Shop;
 
 use DomainException;
-use Plane\Shop\CartItemInterface as CartItem;
+use Plane\Shop\CartItemInterface;
 
 /**
  * Shopcart class
@@ -15,10 +15,10 @@ class Cart implements CartInterface
 {
     protected $items = [];
     
-    public function add(CartItem $item)
+    public function add(CartItemInterface $item)
     {
         // if product already in the cart, increase quantity
-        if ($this->has($item)) {
+        if ($this->has($item->getId())) {
             $this->get($item->getId())->increaseQuantity($item->getQuantity());
             return;
         }
@@ -67,7 +67,7 @@ class Cart implements CartInterface
     public function totalItems()
     {
         return array_sum(
-            array_map(function (CartItem $item) {
+            array_map(function (CartItemInterface $item) {
                 return $item->getQuantity();
             }, $this->items)
         );
@@ -76,7 +76,7 @@ class Cart implements CartInterface
     public function total()
     {
         return (float) array_sum(
-            array_map(function (PriceInterface $item) {
+            array_map(function (CartItemInterface $item) {
                 return $item->getPriceTotal();
             }, $this->items)
         );
@@ -85,7 +85,7 @@ class Cart implements CartInterface
     public function totalWithTax()
     {
         return (float) array_sum(
-            array_map(function (PriceInterface $item) {
+            array_map(function (CartItemInterface $item) {
                 return $item->getPriceTotalWithTax();
             }, $this->items)
         );
@@ -94,7 +94,7 @@ class Cart implements CartInterface
     public function totalTax()
     {
         return (float) array_sum(
-            array_map(function (PriceInterface $item) {
+            array_map(function (CartItemInterface $item) {
                 return $item->getTaxTotal();
             }, $this->items)
         );
