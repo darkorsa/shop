@@ -35,4 +35,6 @@ interface CartItemInterface
     public function getPriceTotal();
     
     public function getPriceTotalWithTax();
+    
+    public function toArray();
 }

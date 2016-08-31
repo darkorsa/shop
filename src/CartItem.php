@@ -120,4 +120,21 @@ class CartItem implements CartItemInterface
         
         return $this->quantityValidator->validate($this->product, $quantity);
     }
+    
+    public function toArray()
+    {
+        $array = [];
+        $array['id']                = $this->getId();
+        $array['name']              = $this->getName();
+        $array['imagePath']         = $this->getImagePath();
+        $array['quantity']          = $this->getQuantity();
+        $array['tax']               = $this->getTax();
+        $array['totalTax']          = $this->getTaxTotal();
+        $array['price']             = $this->getPrice();
+        $array['priceWithTax']      = $this->getPriceWithTax();
+        $array['priceTotal']        = $this->getPriceTotal();
+        $array['priceTotalWithTax'] = $this->getPriceTotalWithTax();
+        
+        return $array;
+    }
 }

@@ -23,7 +23,7 @@ $product2 = new Product([
 ]);
 
 $cartItem1 = CartItemFactory::create($product1, 4, 'english');
-$cartItem2 = CartItemFactory::create($product2, 'english');
+$cartItem2 = CartItemFactory::create($product2, 1, 'english');
 
 $cart = new Cart();
 $cart->add($cartItem1);
@@ -33,3 +33,5 @@ echo 'Total items: ' . $cart->totalItems() . "\n\n";
 echo 'Total: ' . $cart->total() . "\n\n";
 echo 'Total with tax: ' . $cart->totalWithTax() . "\n\n";
 echo 'Total tax: ' . $cart->totalTax() . "\n\n";
+
+var_dump($cart->toArray());

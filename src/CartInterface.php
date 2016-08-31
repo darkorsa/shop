@@ -33,4 +33,6 @@ interface CartInterface
     public function totalWithTax();
     
     public function totalTax();
+    
+    public function toArray();
 }

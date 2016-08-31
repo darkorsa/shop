@@ -21,22 +21,22 @@ abstract class PriceFormatAbstract implements CartItemInterface
     
     public function getId()
     {
-        return  $this->cartItem->getId();
+        return $this->cartItem->getId();
     }
         
     public function getName()
     {
-        return  $this->cartItem->getName();
+        return $this->cartItem->getName();
     }
     
     public function getImagePath()
     {
-        return  $this->cartItem->getImagePath();
+        return $this->cartItem->getImagePath();
     }
     
     public function getQuantity()
     {
-        return  $this->cartItem->getQuantity();
+        return $this->cartItem->getQuantity();
     }
     
     public function setQuantity($quantity)
@@ -82,6 +82,23 @@ abstract class PriceFormatAbstract implements CartItemInterface
     public function getPriceTotalWithTax()
     {
         return $this->formatPrice($this->cartItem->getPriceTotalWithTax());
+    }
+    
+    public function toArray()
+    {
+        $array = [];
+        $array['id']                = $this->getId();
+        $array['name']              = $this->getName();
+        $array['imagePath']         = $this->getImagePath();
+        $array['quantity']          = $this->getQuantity();
+        $array['tax']               = $this->getTax();
+        $array['totalTax']          = $this->getTaxTotal();
+        $array['price']             = $this->getPrice();
+        $array['priceWithTax']      = $this->getPriceWithTax();
+        $array['priceTotal']        = $this->getPriceTotal();
+        $array['priceTotalWithTax'] = $this->getPriceTotalWithTax();
+        
+        return $array;
     }
     
     abstract protected function formatPrice($price);

@@ -6,7 +6,7 @@ use Plane\Shop\PriceFormat\EnglishFormat;
 
 class CartItemFactory
 {
-    public static function create(ProductInterface $product, $quantity = 1, $priceFormat = null)
+    public static function create(ProductInterface $product, $quantity, $priceFormat = null)
     {
         switch ($priceFormat) {
             case 'english':

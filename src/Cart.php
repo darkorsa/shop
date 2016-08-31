@@ -99,4 +99,19 @@ class Cart implements CartInterface
             }, $this->items)
         );
     }
+    
+    public function toArray()
+    {
+        $array = [];
+        $array['items'] = array_map(function (CartItemInterface $item) {
+            return $item->toArray();
+        }, $this->items);
+        
+        $array['totalItems']    = $this->totalItems();
+        $array['total']         = $this->total();
+        $array['totalWithTax']  = $this->totalWithTax();
+        $array['totalTax']      = $this->totalTax();
+        
+        return $array;
+    }
 }
