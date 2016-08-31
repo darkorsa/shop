@@ -3,8 +3,10 @@
 require_once __DIR__ . '/../vendor/autoload.php'; // Autoload files using Composer autoload
 
 use Plane\Shop\Cart;
+use Plane\Shop\CartItem;
 use Plane\Shop\Product;
-use Plane\Shop\CartItemFactory;
+use Plane\Shop\CartItemCollection;
+use Plane\Shop\CartItemsDecorator;
 
 $product1 = new Product([
     'id'        => 1,
@@ -22,16 +24,18 @@ $product2 = new Product([
     'taxRate'   => 0.23
 ]);
 
-$cartItem1 = CartItemFactory::create($product1, 4, 'english');
-$cartItem2 = CartItemFactory::create($product2, 1, 'english');
+$cartItemCollection = new CartItemCollection;
+$cartItemCollection->addItem(new CartItem($product1, 4));
+$cartItemCollection->addItem(new CartItem($product2, 1));
 
-$cart = new Cart();
-$cart->add($cartItem1);
-$cart->add($cartItem2);
+$cartItemsDecorator = new CartItemsDecorator($cartItemCollection, 'Plane\\Shop\\PriceFormat\\EnglishFormat');
+$cartItemsDecorator->decorate();
+
+$cart = new Cart($cartItemCollection);
 
 echo 'Total items: ' . $cart->totalItems() . "\n\n";
 echo 'Total: ' . $cart->total() . "\n\n";
 echo 'Total with tax: ' . $cart->totalWithTax() . "\n\n";
 echo 'Total tax: ' . $cart->totalTax() . "\n\n";
 
-var_dump($cart->toArray());
+//var_dump($cart->toArray());

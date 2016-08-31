@@ -4,6 +4,7 @@ namespace Plane\Shop;
 
 use DomainException;
 use Plane\Shop\CartItemInterface;
+use Plane\Shop\CartItemCollection;
 
 /**
  * Shopcart class
@@ -14,6 +15,11 @@ use Plane\Shop\CartItemInterface;
 class Cart implements CartInterface
 {
     protected $items = [];
+    
+    public function __construct(CartItemCollection $collection)
+    {
+        $this->items = $collection->getItems();
+    }
     
     public function add(CartItemInterface $item)
     {
