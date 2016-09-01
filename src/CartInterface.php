@@ -12,6 +12,10 @@ use Plane\Shop\CartItemInterface;
  */
 interface CartInterface
 {
+    public function setShipping(ShippingInterface $shipping);
+    
+    public function fill(CartItemCollection $collection);
+    
     public function add(CartItemInterface $item);
     
     public function remove($itemId);
@@ -30,9 +34,13 @@ interface CartInterface
     
     public function total();
 
-    public function totalWithTax();
+    public function totalWithoutTax();
     
     public function totalTax();
+    
+    public function totalWithShipping();
+    
+    public function shippingCost();
     
     public function toArray();
 }

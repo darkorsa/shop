@@ -5,6 +5,7 @@ require_once __DIR__ . '/../vendor/autoload.php'; // Autoload files using Compos
 use Plane\Shop\Cart;
 use Plane\Shop\CartItem;
 use Plane\Shop\Product;
+use Plane\Shop\Shipping;
 use Plane\Shop\CartItemCollection;
 use Plane\Shop\PriceFormat\EnglishFormat;
 
@@ -30,12 +31,22 @@ $cartItemCollection->addItem(new CartItem($product2, 1));
 
 $priceFormat = new EnglishFormat();
 
+$shipping = new Shipping([
+   'id'             => 9,
+   'name'           => 'Poczta polska',
+   'description'    => 'Wysyłka pocztą polska cośtam cośtam',
+   'cost'           => 15
+]);
+
 $cart = new Cart($priceFormat);
 $cart->fill($cartItemCollection);
+$cart->setShipping($shipping);
 
 echo 'Total items: ' . $cart->totalItems() . "\n\n";
 echo 'Total: ' . $cart->total() . "\n\n";
-echo 'Total with tax: ' . $cart->totalWithTax() . "\n\n";
+echo 'Total without tax: ' . $cart->totalWithoutTax() . "\n\n";
 echo 'Total tax: ' . $cart->totalTax() . "\n\n";
+echo 'Total with shipping: ' . $cart->totalWithShipping() . "\n\n";
 
-//var_dump($cart->toArray());
+
+var_dump($cart->toArray());

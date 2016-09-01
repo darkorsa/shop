@@ -5,10 +5,11 @@ namespace Plane\Shop;
 use DomainException;
 use Plane\Shop\CartItemInterface;
 use Plane\Shop\CartItemCollection;
+use Plane\Shop\ShippingInterface;
 use Plane\Shop\PriceFormat\PriceFormatInterface;
 
 /**
- * Shopcart class
+ * Shopping cart class
  *
  * @author Dariusz Korsak <dkorsak@gmail.com>
  * @package Plane\Shop
@@ -19,9 +20,16 @@ class Cart implements CartInterface
     
     protected $priceFormat;
     
+    protected $shipping;
+    
     public function __construct(PriceFormatInterface $priceFormat = null)
     {
         $this->priceFormat = $priceFormat;
+    }
+    
+    public function setShipping(ShippingInterface $shipping)
+    {
+        $this->shipping = $shipping;
     }
     
     public function fill(CartItemCollection $collection)
@@ -89,7 +97,7 @@ class Cart implements CartInterface
         );
     }
     
-    public function total()
+    public function totalWithoutTax()
     {
         return (float) array_sum(
             array_map(function (CartItemInterface $item) {
@@ -98,7 +106,7 @@ class Cart implements CartInterface
         );
     }
     
-    public function totalWithTax()
+    public function total()
     {
         return (float) array_sum(
             array_map(function (CartItemInterface $item) {
@@ -116,6 +124,16 @@ class Cart implements CartInterface
         );
     }
     
+    public function totalWithShipping()
+    {
+        return $this->priceFormat->formatPrice($this->total() + (float) $this->shipping->getCost());
+    }
+    
+    public function shippingCost()
+    {
+        return $this->priceFormat->formatPrice($this->shipping->getCost());
+    }
+        
     public function toArray()
     {
         $array = [];
@@ -123,10 +141,15 @@ class Cart implements CartInterface
             return $item->toArray();
         }, $this->items);
         
-        $array['totalItems']    = $this->totalItems();
-        $array['total']         = $this->total();
-        $array['totalWithTax']  = $this->totalWithTax();
-        $array['totalTax']      = $this->totalTax();
+        $array['shipping_name']     = $this->shipping->getName();
+        $array['shipping_desc']     = $this->shipping->getDescription();
+        $array['shipping_cost']     = $this->shippingCost();
+        
+        $array['totalItems']        = $this->totalItems();
+        $array['total']             = $this->total();
+        $array['totalWithoutTax']   = $this->totalWithoutTax();
+        $array['totalTax']          = $this->totalTax();
+        $array['totalWithShipping'] = $this->totalWithShipping();
         
         return $array;
     }
