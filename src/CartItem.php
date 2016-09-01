@@ -4,7 +4,8 @@ namespace Plane\Shop;
 
 use DomainException;
 
-use Plane\Shop\QuantityValidatorInterface as QuantityValidator;
+use Plane\Shop\QuantityValidatorInterface;
+use Plane\Shop\PriceFormat\PriceFormatInterface;
 
 /**
  * Description of CartItem
@@ -20,6 +21,8 @@ class CartItem implements CartItemInterface
     
     protected $quantity;
     
+    protected $priceFormat;
+    
     /**
      * Constructor
      * @param Plane\Shop\ProductInterface $product
@@ -27,7 +30,7 @@ class CartItem implements CartItemInterface
      * @param Plane\Shop\QuantityValidatorInterface $quantityValidator
      * @throws DomainException
      */
-    public function __construct(ProductInterface $product, $quantity = 1, QuantityValidator $quantityValidator = null)
+    public function __construct(ProductInterface $product, $quantity = 1, QuantityValidatorInterface $quantityValidator = null)
     {
         $this->product = $product;
         $this->quantityValidator = $quantityValidator;
@@ -37,6 +40,11 @@ class CartItem implements CartItemInterface
         }
         
         $this->quantity = (int) $quantity;
+    }
+    
+    public function setPriceFormat(PriceFormatInterface $priceFormat)
+    {
+        $this->priceFormat = $priceFormat;
     }
     
     public function getId()
@@ -84,41 +92,32 @@ class CartItem implements CartItemInterface
     
     public function getTax()
     {
-        return (float) $this->product->getPrice() * $this->product->getTaxRate();
+        return $this->formatPrice((float) $this->product->getPrice() * $this->product->getTaxRate());
     }
             
     public function getTaxTotal()
     {
-        return (float) $this->getTax() * $this->quantity;
+        return $this->formatPrice((float) $this->getTax() * $this->quantity);
     }
     
     public function getPrice()
     {
-        return (float) $this->product->getPrice();
+        return $this->formatPrice((float) $this->product->getPrice());
     }
     
     public function getPriceWithTax()
     {
-        return (float) $this->getPrice() + $this->getTax();
+        return $this->formatPrice((float) $this->getPrice() + $this->getTax());
     }
     
     public function getPriceTotal()
     {
-        return (float) $this->getPrice() * $this->quantity;
+        return $this->formatPrice((float) $this->getPrice() * $this->quantity);
     }
     
     public function getPriceTotalWithTax()
     {
-        return (float) $this->getPriceTotal() + $this->getTaxTotal();
-    }
-    
-    protected function validateQuantity($quantity)
-    {
-        if (is_null($this->quantityValidator)) {
-            return true;
-        }
-        
-        return $this->quantityValidator->validate($this->product, $quantity);
+        return $this->formatPrice((float) $this->getPriceTotal() + $this->getTaxTotal());
     }
     
     public function toArray()
@@ -136,5 +135,23 @@ class CartItem implements CartItemInterface
         $array['priceTotalWithTax'] = $this->getPriceTotalWithTax();
         
         return $array;
+    }
+    
+    protected function validateQuantity($quantity)
+    {
+        if (is_null($this->quantityValidator)) {
+            return true;
+        }
+        
+        return $this->quantityValidator->validate($this->product, $quantity);
+    }
+    
+    protected function formatPrice($price)
+    {
+        if (is_null($this->priceFormat)) {
+            return $price;
+        }
+        
+        return $this->priceFormat->formatPrice($price);
     }
 }

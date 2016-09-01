@@ -5,6 +5,7 @@ namespace Plane\Shop;
 use DomainException;
 use Plane\Shop\CartItemInterface;
 use Plane\Shop\CartItemCollection;
+use Plane\Shop\PriceFormat\PriceFormatInterface;
 
 /**
  * Shopcart class
@@ -16,9 +17,18 @@ class Cart implements CartInterface
 {
     protected $items = [];
     
-    public function __construct(CartItemCollection $collection)
+    protected $priceFormat;
+    
+    public function __construct(PriceFormatInterface $priceFormat = null)
     {
-        $this->items = $collection->getItems();
+        $this->priceFormat = $priceFormat;
+    }
+    
+    public function fill(CartItemCollection $collection)
+    {
+        array_map(function ($item) {
+            $this->addItem($item);
+        }, $collection->getItems());
     }
     
     public function add(CartItemInterface $item)
@@ -29,7 +39,7 @@ class Cart implements CartInterface
             return;
         }
         
-        $this->items[$item->getId()] = $item;
+        $this->addItem($item);
     }
     
     public function remove($itemId)
@@ -43,7 +53,7 @@ class Cart implements CartInterface
       
     public function update(Product $item)
     {
-        $this->items[$item->getId()] = $item;
+        $this->addItem($item);
     }
     
     public function has($itemId)
@@ -119,5 +129,15 @@ class Cart implements CartInterface
         $array['totalTax']      = $this->totalTax();
         
         return $array;
+    }
+    
+    protected function addItem(CartItemInterface $item)
+    {
+        // override item's price format in order to make it consistent with cart's price format
+        if (!is_null($this->priceFormat)) {
+            $item->setPriceFormat($this->priceFormat);
+        }
+        
+        $this->items[$item->getId()] = $item;
     }
 }

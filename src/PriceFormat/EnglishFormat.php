@@ -8,13 +8,13 @@ namespace Plane\Shop\PriceFormat;
  * @author Dariusz Korsak <dkorsak@gmail.com>
  * @package Plane\Shop;
  */
-class EnglishFormat extends PriceFormatAbstract
+class EnglishFormat implements PriceFormatInterface
 {
-    protected $decimals = 2;
+    private $decimals = 2;
     
-    protected $decPoint = '.';
+    private $decPoint = '.';
     
-    protected function formatPrice($price)
+    public function formatPrice($price)
     {
         return number_format(floor((float) $price * 100) / 100, $this->decimals, $this->decPoint, '');
     }

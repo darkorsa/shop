@@ -6,7 +6,7 @@ use Plane\Shop\Cart;
 use Plane\Shop\CartItem;
 use Plane\Shop\Product;
 use Plane\Shop\CartItemCollection;
-use Plane\Shop\CartItemsDecorator;
+use Plane\Shop\PriceFormat\EnglishFormat;
 
 $product1 = new Product([
     'id'        => 1,
@@ -28,10 +28,10 @@ $cartItemCollection = new CartItemCollection;
 $cartItemCollection->addItem(new CartItem($product1, 4));
 $cartItemCollection->addItem(new CartItem($product2, 1));
 
-$cartItemsDecorator = new CartItemsDecorator($cartItemCollection, 'Plane\\Shop\\PriceFormat\\EnglishFormat');
-$cartItemsDecorator->decorate();
+$priceFormat = new EnglishFormat();
 
-$cart = new Cart($cartItemCollection);
+$cart = new Cart($priceFormat);
+$cart->fill($cartItemCollection);
 
 echo 'Total items: ' . $cart->totalItems() . "\n\n";
 echo 'Total: ' . $cart->total() . "\n\n";
