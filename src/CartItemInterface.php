@@ -2,6 +2,8 @@
 
 namespace Plane\Shop;
 
+use Plane\Shop\PriceFormat\PriceFormatInterface;
+
 /**
  * Description of CartItem
  *
@@ -30,11 +32,13 @@ interface CartItemInterface
     
     public function getPrice();
     
-    public function getPriceWithTax();
-    
     public function getPriceTotal();
     
+    public function getPriceWithTax();
+    
     public function getPriceTotalWithTax();
+    
+    public function setPriceFormat(PriceFormatInterface $priceFormat);
     
     public function toArray();
 }

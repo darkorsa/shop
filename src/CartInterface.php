@@ -34,11 +34,7 @@ interface CartInterface
     
     public function total();
 
-    public function totalWithoutTax();
-    
     public function totalTax();
-    
-    public function totalWithShipping();
     
     public function shippingCost();
     

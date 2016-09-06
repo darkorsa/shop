@@ -5,6 +5,7 @@ namespace Plane\Shop;
 use DomainException;
 use Plane\Shop\CartItemInterface;
 use Plane\Shop\CartItemCollection;
+use Plane\Shop\PaymentInterface;
 use Plane\Shop\ShippingInterface;
 use Plane\Shop\PriceFormat\PriceFormatInterface;
 
@@ -16,11 +17,13 @@ use Plane\Shop\PriceFormat\PriceFormatInterface;
  */
 class Cart implements CartInterface
 {
-    protected $items = [];
+    private $items = [];
     
-    protected $priceFormat;
+    private $priceFormat;
     
-    protected $shipping;
+    private $shipping;
+    
+    private $payment;
     
     public function __construct(PriceFormatInterface $priceFormat = null)
     {
@@ -30,6 +33,13 @@ class Cart implements CartInterface
     public function setShipping(ShippingInterface $shipping)
     {
         $this->shipping = $shipping;
+        $this->shipping->setPriceFormat($this->priceFormat);
+    }
+    
+    public function setPayment(PaymentInterface $payment)
+    {
+        $this->payment = $payment;
+        $this->payment->setPriceFormat($this->priceFormat);
     }
     
     public function fill(CartItemCollection $collection)
@@ -88,6 +98,15 @@ class Cart implements CartInterface
         $this->items = [];
     }
     
+    public function total()
+    {
+        return (float) array_sum(
+            array_map(function (CartItemInterface $item) {
+                return $item->getPriceTotal();
+            }, $this->items)
+        );
+    }
+    
     public function totalItems()
     {
         return array_sum(
@@ -97,24 +116,6 @@ class Cart implements CartInterface
         );
     }
     
-    public function totalWithoutTax()
-    {
-        return (float) array_sum(
-            array_map(function (CartItemInterface $item) {
-                return $item->getPriceTotal();
-            }, $this->items)
-        );
-    }
-    
-    public function total()
-    {
-        return (float) array_sum(
-            array_map(function (CartItemInterface $item) {
-                return $item->getPriceTotalWithTax();
-            }, $this->items)
-        );
-    }
-
     public function totalTax()
     {
         return (float) array_sum(
@@ -124,14 +125,14 @@ class Cart implements CartInterface
         );
     }
     
-    public function totalWithShipping()
-    {
-        return $this->priceFormat->formatPrice($this->total() + (float) $this->shipping->getCost());
-    }
-    
     public function shippingCost()
     {
-        return $this->priceFormat->formatPrice($this->shipping->getCost());
+        return $this->shipping->getCost();
+    }
+    
+    public function paymentFee()
+    {
+        return $this->payment->getFee();
     }
         
     public function toArray()
@@ -141,9 +142,13 @@ class Cart implements CartInterface
             return $item->toArray();
         }, $this->items);
         
-        $array['shipping_name']     = $this->shipping->getName();
-        $array['shipping_desc']     = $this->shipping->getDescription();
-        $array['shipping_cost']     = $this->shippingCost();
+        $array['shipping']['name']      = $this->shipping->getName();
+        $array['shipping']['desc']      = $this->shipping->getDescription();
+        $array['shipping']['cost']      = $this->shippingCost();
+        
+        $array['payment']['name']       = $this->payment->getName();
+        $array['payment']['desc']       = $this->payment->getDescription();
+        $array['payment']['fee']        = $this->paymentFee();
         
         $array['totalItems']        = $this->totalItems();
         $array['total']             = $this->total();

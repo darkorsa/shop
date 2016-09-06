@@ -5,12 +5,12 @@ namespace Plane\Shop;
 use Plane\Shop\PriceFormat\PriceFormatInterface;
 
 /**
- * Description of Shipping
+ * Payment class
  *
  * @author Dariusz Korsak <dkorsak@gmail.com>
- * @package Plane/Shop
+ * @package Plane\Shop
  */
-class Shipping implements ShippingInterface
+class Payment implements PaymentInterface
 {
     private $id;
     
@@ -18,9 +18,7 @@ class Shipping implements ShippingInterface
     
     private $description;
     
-    private $cost;
-    
-    private $priceFormat;
+    private $fee;
     
     public function __construct(array $data)
     {
@@ -44,18 +42,13 @@ class Shipping implements ShippingInterface
         return $this->description;
     }
     
-    public function getCost()
+    public function getFee()
     {
         if (!is_null($this->priceFormat)) {
-            return $this->priceFormat->formatPrice($this->cost);
+            return $this->priceFormat->formatPrice($this->fee);
         }
         
-        return $this->cost;
-    }
-    
-    public function setCost($cost)
-    {
-        $this->cost = $cost;
+        return $this->fee;
     }
     
     public function setPriceFormat(PriceFormatInterface $priceFormat)

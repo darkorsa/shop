@@ -5,6 +5,7 @@ require_once __DIR__ . '/../vendor/autoload.php'; // Autoload files using Compos
 use Plane\Shop\Cart;
 use Plane\Shop\CartItem;
 use Plane\Shop\Product;
+use Plane\Shop\Payment;
 use Plane\Shop\Shipping;
 use Plane\Shop\CartItemCollection;
 use Plane\Shop\PriceFormat\EnglishFormat;
@@ -34,19 +35,26 @@ $priceFormat = new EnglishFormat();
 $shipping = new Shipping([
    'id'             => 9,
    'name'           => 'Poczta polska',
-   'description'    => 'Wysyłka pocztą polska cośtam cośtam',
+   'description'    => 'Wysylka poczta polska costam costam',
    'cost'           => 15
+]);
+
+$payment = new Payment([
+   'id'             => 1,
+   'name'           => 'PayPal',
+   'description'    => 'Platnosc paypal + 4zl do kosztu zamowienia',
+   'fee'           => 4
 ]);
 
 $cart = new Cart($priceFormat);
 $cart->fill($cartItemCollection);
 $cart->setShipping($shipping);
+$cart->setPayment($payment);
 
 echo 'Total items: ' . $cart->totalItems() . "\n\n";
 echo 'Total: ' . $cart->total() . "\n\n";
-echo 'Total without tax: ' . $cart->totalWithoutTax() . "\n\n";
 echo 'Total tax: ' . $cart->totalTax() . "\n\n";
-echo 'Total with shipping: ' . $cart->totalWithShipping() . "\n\n";
+echo 'Shipping cost: ' . $cart->shippingCost() . "\n\n";
+echo 'Payment fee: ' . $cart->paymentFee() . "\n\n";
 
-
-var_dump($cart->toArray());
+//var_dump($cart->toArray());

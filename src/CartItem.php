@@ -41,12 +41,7 @@ class CartItem implements CartItemInterface
         
         $this->quantity = (int) $quantity;
     }
-    
-    public function setPriceFormat(PriceFormatInterface $priceFormat)
-    {
-        $this->priceFormat = $priceFormat;
-    }
-    
+
     public function getId()
     {
         return $this->product->getId();
@@ -105,19 +100,24 @@ class CartItem implements CartItemInterface
         return $this->formatPrice((float) $this->product->getPrice());
     }
     
-    public function getPriceWithTax()
-    {
-        return $this->formatPrice((float) $this->getPrice() + $this->getTax());
-    }
-    
     public function getPriceTotal()
     {
         return $this->formatPrice((float) $this->getPrice() * $this->quantity);
     }
     
+    public function getPriceWithTax()
+    {
+        return $this->formatPrice((float) $this->getPrice() + $this->getTax());
+    }
+    
     public function getPriceTotalWithTax()
     {
         return $this->formatPrice((float) $this->getPriceTotal() + $this->getTaxTotal());
+    }
+    
+    public function setPriceFormat(PriceFormatInterface $priceFormat)
+    {
+        $this->priceFormat = $priceFormat;
     }
     
     public function toArray()
