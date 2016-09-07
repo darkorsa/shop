@@ -3,6 +3,8 @@
 namespace Plane\Shop;
 
 use Plane\Shop\CartItemInterface;
+use Plane\Shop\PaymentInterface;
+use Plane\Shop\ShippingInterface;
 
 /**
  * Interface for Cart classes
@@ -13,6 +15,8 @@ use Plane\Shop\CartItemInterface;
 interface CartInterface
 {
     public function setShipping(ShippingInterface $shipping);
+    
+    public function setPayment(PaymentInterface $payment);
     
     public function fill(CartItemCollection $collection);
     
@@ -37,6 +41,8 @@ interface CartInterface
     public function totalTax();
     
     public function shippingCost();
+    
+    public function paymentFee();
     
     public function toArray();
 }

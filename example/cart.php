@@ -9,6 +9,7 @@ use Plane\Shop\Payment;
 use Plane\Shop\Shipping;
 use Plane\Shop\CartItemCollection;
 use Plane\Shop\PriceFormat\EnglishFormat;
+use Plane\Shop\Discount\SecondItemFreeDiscount;
 
 $product1 = new Product([
     'id'        => 1,
@@ -51,10 +52,12 @@ $cart->fill($cartItemCollection);
 $cart->setShipping($shipping);
 $cart->setPayment($payment);
 
-echo 'Total items: ' . $cart->totalItems() . "\n\n";
-echo 'Total: ' . $cart->total() . "\n\n";
-echo 'Total tax: ' . $cart->totalTax() . "\n\n";
-echo 'Shipping cost: ' . $cart->shippingCost() . "\n\n";
-echo 'Payment fee: ' . $cart->paymentFee() . "\n\n";
+$discountedCart = new SecondItemFreeDiscount($cart);
+
+echo 'Total items: ' . $discountedCart->totalItems() . "\n\n";
+echo 'Total: ' . $discountedCart->total() . "\n\n";
+echo 'Total tax: ' . $discountedCart->totalTax() . "\n\n";
+echo 'Shipping cost: ' . $discountedCart->shippingCost() . "\n\n";
+echo 'Payment fee: ' . $discountedCart->paymentFee() . "\n\n";
 
 //var_dump($cart->toArray());

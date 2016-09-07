@@ -32,6 +32,8 @@ interface CartItemInterface
     
     public function getPrice();
     
+    public function setPrice($price);
+    
     public function getPriceTotal();
     
     public function getPriceWithTax();

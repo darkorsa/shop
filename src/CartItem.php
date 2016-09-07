@@ -15,13 +15,13 @@ use Plane\Shop\PriceFormat\PriceFormatInterface;
  */
 class CartItem implements CartItemInterface
 {
-    protected $product;
+    private $product;
     
-    protected $quantityValidator;
+    private $quantityValidator;
     
-    protected $quantity;
+    private $quantity;
     
-    protected $priceFormat;
+    private $priceFormat;
     
     /**
      * Constructor
@@ -98,6 +98,11 @@ class CartItem implements CartItemInterface
     public function getPrice()
     {
         return $this->formatPrice((float) $this->product->getPrice());
+    }
+    
+    public function setPrice($price)
+    {
+        $this->product->setPrice($price);
     }
     
     public function getPriceTotal()

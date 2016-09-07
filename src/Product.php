@@ -42,6 +42,11 @@ class Product implements ProductInterface
         return $this->price;
     }
     
+    public function setPrice($price)
+    {
+        $this->price = $price;
+    }
+    
     public function getTaxRate()
     {
         return $this->taxRate;
