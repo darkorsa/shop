@@ -12,7 +12,7 @@ use Plane\Shop\Discount\DiscountInterface;
  * @author Dariusz Korsak <dkorsak@gmail.com>
  * @package Plane\Shop;
  */
-class SecondItemFreeDiscount implements CartInterface, DiscountInterface
+class TotalPriceThresholdDiscount implements CartInterface, DiscountInterface
 {
     use \Plane\Shop\CartDecoratorTrait;
     
@@ -22,10 +22,18 @@ class SecondItemFreeDiscount implements CartInterface, DiscountInterface
     
     private $cartDiscount;
     
-    public function __construct(CartInterface $cart, CartDiscount $cartDiscount)
+    private $threshold;
+    
+    private $discount;
+    
+    public function __construct(CartInterface $cart, CartDiscount $cartDiscount, array $config)
     {
         $this->cart = $cart;
         $this->cartDiscount = $cartDiscount;
+        
+        foreach ($config as $k => $v) {
+            $this->$k = $v;
+        }
         
         $this->applyDiscount();
     }
@@ -42,20 +50,12 @@ class SecondItemFreeDiscount implements CartInterface, DiscountInterface
     
     private function applyDiscount()
     {
-        $discountedPrice = 0;
+        $total = $this->totalAfterDisconuts();
         
-        $items = $this->all();
-        
-        $i = 1;
-        foreach ($items as $item) {
-            // every even item is free
-            if ($i % 2 == 0) {
-                continue;
-            }
-            $discountedPrice += $item->getPriceTotalWithTax();
-            $i++;
+        if ($total >= $this->threshold) {
+            $discountedPrice = $total - ($total * $this->discount);
         }
-        
+                
         $this->cartDiscount->setDiscountTest($this->description);
         $this->cartDiscount->setPriceAfterDiscount($discountedPrice);
         

@@ -7,9 +7,13 @@ use Plane\Shop\CartItem;
 use Plane\Shop\Product;
 use Plane\Shop\Payment;
 use Plane\Shop\Shipping;
+use Plane\Shop\CartDiscount;
 use Plane\Shop\CartItemCollection;
+
 use Plane\Shop\PriceFormat\EnglishFormat;
+
 use Plane\Shop\Discount\SecondItemFreeDiscount;
+use Plane\Shop\Discount\TotalPriceThresholdDiscount;
 
 $product1 = new Product([
     'id'        => 1,
@@ -52,12 +56,16 @@ $cart->fill($cartItemCollection);
 $cart->setShipping($shipping);
 $cart->setPayment($payment);
 
-$discountedCart = new SecondItemFreeDiscount($cart);
+$discountedCart = new SecondItemFreeDiscount($cart, new CartDiscount);
+$discountedCart = new TotalPriceThresholdDiscount($discountedCart, new CartDiscount, ['threshold' => 50, 'discount' => 0.05]);
 
+/*
 echo 'Total items: ' . $discountedCart->totalItems() . "\n\n";
 echo 'Total: ' . $discountedCart->total() . "\n\n";
 echo 'Total tax: ' . $discountedCart->totalTax() . "\n\n";
 echo 'Shipping cost: ' . $discountedCart->shippingCost() . "\n\n";
 echo 'Payment fee: ' . $discountedCart->paymentFee() . "\n\n";
+*/
 
-//var_dump($cart->toArray());
+echo '<pre>';
+var_dump($cart->toArray());

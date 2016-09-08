@@ -3,6 +3,7 @@
 namespace Plane\Shop;
 
 use DomainException;
+use Plane\Shop\CartDiscount;
 use Plane\Shop\CartItemInterface;
 use Plane\Shop\CartItemCollection;
 use Plane\Shop\PaymentInterface;
@@ -25,6 +26,8 @@ class Cart implements CartInterface
     
     private $payment;
     
+    private $discounts = [];
+    
     public function __construct(PriceFormatInterface $priceFormat = null)
     {
         $this->priceFormat = $priceFormat;
@@ -40,6 +43,12 @@ class Cart implements CartInterface
     {
         $this->payment = $payment;
         $this->payment->setPriceFormat($this->priceFormat);
+    }
+    
+    public function addDiscount(CartDiscount $discount)
+    {
+        $discount->setPriceFormat($this->priceFormat);
+        $this->discounts[] = $discount;
     }
     
     public function fill(CartItemCollection $collection)
@@ -102,7 +111,7 @@ class Cart implements CartInterface
     {
         return (float) array_sum(
             array_map(function (CartItemInterface $item) {
-                return $item->getPriceTotal();
+                return $item->getPriceTotalWithTax();
             }, $this->items)
         );
     }
@@ -125,6 +134,15 @@ class Cart implements CartInterface
         );
     }
     
+    public function totalAfterDisconuts()
+    {
+        return (float) array_sum(
+            array_map(function (CartDiscount $discount) {
+                return $discount->getPriceAfterDiscount();
+            }, $this->discounts)
+        );
+    }
+    
     public function shippingCost()
     {
         return $this->shipping->getCost();
@@ -138,9 +156,9 @@ class Cart implements CartInterface
     public function toArray()
     {
         $array = [];
-        $array['items'] = array_map(function (CartItemInterface $item) {
+        /*$array['items'] = array_map(function (CartItemInterface $item) {
             return $item->toArray();
-        }, $this->items);
+        }, $this->items);*/
         
         $array['shipping']['name']      = $this->shipping->getName();
         $array['shipping']['desc']      = $this->shipping->getDescription();
@@ -150,11 +168,18 @@ class Cart implements CartInterface
         $array['payment']['desc']       = $this->payment->getDescription();
         $array['payment']['fee']        = $this->paymentFee();
         
+        $array['discounts'] = array_map(function (CartDiscount $discount) {
+            return [
+                'text'  => $discount->getDiscountText(),
+                'price' => $discount->getPriceAfterDiscount()
+            ];
+        }, $this->discounts);
+        
         $array['totalItems']        = $this->totalItems();
         $array['total']             = $this->total();
-        $array['totalWithoutTax']   = $this->totalWithoutTax();
         $array['totalTax']          = $this->totalTax();
-        $array['totalWithShipping'] = $this->totalWithShipping();
+        $array['shippingCost']      = $this->shippingCost();
+        $array['paymentFee']        = $this->paymentFee();
         
         return $array;
     }

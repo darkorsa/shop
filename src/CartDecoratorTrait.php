@@ -24,6 +24,11 @@ trait CartDecoratorTrait
         $this->cart->setPayment($payment);
     }
     
+    public function addDiscount(CartDiscount $discount)
+    {
+        $this->cart->addDiscount($discount);
+    }
+    
     public function fill(CartItemCollection $collection)
     {
         $this->cart->fill($collection);
@@ -79,6 +84,11 @@ trait CartDecoratorTrait
         return $this->cart->totalTax();
     }
     
+    public function totalAfterDisconuts()
+    {
+        return $this->cart->totalAfterDisconuts();
+    }
+    
     public function shippingCost()
     {
         return $this->cart->shippingCost();
@@ -91,6 +101,6 @@ trait CartDecoratorTrait
     
     public function toArray()
     {
-        return $this->toArray();
+        return $this->cart->toArray();
     }
 }
