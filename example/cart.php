@@ -59,13 +59,12 @@ $cart->setPayment($payment);
 $discountedCart = new SecondItemFreeDiscount($cart, new CartDiscount);
 $discountedCart = new TotalPriceThresholdDiscount($discountedCart, new CartDiscount, ['threshold' => 50, 'discount' => 0.05]);
 
-/*
+
 echo 'Total items: ' . $discountedCart->totalItems() . "\n\n";
 echo 'Total: ' . $discountedCart->total() . "\n\n";
 echo 'Total tax: ' . $discountedCart->totalTax() . "\n\n";
 echo 'Shipping cost: ' . $discountedCart->shippingCost() . "\n\n";
 echo 'Payment fee: ' . $discountedCart->paymentFee() . "\n\n";
-*/
+echo 'Total after discounts: ' . $discountedCart->totalAfterDisconuts() . "\n\n";
 
-echo '<pre>';
-var_dump($cart->toArray());
+

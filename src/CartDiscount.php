@@ -16,7 +16,7 @@ class CartDiscount
     
     private $priceAfterDiscount;
     
-    public function setDiscountTest($discountText)
+    public function setDiscountText($discountText)
     {
         $this->discountText = $discountText;
     }

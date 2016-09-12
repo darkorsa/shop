@@ -42,22 +42,19 @@ class SecondItemFreeDiscount implements CartInterface, DiscountInterface
     
     private function applyDiscount()
     {
-        $discountedPrice = 0;
-        
-        $items = $this->all();
-        
+        $total = $this->totalAfterDisconuts();
+
         $i = 1;
-        foreach ($items as $item) {
+        foreach ($this->all() as $item) {
             // every even item is free
             if ($i % 2 == 0) {
-                continue;
+                $total -= $item->getPriceTotalWithTax();
             }
-            $discountedPrice += $item->getPriceTotalWithTax();
             $i++;
         }
         
-        $this->cartDiscount->setDiscountTest($this->description);
-        $this->cartDiscount->setPriceAfterDiscount($discountedPrice);
+        $this->cartDiscount->setDiscountText($this->description);
+        $this->cartDiscount->setPriceAfterDiscount($total);
         
         $this->addDiscount($this->cartDiscount);
     }

@@ -53,11 +53,11 @@ class TotalPriceThresholdDiscount implements CartInterface, DiscountInterface
         $total = $this->totalAfterDisconuts();
         
         if ($total >= $this->threshold) {
-            $discountedPrice = $total - ($total * $this->discount);
+            $total = $total - ($total * $this->discount);
         }
                 
-        $this->cartDiscount->setDiscountTest($this->description);
-        $this->cartDiscount->setPriceAfterDiscount($discountedPrice);
+        $this->cartDiscount->setDiscountText($this->description);
+        $this->cartDiscount->setPriceAfterDiscount($total);
         
         $this->addDiscount($this->cartDiscount);
     }

@@ -136,11 +136,10 @@ class Cart implements CartInterface
     
     public function totalAfterDisconuts()
     {
-        return (float) array_sum(
-            array_map(function (CartDiscount $discount) {
-                return $discount->getPriceAfterDiscount();
-            }, $this->discounts)
-        );
+        return !empty($this->discounts)
+            ? end($this->discounts)->getPriceAfterDiscount()
+            : $this->total();
+                
     }
     
     public function shippingCost()
@@ -156,9 +155,9 @@ class Cart implements CartInterface
     public function toArray()
     {
         $array = [];
-        /*$array['items'] = array_map(function (CartItemInterface $item) {
+        $array['items'] = array_map(function (CartItemInterface $item) {
             return $item->toArray();
-        }, $this->items);*/
+        }, $this->items);
         
         $array['shipping']['name']      = $this->shipping->getName();
         $array['shipping']['desc']      = $this->shipping->getDescription();
@@ -180,6 +179,7 @@ class Cart implements CartInterface
         $array['totalTax']          = $this->totalTax();
         $array['shippingCost']      = $this->shippingCost();
         $array['paymentFee']        = $this->paymentFee();
+        $array['totalAfterDisconuts'] = $this->totalAfterDisconuts();
         
         return $array;
     }
