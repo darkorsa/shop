@@ -3,8 +3,6 @@
 namespace Plane\Shop\Discount;
 
 use Plane\Shop\CartInterface;
-use Plane\Shop\CartDiscount;
-use Plane\Shop\Discount\DiscountInterface;
 
 /**
  * Description of SecondItemFreeDiscount
@@ -12,35 +10,11 @@ use Plane\Shop\Discount\DiscountInterface;
  * @author Dariusz Korsak <dkorsak@gmail.com>
  * @package Plane\Shop;
  */
-class SecondItemFreeDiscount implements CartInterface, DiscountInterface
+class SecondItemFreeDiscount extends DiscountAbstract implements CartInterface
 {
     use \Plane\Shop\CartDecoratorTrait;
     
-    private $name;
-    
-    private $description;
-    
-    private $cartDiscount;
-    
-    public function __construct(CartInterface $cart, CartDiscount $cartDiscount)
-    {
-        $this->cart = $cart;
-        $this->cartDiscount = $cartDiscount;
-        
-        $this->applyDiscount();
-    }
-    
-    public function getName()
-    {
-        return $this->name;
-    }
-    
-    public function getDesc()
-    {
-        return $this->description;
-    }
-    
-    private function applyDiscount()
+    protected function applyDiscount()
     {
         $total = $this->totalAfterDisconuts();
 

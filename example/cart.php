@@ -18,9 +18,9 @@ use Plane\Shop\Discount\TotalPriceThresholdDiscount;
 $product1 = new Product([
     'id'        => 1,
     'name'      => 'Commander Graven Il-vec',
-    'price'     => 19.43,
+    'price'     => 10,
     'imagePath' => '/resources/singles/commander.jpg',
-    'taxRate'   => 0.23
+    'taxRate'   => 0.0
 ]);
 
 $product2 = new Product([
@@ -28,7 +28,7 @@ $product2 = new Product([
     'name'      => 'Wall of Blossoms',
     'price'     => 4.00,
     'imagePath' => '/resources/singles/wall.jpg',
-    'taxRate'   => 0.23
+    'taxRate'   => 0.0
 ]);
 
 $cartItemCollection = new CartItemCollection;
@@ -48,7 +48,7 @@ $payment = new Payment([
    'id'             => 1,
    'name'           => 'PayPal',
    'description'    => 'Platnosc paypal + 4zl do kosztu zamowienia',
-   'fee'           => 4
+   'fee'            => 5
 ]);
 
 $cart = new Cart($priceFormat);
@@ -56,15 +56,27 @@ $cart->fill($cartItemCollection);
 $cart->setShipping($shipping);
 $cart->setPayment($payment);
 
-$discountedCart = new SecondItemFreeDiscount($cart, new CartDiscount);
-$discountedCart = new TotalPriceThresholdDiscount($discountedCart, new CartDiscount, ['threshold' => 50, 'discount' => 0.05]);
+$discount1Cart = new SecondItemFreeDiscount(
+    $cart,
+    ['name' => 'Second item will be free',
+    'description' => 'Some description']
+);
+$discount2Cart = new TotalPriceThresholdDiscount(
+    $discount1Cart,
+    [
+    'name' => 'To percent off on discount',
+    'description' => '10% off on orders equal or above 40',
+    'threshold' => 40,
+    'discount' => 0.10
+    ]
+);
 
 
-echo 'Total items: ' . $discountedCart->totalItems() . "\n\n";
-echo 'Total: ' . $discountedCart->total() . "\n\n";
-echo 'Total tax: ' . $discountedCart->totalTax() . "\n\n";
-echo 'Shipping cost: ' . $discountedCart->shippingCost() . "\n\n";
-echo 'Payment fee: ' . $discountedCart->paymentFee() . "\n\n";
-echo 'Total after discounts: ' . $discountedCart->totalAfterDisconuts() . "\n\n";
+echo 'Total items: ' . $discount2Cart->totalItems() . "\n\n";
+echo 'Total: ' . $discount2Cart->total() . "\n\n";
+echo 'Total tax: ' . $discount2Cart->totalTax() . "\n\n";
+echo 'Shipping cost: ' . $discount2Cart->shippingCost() . "\n\n";
+echo 'Payment fee: ' . $discount2Cart->paymentFee() . "\n\n";
+echo 'Total after discounts: ' . $discount2Cart->totalAfterDisconuts() . "\n\n";
 
 

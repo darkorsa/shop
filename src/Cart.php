@@ -144,11 +144,19 @@ class Cart implements CartInterface
     
     public function shippingCost()
     {
+        if (!is_object($this->shipping)) {
+            return null;
+        }
+        
         return $this->shipping->getCost();
     }
     
     public function paymentFee()
     {
+        if (!is_object($this->payment)) {
+            return null;
+        }
+        
         return $this->payment->getFee();
     }
         
