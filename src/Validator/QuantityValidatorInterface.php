@@ -12,5 +12,11 @@ use Plane\Shop\ProductInterface;
  */
 interface QuantityValidatorInterface
 {
+    /**
+     * Validate quantity
+     * @param \Plane\Shop\ProductInterface $product
+     * @param int $quantity
+     * @return boolean
+     */
     public function validate(ProductInterface $product, $quantity);
 }

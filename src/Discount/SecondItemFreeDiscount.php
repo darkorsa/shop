@@ -14,6 +14,9 @@ class SecondItemFreeDiscount extends DiscountAbstract implements CartInterface
 {
     use \Plane\Shop\CartDecoratorTrait;
     
+    /**
+     * Apply discount so that every even item price is set to 0
+     */
     protected function applyDiscount()
     {
         $total = $this->totalAfterDisconuts();

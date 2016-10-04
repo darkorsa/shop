@@ -14,10 +14,21 @@ class TotalPriceThresholdDiscount extends DiscountAbstract implements CartInterf
 {
     use \Plane\Shop\CartDecoratorTrait;
     
+    /**
+     * Price treshiold
+     * @var int
+     */
     protected $threshold;
     
+    /**
+     * Discount value
+     * @var float
+     */
     protected $discount;
     
+    /**
+     * Apply discount so that after total price is over given treshold
+     */
     protected function applyDiscount()
     {
         $total = $this->totalAfterDisconuts();

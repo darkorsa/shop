@@ -2,6 +2,8 @@
 
 namespace Plane\Shop\Discount;
 
+use Plane\Shop\CartDiscount;
+
 /**
  * Inferface for discount classes
  *
@@ -10,7 +12,21 @@ namespace Plane\Shop\Discount;
  */
 interface DiscountInterface
 {
+    /**
+     * Set CartDiscount object
+     * @param \Plane\Shop\CartDiscount $cartDiscount
+     */
+    public function setCartDiscount(CartDiscount $cartDiscount);
+    
+    /**
+     * Return name
+     * @return string
+     */
     public function getName();
     
-    public function getDesc();
+    /**
+     * Return description
+     * @return string
+     */
+    public function getDescription();
 }

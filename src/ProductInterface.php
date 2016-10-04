@@ -10,15 +10,39 @@ namespace Plane\Shop;
  */
 interface ProductInterface
 {
+    /**
+     * Return id
+     * @return ing
+     */
     public function getId();
     
+    /**
+     * Return name
+     * @return string
+     */
     public function getName();
 
+    /**
+     * Return price
+     * @return float
+     */
     public function getPrice();
     
+    /**
+     * Set price
+     * @param int|float $price
+     */
     public function setPrice($price);
 
+    /**
+     * Return image path
+     * @return string
+     */
     public function getImagePath();
     
+    /**
+     * Return tax rate
+     * @return float
+     */
     public function getTaxRate();
 }

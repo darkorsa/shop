@@ -10,5 +10,10 @@ namespace Plane\Shop\PriceFormat;
  */
 interface PriceFormatInterface
 {
+    /**
+     * Format price
+     * @param int|float $price
+     * @return float
+     */
     public function formatPrice($price);
 }
