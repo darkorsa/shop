@@ -7,7 +7,6 @@ use Plane\Shop\CartItem;
 use Plane\Shop\Product;
 use Plane\Shop\Payment;
 use Plane\Shop\Shipping;
-use Plane\Shop\CartDiscount;
 use Plane\Shop\CartItemCollection;
 
 use Plane\Shop\PriceFormat\EnglishFormat;
@@ -17,18 +16,16 @@ use Plane\Shop\Discount\TotalPriceThresholdDiscount;
 
 $product1 = new Product([
     'id'        => 1,
-    'name'      => 'Commander Graven Il-vec',
+    'name'      => 'Product One',
     'price'     => 10,
-    'imagePath' => '/resources/singles/commander.jpg',
-    'taxRate'   => 0.0
+    'taxRate'   => 0.2
 ]);
 
 $product2 = new Product([
     'id'        => 2,
-    'name'      => 'Wall of Blossoms',
+    'name'      => 'Product Two',
     'price'     => 4.00,
-    'imagePath' => '/resources/singles/wall.jpg',
-    'taxRate'   => 0.0
+    'taxRate'   => 0.2
 ]);
 
 $cartItemCollection = new CartItemCollection;
@@ -39,15 +36,15 @@ $priceFormat = new EnglishFormat();
 
 $shipping = new Shipping([
    'id'             => 9,
-   'name'           => 'Poczta polska',
-   'description'    => 'Wysylka poczta polska costam costam',
+   'name'           => 'National Shipping Company',
+   'description'    => 'Standart Ground Shipping',
    'cost'           => 15
 ]);
 
 $payment = new Payment([
    'id'             => 1,
    'name'           => 'PayPal',
-   'description'    => 'Platnosc paypal + 4zl do kosztu zamowienia',
+   'description'    => 'Payment with Paypal',
    'fee'            => 5
 ]);
 
@@ -56,27 +53,23 @@ $cart->fill($cartItemCollection);
 $cart->setShipping($shipping);
 $cart->setPayment($payment);
 
-$discount1Cart = new SecondItemFreeDiscount(
-    $cart,
-    ['name' => 'Second item will be free',
-    'description' => 'Some description']
-);
-$discount2Cart = new TotalPriceThresholdDiscount(
-    $discount1Cart,
-    [
+$discount1 = new SecondItemFreeDiscount($cart, [
+    'name' => 'Second item will be free',
+    'description' => 'Some description'
+]);
+
+$discount2 = new TotalPriceThresholdDiscount($discount1, [
     'name' => 'To percent off on discount',
     'description' => '10% off on orders equal or above 40',
     'threshold' => 40,
     'discount' => 0.10
-    ]
-);
+]);
 
-
-echo 'Total items: ' . $discount2Cart->totalItems() . "\n\n";
-echo 'Total: ' . $discount2Cart->total() . "\n\n";
-echo 'Total tax: ' . $discount2Cart->totalTax() . "\n\n";
-echo 'Shipping cost: ' . $discount2Cart->shippingCost() . "\n\n";
-echo 'Payment fee: ' . $discount2Cart->paymentFee() . "\n\n";
-echo 'Total after discounts: ' . $discount2Cart->totalAfterDisconuts() . "\n\n";
+echo 'Total items: ' . $discount2->totalItems() . "\n\n";
+echo 'Total: ' . $discount2->total() . "\n\n";
+echo 'Total tax: ' . $discount2->totalTax() . "\n\n";
+echo 'Shipping cost: ' . $discount2->shippingCost() . "\n\n";
+echo 'Payment fee: ' . $discount2->paymentFee() . "\n\n";
+echo 'Total after discounts: ' . $discount2->totalAfterDisconuts() . "\n\n";
 
 
