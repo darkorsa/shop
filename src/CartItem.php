@@ -4,7 +4,7 @@ namespace Plane\Shop;
 
 use DomainException;
 
-use Plane\Shop\QuantityValidatorInterface;
+use Plane\Shop\Validator\QuantityValidatorInterface;
 use Plane\Shop\PriceFormat\PriceFormatInterface;
 
 /**
