@@ -29,6 +29,12 @@ class Product implements ProductInterface
     protected $price;
     
     /**
+     * Product quantity
+     * @var int
+     */
+    protected $quantity;
+    
+    /**
      * Product path to image
      * @var string
      */
@@ -85,6 +91,15 @@ class Product implements ProductInterface
     public function setPrice($price)
     {
         $this->price = $price;
+    }
+    
+    /**
+     * Return quantity
+     * @return int
+     */
+    public function getQuantity()
+    {
+        return (int) $this->quantity;
     }
     
     /**
