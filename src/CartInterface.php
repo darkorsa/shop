@@ -49,9 +49,9 @@ interface CartInterface
     
     /**
      * Replace cart item
-     * @param \Plane\Shop\Product $item
+     * @param \Plane\Shop\CartItemInterface $item
      */
-    public function update(Product $item);
+    public function update(CartItemInterface $item);
     
     /**
      * Check if cart item with given id exists

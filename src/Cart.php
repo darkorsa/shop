@@ -124,9 +124,9 @@ class Cart implements CartInterface
       
     /**
      * Replace cart item
-     * @param \Plane\Shop\Product $item
+     * @param \Plane\Shop\CartItemInterface $item
      */
-    public function update(Product $item)
+    public function update(CartItemInterface $item)
     {
         $this->addItem($item);
     }
