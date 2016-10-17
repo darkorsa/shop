@@ -261,13 +261,18 @@ class Cart implements CartInterface
             return $item->toArray();
         }, $this->items);
         
-        $array['shipping']['name']      = $this->shipping->getName();
-        $array['shipping']['desc']      = $this->shipping->getDescription();
-        $array['shipping']['cost']      = $this->shippingCost();
         
-        $array['payment']['name']       = $this->payment->getName();
-        $array['payment']['desc']       = $this->payment->getDescription();
-        $array['payment']['fee']        = $this->paymentFee();
+        if (!is_null($this->shipping)) {
+            $array['shipping']['name']      = $this->shipping->getName();
+            $array['shipping']['desc']      = $this->shipping->getDescription();
+            $array['shipping']['cost']      = $this->shippingCost();
+        }
+        
+        if (!is_null($this->payment)) {
+            $array['payment']['name']       = $this->payment->getName();
+            $array['payment']['desc']       = $this->payment->getDescription();
+            $array['payment']['fee']        = $this->paymentFee();
+        }
         
         $array['discounts'] = array_map(function (CartDiscount $discount) {
             return [
