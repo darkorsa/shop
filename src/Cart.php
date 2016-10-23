@@ -63,6 +63,15 @@ class Cart implements CartInterface
     }
     
     /**
+     * Return shipping object
+     * @return \Plane\Shop\ShippingInterface
+     */
+    public function getShipping()
+    {
+        return $this->shipping;
+    }
+    
+    /**
      * Set payment object
      * @param \Plane\Shop\PaymentInterface $payment
      */
@@ -70,6 +79,15 @@ class Cart implements CartInterface
     {
         $this->payment = $payment;
         $this->payment->setPriceFormat($this->priceFormat);
+    }
+    
+    /**
+     * Return payment object
+     * @return \Plane\Shop\PaymentInterface
+     */
+    public function getPayment()
+    {
+        return $this->payment;
     }
     
     /**

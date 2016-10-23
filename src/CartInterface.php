@@ -17,10 +17,22 @@ interface CartInterface
     public function setShipping(ShippingInterface $shipping);
     
     /**
+     * Return shipping object
+     * @return \Plane\Shop\ShippingInterface
+     */
+    public function getShipping();
+    
+    /**
      * Set payment object
      * @param \Plane\Shop\PaymentInterface $payment
      */
     public function setPayment(PaymentInterface $payment);
+    
+    /**
+     * Return payment object
+     * @return \Plane\Shop\PaymentInterface
+     */
+    public function getPayment();
     
     /**
      * Add discount
