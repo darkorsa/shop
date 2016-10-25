@@ -18,7 +18,7 @@ $product1 = new Product([
     'id'        => 1,
     'name'      => 'Product One',
     'price'     => 10,
-    'taxRate'   => 0.23,
+    'taxRate'   => 0.2,
     'weight'    => 5,
 ]);
 
@@ -26,7 +26,7 @@ $product2 = new Product([
     'id'        => 2,
     'name'      => 'Product Two',
     'price'     => 4.00,
-    'taxRate'   => 0.23,
+    'taxRate'   => 0.2,
     'weight'    => 0.25,
 ]);
 

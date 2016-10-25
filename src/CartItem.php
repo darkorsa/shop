@@ -136,7 +136,7 @@ class CartItem implements CartItemInterface
      */
     public function getTax()
     {
-        return $this->formatPrice((float) $this->product->getPrice() * $this->product->getTaxRate());
+        return $this->product->getTax();
     }
             
     /**
@@ -199,7 +199,7 @@ class CartItem implements CartItemInterface
      */
     public function getPriceWithTax()
     {
-        return $this->formatPrice((float) $this->getPrice() + $this->getTax());
+        return $this->product->getPriceWithTax();
     }
     
     /**
@@ -218,25 +218,21 @@ class CartItem implements CartItemInterface
     public function setPriceFormat(PriceFormatInterface $priceFormat)
     {
         $this->priceFormat = $priceFormat;
+        $this->product->setPriceFormat($priceFormat);
     }
     
     /**
-     * Cast object to array
+     * Return object array representation
      * @return array
      */
     public function toArray()
     {
         $array = [];
-        $array['id']                = $this->getId();
-        $array['name']              = $this->getName();
-        $array['imagePath']         = $this->getImagePath();
         $array['quantity']          = $this->getQuantity();
-        $array['tax']               = $this->getTax();
         $array['totalTax']          = $this->getTaxTotal();
-        $array['price']             = $this->getPrice();
-        $array['priceWithTax']      = $this->getPriceWithTax();
         $array['priceTotal']        = $this->getPriceTotal();
         $array['priceTotalWithTax'] = $this->getPriceTotalWithTax();
+        $array['product']           = $this->product->toArray();
         
         return $array;
     }

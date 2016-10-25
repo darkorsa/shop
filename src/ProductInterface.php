@@ -2,6 +2,8 @@
 
 namespace Plane\Shop;
 
+use Plane\Shop\PriceFormat\PriceFormatInterface;
+
 /**
  * Interface for Product class
  *
@@ -51,4 +53,28 @@ interface ProductInterface
      * @return float
      */
     public function getTaxRate();
+    
+    /**
+     * Return tax for single item
+     * @return float
+     */
+    public function getTax();
+    
+    /**
+     * Return price including tax for single item
+     * @return float
+     */
+    public function getPriceWithTax();
+    
+    /**
+     * Set price format object
+     * @param \Plane\Shop\PriceFormat\PriceFormatInterface $priceFormat
+     */
+    public function setPriceFormat(PriceFormatInterface $priceFormat);
+    
+    /**
+     * Return object array representation
+     * @return array
+     */
+    public function toArray();
 }

@@ -2,8 +2,10 @@
 
 namespace Plane\Shop;
 
+use Plane\Shop\PriceFormat\PriceFormatInterface;
+
 /**
- * Shop product class
+ * Abstraction layer for product
  *
  * @author Dariusz Korsak <dkorsak@gmail.com>
  * @package Plane\Shop
@@ -51,6 +53,12 @@ class Product implements ProductInterface
      * @var float
      */
     protected $taxRate;
+    
+    /**
+     * Price format object
+     * @var \Plane\Shop\PriceFormat\PriceFormatInterface
+     */
+    private $priceFormat;
     
     /**
      * Constructor
@@ -118,15 +126,6 @@ class Product implements ProductInterface
     }
     
     /**
-     * Return tax rate
-     * @return float
-     */
-    public function getTaxRate()
-    {
-        return (float) $this->taxRate;
-    }
-    
-    /**
      * Return image path
      * @return string|null
      */
@@ -137,5 +136,71 @@ class Product implements ProductInterface
         }
         
         return null;
+    }
+    
+    /**
+     * Return tax rate
+     * @return float
+     */
+    public function getTaxRate()
+    {
+        return (float) $this->taxRate;
+    }
+    
+    /**
+     * Return tax for single item
+     * @return float
+     */
+    public function getTax()
+    {
+        return $this->formatPrice((float) $this->getPrice() * $this->getTaxRate());
+    }
+    
+    /**
+     * Return price including tax for single item
+     * @return float
+     */
+    public function getPriceWithTax()
+    {
+        return $this->formatPrice((float) $this->getPrice() + $this->getTax());
+    }
+    
+    /**
+     * Set price format object
+     * @param \Plane\Shop\PriceFormat\PriceFormatInterface $priceFormat
+     */
+    public function setPriceFormat(PriceFormatInterface $priceFormat)
+    {
+        $this->priceFormat = $priceFormat;
+    }
+    
+    public function toArray()
+    {
+        $array = [];
+        $array['id']                = $this->getId();
+        $array['name']              = $this->getName();
+        $array['imagePath']         = $this->getImagePath();
+        $array['quantity']          = $this->getQuantity();
+        $array['taxRate']           = $this->getTaxRate();
+        $array['tax']               = $this->getTax();
+        $array['price']             = $this->getPrice();
+        $array['weight']            = $this->getWeight();
+        $array['priceWithTax']      = $this->getPriceWithTax();
+
+        return $array;
+    }
+    
+    /**
+     * Format price with set price format object
+     * @param float $price
+     * @return float
+     */
+    protected function formatPrice($price)
+    {
+        if (is_null($this->priceFormat)) {
+            return $price;
+        }
+        
+        return $this->priceFormat->formatPrice($price);
     }
 }

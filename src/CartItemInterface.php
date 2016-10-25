@@ -116,7 +116,7 @@ interface CartItemInterface
     public function setPriceFormat(PriceFormatInterface $priceFormat);
     
     /**
-     * Cast object to array
+     * Return object array representation
      * @return array
      */
     public function toArray();
