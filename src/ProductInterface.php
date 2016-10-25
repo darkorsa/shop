@@ -29,6 +29,12 @@ interface ProductInterface
     public function getPrice();
     
     /**
+     * Return weight
+     * @return float
+     */
+    public function getWeight();
+    
+    /**
      * Set price
      * @param int|float $price
      */

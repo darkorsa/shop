@@ -29,6 +29,12 @@ class Product implements ProductInterface
     protected $price;
     
     /**
+     * Product weight
+     * @var int|foat
+     */
+    protected $weight;
+    
+    /**
      * Product quantity
      * @var int
      */
@@ -82,6 +88,15 @@ class Product implements ProductInterface
     public function getPrice()
     {
         return (float) $this->price;
+    }
+    
+    /**
+     * Return weight
+     * @return float
+     */
+    public function getWeight()
+    {
+        return (float) $this->weight;
     }
     
     /**

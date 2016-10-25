@@ -231,6 +231,19 @@ class Cart implements CartInterface
     }
     
     /**
+     * Return total weight of all items
+     * return float
+     */
+    public function totalWeight()
+    {
+        return (float) array_sum(
+            array_map(function (CartItemInterface $item) {
+                return $item->getWeightTotal();
+            }, $this->items)
+        );
+    }
+    
+    /**
      * Return price after discounts
      * @return float
      */
@@ -302,6 +315,7 @@ class Cart implements CartInterface
         $array['totalItems']        = $this->totalItems();
         $array['total']             = $this->total();
         $array['totalTax']          = $this->totalTax();
+        $array['totalWeight']       = $this->totalWeight();
         $array['shippingCost']      = $this->shippingCost();
         $array['paymentFee']        = $this->paymentFee();
         $array['totalAfterDisconuts'] = $this->totalAfterDisconuts();

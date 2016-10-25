@@ -110,6 +110,12 @@ interface CartInterface
     public function totalTax();
     
     /**
+     * Return total weight of all items
+     * return float
+     */
+    public function totalWeight();
+    
+    /**
      * Return price after discounts
      * @return float
      */

@@ -68,6 +68,18 @@ interface CartItemInterface
     public function getTaxTotal();
     
     /**
+     * Return product weight
+     * @return float
+     */
+    public function getWeight();
+    
+    /**
+     * Return weight for all items
+     * @return float
+     */
+    public function getWeightTotal();
+    
+    /**
      * Return single cart item price
      * @return float
      */

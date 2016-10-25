@@ -18,14 +18,16 @@ $product1 = new Product([
     'id'        => 1,
     'name'      => 'Product One',
     'price'     => 10,
-    'taxRate'   => 0.2
+    'taxRate'   => 0.23,
+    'weight'    => 5,
 ]);
 
 $product2 = new Product([
     'id'        => 2,
     'name'      => 'Product Two',
     'price'     => 4.00,
-    'taxRate'   => 0.2
+    'taxRate'   => 0.23,
+    'weight'    => 0.25,
 ]);
 
 $cartItemCollection = new CartItemCollection;
@@ -68,6 +70,7 @@ $discount2 = new TotalPriceThresholdDiscount($discount1, [
 echo 'Total items: ' . $discount2->totalItems() . "\n\n";
 echo 'Total: ' . $discount2->total() . "\n\n";
 echo 'Total tax: ' . $discount2->totalTax() . "\n\n";
+echo 'Total weight: ' . $discount2->totalWeight() . "\n\n";
 echo 'Shipping cost: ' . $discount2->shippingCost() . "\n\n";
 echo 'Payment fee: ' . $discount2->paymentFee() . "\n\n";
 echo 'Total after discounts: ' . $discount2->totalAfterDisconuts() . "\n\n";

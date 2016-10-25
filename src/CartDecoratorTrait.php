@@ -24,12 +24,30 @@ trait CartDecoratorTrait
     }
     
     /**
+     * Return shipping object
+     * @return \Plane\Shop\ShippingInterface
+     */
+    public function getShipping()
+    {
+        return $this->cart->getShipping();
+    }
+    
+    /**
      * Set payment object
      * @param \Plane\Shop\PaymentInterface $payment
      */
     public function setPayment(PaymentInterface $payment)
     {
         $this->cart->setPayment($payment);
+    }
+    
+    /**
+     * Return payment object
+     * @return \Plane\Shop\PaymentInterface
+     */
+    public function getPayment()
+    {
+        return $this->cart->getPayment();
     }
     
     /**
@@ -71,9 +89,9 @@ trait CartDecoratorTrait
     
     /**
      * Replace cart item
-     * @param \Plane\Shop\Product $item
+     * @param \Plane\Shop\CartItemInterface $item
      */
-    public function update(Product $item)
+    public function update(CartItemInterface $item)
     {
         $this->cart->update($item);
     }
@@ -141,6 +159,15 @@ trait CartDecoratorTrait
     public function totalTax()
     {
         return $this->cart->totalTax();
+    }
+    
+    /**
+     * Return total weight of all items
+     * return float
+     */
+    public function totalWeight()
+    {
+        return $this->cart->totalWeight();
     }
     
     /**

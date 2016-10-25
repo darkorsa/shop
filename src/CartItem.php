@@ -149,6 +149,24 @@ class CartItem implements CartItemInterface
     }
     
     /**
+     * Return product weight
+     * @return float
+     */
+    public function getWeight()
+    {
+        return (float) $this->product->getWeight();
+    }
+    
+    /**
+     * Return weight for all items
+     * @return float
+     */
+    public function getWeightTotal()
+    {
+        return (float) ($this->getWeight() * $this->quantity);
+    }
+    
+    /**
      * Return single cart item price
      * @return float
      */
