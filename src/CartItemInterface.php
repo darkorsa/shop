@@ -13,6 +13,12 @@ use Plane\Shop\PriceFormat\PriceFormatInterface;
 interface CartItemInterface
 {
     /**
+     * Return product object
+     * @return \Plane\Shop\ProductInterface
+     */
+    public function getProduct();
+    
+    /**
      * Return id
      * @return int
      */

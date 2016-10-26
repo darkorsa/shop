@@ -57,6 +57,15 @@ class CartItem implements CartItemInterface
         
         $this->quantity = (int) $quantity;
     }
+    
+    /**
+     * Return product object
+     * @return \Plane\Shop\ProductInterface
+     */
+    public function getProduct()
+    {
+        return $this->product;
+    }
 
     /**
      * Return id
