@@ -30,10 +30,21 @@ interface PaymentInterface
     
     /**
      * Return fee
-     * @return float|int
+     * @param float $totalPrice
+     * @return float
      */
-    public function getFee();
+    public function getFee($totalPrice);
     
+    /**
+     * Set fee as fixed price
+     */
+    public function setFixed();
+    
+    /**
+     * Set fee as percentage of total price
+     */
+    public function setPercentage();
+
     /**
      * Set price format object
      * @param \Plane\Shop\PriceFormat\PriceFormatInterface $priceFormat

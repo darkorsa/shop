@@ -47,8 +47,9 @@ $payment = new Payment([
    'id'             => 1,
    'name'           => 'PayPal',
    'description'    => 'Payment with Paypal',
-   'fee'            => 5
+   'fee'            => 0.02
 ]);
+$payment->setPercentage();
 
 $cart = new Cart($priceFormat);
 $cart->fill($cartItemCollection);

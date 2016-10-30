@@ -278,7 +278,7 @@ class Cart implements CartInterface
             return null;
         }
         
-        return $this->payment->getFee();
+        return $this->payment->getFee($this->totalAfterDisconuts() + (float) $this->shippingCost());
     }
         
     /**

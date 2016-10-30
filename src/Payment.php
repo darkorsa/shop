@@ -13,6 +13,16 @@ use Plane\Shop\PriceFormat\PriceFormatInterface;
 class Payment implements PaymentInterface
 {
     /**
+     * Fee is a fixed price
+     */
+    const FEE_FIXED = 'fixed';
+    
+    /**
+     * Fee is calculated as a percentage of total price
+     */
+    const FEE_PERCENTAGE = 'percentage';
+    
+    /**
      * Payment id
      * @var int
      */
@@ -35,6 +45,12 @@ class Payment implements PaymentInterface
      * @var int|float
      */
     private $fee;
+    
+    /**
+     * Payment fee type (fee_fixed|fee_percentage)
+     * @var type
+     */
+    private $feeType = self::FEE_FIXED;
     
     /**
      * Constructor
@@ -75,16 +91,33 @@ class Payment implements PaymentInterface
     }
     
     /**
-     * Return fee
-     * @return float|int
+     * Set fee as fixed price
      */
-    public function getFee()
+    public function setFixed()
+    {
+        $this->feeType = self::FEE_FIXED;
+    }
+    
+    /**
+     * Set fee as percentage of total price
+     */
+    public function setPercentage()
+    {
+        $this->feeType = self::FEE_PERCENTAGE;
+    }
+    
+    /**
+     * Return fee
+     * @param float $totalPrice
+     * @return float
+     */
+    public function getFee($totalPrice)
     {
         if (!is_null($this->priceFormat)) {
-            return $this->priceFormat->formatPrice($this->fee);
+            return $this->priceFormat->formatPrice($this->calculateFee($totalPrice));
         }
         
-        return (float) $this->fee;
+        return $this->calculateFee($totalPrice);
     }
     
     /**
@@ -94,5 +127,19 @@ class Payment implements PaymentInterface
     public function setPriceFormat(PriceFormatInterface $priceFormat)
     {
         $this->priceFormat = $priceFormat;
+    }
+    
+    /**
+     * Calculate fee based on feeType
+     * @param type $totalPrice
+     * @return float
+     */
+    protected function calculateFee($totalPrice)
+    {
+        if ($this->feeType == self::FEE_PERCENTAGE) {
+            return (float) $totalPrice * $this->fee;
+        }
+        
+        return (float) $this->fee;
     }
 }
