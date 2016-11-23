@@ -131,11 +131,7 @@ class Product implements ProductInterface
      */
     public function getImagePath()
     {
-        if (file_exists($this->imagePath)) {
-            return $this->imagePath;
-        }
-        
-        return null;
+        return $this->imagePath;
     }
     
     /**
