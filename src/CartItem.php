@@ -50,11 +50,6 @@ class CartItem implements CartItemInterface
     {
         $this->product = $product;
         $this->quantityValidator = $quantityValidator;
-        
-        if (!$this->validateQuantity($quantity)) {
-            throw new DomainException(sprintf('Quantity of %d is invalid for product %d', $quantity, $product->getId()));
-        }
-        
         $this->quantity = (int) $quantity;
     }
     
