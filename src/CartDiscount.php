@@ -35,7 +35,7 @@ class CartDiscount
     
     /**
      * Set price after discount
-     * @param int|float $priceAfterDiscount
+     * @param double $priceAfterDiscount
      */
     public function setPriceAfterDiscount($priceAfterDiscount)
     {
