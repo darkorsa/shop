@@ -3,7 +3,6 @@
 namespace Plane\Shop;
 
 use DomainException;
-
 use Plane\Shop\Validator\QuantityValidatorInterface;
 use Plane\Shop\PriceFormat\PriceFormatInterface;
 
@@ -43,7 +42,7 @@ class CartItem implements CartItemInterface
      * Constructor
      * @param \Plane\Shop\ProductInterface $product
      * @param integer $quantity
-     * @param \Plane\Shop\QuantityValidatorInterface $quantityValidator
+     * @param QuantityValidatorInterface $quantityValidator
      * @throws \DomainException
      */
     public function __construct(ProductInterface $product, $quantity = 1, QuantityValidatorInterface $quantityValidator = null)
@@ -82,7 +81,7 @@ class CartItem implements CartItemInterface
     
     /**
      * Return path to image
-     * @return sting
+     * @return string
      */
     public function getImagePath()
     {

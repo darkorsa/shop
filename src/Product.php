@@ -73,7 +73,7 @@ class Product implements ProductInterface
     
     /**
      * Return id
-     * @return ing
+     * @return integer
      */
     public function getId()
     {

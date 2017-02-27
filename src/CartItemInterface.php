@@ -37,9 +37,9 @@ interface CartItemInterface
     public function getQuantity();
     
      /**
-     * Return cart item quantity
-     * @return int
-     */
+      * Return cart item quantity
+      * @return int
+      */
     public function getImagePath();
     
     /**

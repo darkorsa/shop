@@ -131,7 +131,7 @@ class Payment implements PaymentInterface
     
     /**
      * Calculate fee based on feeType
-     * @param type $totalPrice
+     * @param double $totalPrice
      * @return float
      */
     protected function calculateFee($totalPrice)
