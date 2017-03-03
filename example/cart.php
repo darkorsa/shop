@@ -66,7 +66,7 @@ $discount2 = new TotalPriceThresholdDiscount($discount1, [
     'description' => '10% off on orders equal or above 40',
     'threshold' => 40,
     'discount' => 0.10
-]);
+], $priceFormat);
 
 echo 'Total items: ' . $discount2->totalItems() . "\n\n";
 echo 'Total: ' . $discount2->total() . "\n\n";

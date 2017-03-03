@@ -25,6 +25,12 @@ class CartDiscount
     private $priceAfterDiscount;
     
     /**
+     * Price format object
+     * @var \Plane\Shop\PriceFormat\PriceFormatInterface
+     */
+    private $priceFormat;
+    
+    /**
      * Set discount text
      * @param string $discountText
      */
@@ -57,7 +63,7 @@ class CartDiscount
      */
     public function getPriceAfterDiscount()
     {
-        return $this->priceFormat->formatPrice($this->priceAfterDiscount);
+        return $this->formatPrice($this->priceAfterDiscount);
     }
     
     /**
@@ -67,5 +73,19 @@ class CartDiscount
     public function setPriceFormat(PriceFormatInterface $priceFormat)
     {
         $this->priceFormat = $priceFormat;
+    }
+    
+    /**
+     * Format price with set price format object
+     * @param float $price
+     * @return float
+     */
+    protected function formatPrice($price)
+    {
+        if (is_null($this->priceFormat)) {
+            return $price;
+        }
+        
+        return $this->priceFormat->formatPrice($price);
     }
 }
