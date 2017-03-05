@@ -30,7 +30,7 @@ class Payment implements PaymentInterface
     
     /**
      * Payment name
-     * @var sting
+     * @var string
      */
     private $name;
     
@@ -48,9 +48,15 @@ class Payment implements PaymentInterface
     
     /**
      * Payment fee type (fee_fixed|fee_percentage)
-     * @var type
+     * @var string
      */
     private $feeType = self::FEE_FIXED;
+    
+    /**
+     * Price format object
+     * @var \Plane\Shop\PriceFormat\PriceFormatInterface
+     */
+    private $priceFormat;
     
     /**
      * Constructor

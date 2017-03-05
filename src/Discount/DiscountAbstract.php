@@ -61,7 +61,7 @@ abstract class DiscountAbstract implements DiscountInterface
      */
     public function setCartDiscount(CartDiscount $cartDiscount)
     {
-        $this->cartDisconut = $cartDiscount;
+        $this->cartDiscount = $cartDiscount;
     }
     
     /**

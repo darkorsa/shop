@@ -22,7 +22,7 @@ class CartItem implements CartItemInterface
     
     /**
      * Quantity validator object
-     * @var \Plane\Shop\QuantityValidatorInterface
+     * @var \Plane\Shop\Validator\QuantityValidatorInterface
      */
     private $quantityValidator;
     
@@ -42,8 +42,7 @@ class CartItem implements CartItemInterface
      * Constructor
      * @param \Plane\Shop\ProductInterface $product
      * @param integer $quantity
-     * @param QuantityValidatorInterface $quantityValidator
-     * @throws \DomainException
+     * @param \Plane\Shop\Validator\QuantityValidatorInterface $quantityValidator
      */
     public function __construct(
         ProductInterface $product,

@@ -14,7 +14,7 @@ interface ProductInterface
 {
     /**
      * Return id
-     * @return ing
+     * @return int
      */
     public function getId();
     
