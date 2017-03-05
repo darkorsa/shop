@@ -5,7 +5,6 @@ namespace Plane\Shop\Discount;
 use Plane\Shop\CartDiscount;
 use Plane\Shop\CartInterface;
 use Plane\Shop\Discount\DiscountInterface;
-use Plane\Shop\PriceFormat\PriceFormatInterface;
 
 /**
  * Abstract class for discounts
@@ -43,16 +42,11 @@ abstract class DiscountAbstract implements DiscountInterface
      * Constructor
      * @param \Plane\Shop\CartInterface $cart
      * @param array $config
-     * @param \Plane\Shop\PriceFormat\PriceFormatInterface $priceFormat
      */
-    public function __construct(CartInterface $cart, array $config, PriceFormatInterface $priceFormat = null)
+    public function __construct(CartInterface $cart, array $config)
     {
         $this->cart = $cart;
         $this->cartDiscount = new CartDiscount();
-        
-        if (!is_null($priceFormat)) {
-            $this->cartDiscount->setPriceFormat($priceFormat);
-        }
         
         foreach ($config as $k => $v) {
             $this->$k = $v;

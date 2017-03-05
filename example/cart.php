@@ -18,7 +18,7 @@ $product1 = new Product([
     'id'        => 1,
     'name'      => 'Product One',
     'price'     => 10,
-    'taxRate'   => 0.2,
+    'taxRate'   => 0.0,
     'weight'    => 5,
 ]);
 
@@ -26,7 +26,7 @@ $product2 = new Product([
     'id'        => 2,
     'name'      => 'Product Two',
     'price'     => 4.00,
-    'taxRate'   => 0.2,
+    'taxRate'   => 0.0,
     'weight'    => 0.25,
 ]);
 
@@ -66,7 +66,7 @@ $discount2 = new TotalPriceThresholdDiscount($discount1, [
     'description' => '10% off on orders equal or above 40',
     'threshold' => 40,
     'discount' => 0.10
-], $priceFormat);
+]);
 
 echo 'Total items: ' . $discount2->totalItems() . "\n\n";
 echo 'Total: ' . $discount2->total() . "\n\n";
