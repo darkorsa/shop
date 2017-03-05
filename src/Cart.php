@@ -106,7 +106,7 @@ class Cart implements CartInterface
      */
     public function fill(CartItemCollection $collection)
     {
-        array_map(function($item) {
+        array_map(function ($item) {
             $this->addItem($item);
         }, $collection->getItems());
     }
@@ -198,7 +198,7 @@ class Cart implements CartInterface
     public function total()
     {
         return (float) array_sum(
-            array_map(function(CartItemInterface $item) {
+            array_map(function (CartItemInterface $item) {
                 return $item->getPriceTotalWithTax();
             }, $this->items)
         );
@@ -211,7 +211,7 @@ class Cart implements CartInterface
     public function totalItems()
     {
         return array_sum(
-            array_map(function(CartItemInterface $item) {
+            array_map(function (CartItemInterface $item) {
                 return $item->getQuantity();
             }, $this->items)
         );
@@ -224,7 +224,7 @@ class Cart implements CartInterface
     public function totalTax()
     {
         return (float) array_sum(
-            array_map(function(CartItemInterface $item) {
+            array_map(function (CartItemInterface $item) {
                 return $item->getTaxTotal();
             }, $this->items)
         );
@@ -237,7 +237,7 @@ class Cart implements CartInterface
     public function totalWeight()
     {
         return (float) array_sum(
-            array_map(function(CartItemInterface $item) {
+            array_map(function (CartItemInterface $item) {
                 return $item->getWeightTotal();
             }, $this->items)
         );
@@ -252,7 +252,6 @@ class Cart implements CartInterface
         return !empty($this->discounts)
             ? end($this->discounts)->getPriceAfterDiscount()
             : $this->total();
-                
     }
     
     /**
@@ -288,7 +287,7 @@ class Cart implements CartInterface
     public function toArray()
     {
         $array = [];
-        $array['items'] = array_map(function(CartItemInterface $item) {
+        $array['items'] = array_map(function (CartItemInterface $item) {
             return $item->toArray();
         }, $this->items);
         
@@ -305,7 +304,7 @@ class Cart implements CartInterface
             $array['payment']['fee']        = $this->paymentFee();
         }
         
-        $array['discounts'] = array_map(function(CartDiscount $discount) {
+        $array['discounts'] = array_map(function (CartDiscount $discount) {
             return [
                 'text'  => $discount->getDiscountText(),
                 'price' => $discount->getPriceAfterDiscount()

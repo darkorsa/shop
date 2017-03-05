@@ -42,5 +42,4 @@ class TotalPriceThresholdDiscount extends DiscountAbstract implements CartInterf
         
         $this->addDiscount($this->cartDiscount);
     }
-    
 }

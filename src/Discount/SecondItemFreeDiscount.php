@@ -35,5 +35,4 @@ class SecondItemFreeDiscount extends DiscountAbstract implements CartInterface
         
         $this->addDiscount($this->cartDiscount);
     }
-    
 }

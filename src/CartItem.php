@@ -45,8 +45,11 @@ class CartItem implements CartItemInterface
      * @param QuantityValidatorInterface $quantityValidator
      * @throws \DomainException
      */
-    public function __construct(ProductInterface $product, $quantity = 1, QuantityValidatorInterface $quantityValidator = null)
-    {
+    public function __construct(
+        ProductInterface $product,
+        $quantity = 1,
+        QuantityValidatorInterface $quantityValidator = null
+    ) {
         $this->product = $product;
         $this->quantityValidator = $quantityValidator;
         $this->quantity = (int) $quantity;
