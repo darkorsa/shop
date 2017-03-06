@@ -95,7 +95,7 @@ class Product implements ProductInterface
      */
     public function getPrice()
     {
-        return (float) $this->price;
+        return $this->formatPrice($this->price);
     }
     
     /**
@@ -127,7 +127,7 @@ class Product implements ProductInterface
     
     /**
      * Return image path
-     * @return string|null
+     * @return string
      */
     public function getImagePath()
     {
@@ -149,7 +149,7 @@ class Product implements ProductInterface
      */
     public function getTax()
     {
-        return $this->formatPrice((float) $this->getPrice() * $this->getTaxRate());
+        return $this->formatPrice($this->getPrice() * $this->getTaxRate());
     }
     
     /**
@@ -158,7 +158,7 @@ class Product implements ProductInterface
      */
     public function getPriceWithTax()
     {
-        return $this->formatPrice((float) $this->getPrice() + $this->getTax());
+        return $this->formatPrice($this->getPrice() + $this->getTax());
     }
     
     /**
@@ -194,7 +194,7 @@ class Product implements ProductInterface
     protected function formatPrice($price)
     {
         if (is_null($this->priceFormat)) {
-            return $price;
+            return (float) $price;
         }
         
         return $this->priceFormat->formatPrice($price);
