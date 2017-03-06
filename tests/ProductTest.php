@@ -19,25 +19,37 @@ class ProductTest extends \PHPUnit\Framework\TestCase
         'price'         => '10',
         'weight'        => '5',
         'quantity'      => '4',
-        'imagePath'    => '/path_to_file/file.jpg',
+        'imagePath'     => '/path_to_file/file.jpg',
         'taxRate'       => '0.22',
+    ];
+    
+    protected $productOutput = [
+        'id'            => '1',
+        'name'          => 'Test product',
+        'imagePath'     => '/path_to_file/file.jpg',
+        'quantity'      => 4,       // converted to int
+        'taxRate'       => 0.22,    // converted to double
+        'tax'           => 2.2,     // converted to double
+        'price'         => 10.0,    // converted to double
+        'weight'        => 5.0,     // converted to double
+        'priceWithTax'  => 12.2,    // converted to double
     ];
     
     public function testCreateObject()
     {
         $product = new Product($this->productInput);
         
-        $this->assertSame('1', $product->getId());
-        $this->assertSame('Test product', $product->getName());
-        $this->assertSame(10.0, $product->getPrice());
-        $this->assertSame(5.0, $product->getWeight());
-        $this->assertSame(4, $product->getQuantity());
-        $this->assertSame('/path_to_file/file.jpg', $product->getImagePath());
-        $this->assertSame(0.22, $product->getTaxRate());
-        $this->assertSame(2.2, $product->getTax());
-        
-        // due to imprecision of php floats
-        $this->assertEquals(12.2, $product->getPriceWithTax());
+        $this->assertSame($this->productOutput, [
+            'id'                => $product->getId(),
+            'name'              => $product->getName(),
+            'imagePath'         => $product->getImagePath(),
+            'quantity'          => $product->getQuantity(),
+            'taxRate'           => $product->getTaxRate(),
+            'tax'               => $product->getTax(),
+            'price'             => $product->getPrice(),
+            'weight'            => $product->getWeight(),
+            'priceWithTax'      => $product->getPriceWithTax(),
+        ]);
     }
     
     public function testSetPrice()
@@ -61,6 +73,14 @@ class ProductTest extends \PHPUnit\Framework\TestCase
         $product->setPriceFormat($priceFormat);
         
         $this->assertSame(12.20, $product->getPriceWithTax());
+    }
+    
+    public function testToArray()
+    {
+        $product = new Product($this->productInput);
+        
+        $this->assertSame($product->toArray(), $this->productOutput);
+        
     }
     
     
