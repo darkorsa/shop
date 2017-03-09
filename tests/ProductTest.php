@@ -80,8 +80,5 @@ class ProductTest extends \PHPUnit\Framework\TestCase
         $product = new Product($this->productInput);
         
         $this->assertSame($product->toArray(), $this->productOutput);
-        
     }
-    
-    
 }
