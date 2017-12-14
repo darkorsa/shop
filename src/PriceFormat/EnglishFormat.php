@@ -11,16 +11,10 @@ namespace Plane\Shop\PriceFormat;
 class EnglishFormat implements PriceFormatInterface
 {
     /**
-     * Number of decimals after decimal point
-     * @var int
-     */
-    private $decimals = 2;
-    
-    /**
-     * Decimap point
+     * Price format
      * @var string
      */
-    private $decPoint = '.';
+    private $format = '%.2n';
     
     /**
      * Format price
@@ -29,6 +23,6 @@ class EnglishFormat implements PriceFormatInterface
      */
     public function formatPrice($price)
     {
-        return number_format(floor((float) $price * 100) / 100, $this->decimals, $this->decPoint, '');
+        return (float) money_format($this->format, (float) $price);
     }
 }
