@@ -29,6 +29,6 @@ class EnglishFormat implements PriceFormatInterface
      */
     public function formatPrice($price)
     {
-        return number_format(floor((float) $price * 100) / 100, $this->decimals, $this->decPoint, '');
+        return (float) number_format(floor((float) $price * 100) / 100, $this->decimals, $this->decPoint, '');
     }
 }

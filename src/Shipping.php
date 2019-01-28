@@ -1,113 +1,62 @@
-<?php
+<?php declare(strict_types=1);
+
+/*
+ * This file is part of the Plane\Shop package.
+ *
+ * (c) Dariusz Korsak <dkorsak@gmail.com>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
 
 namespace Plane\Shop;
 
-use Plane\Shop\PriceFormat\PriceFormatInterface;
+use Money\Money;
+use Money\Currency;
+use Money\Currencies\ISOCurrencies;
+use Money\Parser\DecimalMoneyParser;
 
-/**
- * Description of Shipping
- *
- * @author Dariusz Korsak <dkorsak@gmail.com>
- * @package Plane/Shop
- */
 class Shipping implements ShippingInterface
 {
-    /**
-     * Shippint id
-     * @var int
-     */
     private $id;
     
-    /**
-     * Shippint name
-     * @var string
-     */
     private $name;
     
-    /**
-     * Shipping description
-     * @var string
-     */
     private $description;
     
-    /**
-     * Shipping cost
-     * @var float
-     */
     private $cost;
-    
-    /**
-     * Price format object
-     * @var \Plane\Shop\PriceFormat\PriceFormatInterface
-     */
-    private $priceFormat;
-    
-    /**
-     * Constructor
-     * @param array $data
-     */
+
     public function __construct(array $data)
     {
-        foreach ($data as $k => $v) {
-            $this->$k = $v;
+        foreach ($data as $property => $value) {
+            $this->$property = $value;
         }
     }
     
-    /**
-     * Return id
-     * @return int
-     */
-    public function getId()
+    public function getId(): int
     {
         return $this->id;
     }
     
-    /**
-     * Return name
-     * @return string
-     */
-    public function getName()
+    public function getName(): string
     {
         return $this->name;
     }
     
-    /**
-     * Return description
-     * @return string
-     */
-    public function getDescription()
+    public function getDescription(): string
     {
         return $this->description;
     }
     
-    /**
-     * Return cost
-     * @return float
-     */
-    public function getCost()
+    public function getCost(string $currency): Money
     {
-        if (!is_null($this->priceFormat)) {
-            return $this->priceFormat->formatPrice($this->cost);
-        }
+        $moneyParser = new DecimalMoneyParser(new ISOCurrencies());
         
-        return (float) $this->cost;
+        return $moneyParser->parse((string) $this->cost, new Currency($currency));
     }
     
-    /**
-     * Set cost
-     * @param int|float $cost
-     */
-    public function setCost($cost)
+    public function setCost(float $cost): void
     {
-        $this->cost = (float) $cost;
-    }
-    
-    /**
-     * Set price format object
-     * @param \Plane\Shop\PriceFormat\PriceFormatInterface $priceFormat
-     */
-    public function setPriceFormat(PriceFormatInterface $priceFormat)
-    {
-        $this->priceFormat = $priceFormat;
+        $this->cost = $cost;
     }
 }

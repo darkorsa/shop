@@ -1,121 +1,72 @@
-<?php
+<?php declare(strict_types=1);
+
+/*
+ * This file is part of the Plane\Shop package.
+ *
+ * (c) Dariusz Korsak <dkorsak@gmail.com>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
 
 namespace Plane\Shop;
 
 use DomainException;
-use Plane\Shop\PriceFormat\PriceFormatInterface;
+use Money\MoneyFormatter;
+use Money\Currencies\ISOCurrencies;
+use Money\Formatter\DecimalMoneyFormatter;
 
-/**
- * Shopping cart class
- *
- * @author Dariusz Korsak <dkorsak@gmail.com>
- * @package Plane\Shop
- */
 class Cart implements CartInterface
 {
-    /**
-     * Array of cart item objects
-     * @var array
-     */
     private $items = [];
     
-    /**
-     * Price formatting object
-     * @var \Plane\Shop\PriceFormat\PriceFormatInterface
-     */
     private $priceFormat;
     
-    /**
-     * Shipping object
-     * @var \Plane\Shop\ShippingInterface
-     */
     private $shipping;
     
-    /**
-     * Payment object
-     * @var \Plane\Shop\PaymentInterface
-     */
     private $payment;
     
-    /**
-     * Array of discount objects
-     * @var array
-     */
     private $discounts = [];
     
-    /**
-     * Object constructor
-     * @param \Plane\Shop\PriceFormatInterface $priceFormat
-     */
-    public function __construct(PriceFormatInterface $priceFormat = null)
+    public function __construct(MoneyFormatter $priceFormat = null)
     {
-        $this->priceFormat = $priceFormat;
+        $this->priceFormat = $priceFormat ?: new DecimalMoneyFormatter(new ISOCurrencies());
     }
-    
-    /**
-     * Set shipping object
-     * @param \Plane\Shop\ShippingInterface $shipping
-     */
-    public function setShipping(ShippingInterface $shipping)
+
+    public function setShipping(ShippingInterface $shipping): void
     {
         $this->shipping = $shipping;
-        $this->shipping->setPriceFormat($this->priceFormat);
     }
     
-    /**
-     * Return shipping object
-     * @return \Plane\Shop\ShippingInterface
-     */
-    public function getShipping()
+    public function getShipping(): ShippingInterface
     {
         return $this->shipping;
     }
     
-    /**
-     * Set payment object
-     * @param \Plane\Shop\PaymentInterface $payment
-     */
-    public function setPayment(PaymentInterface $payment)
+    public function setPayment(PaymentInterface $payment): void
     {
         $this->payment = $payment;
-        $this->payment->setPriceFormat($this->priceFormat);
     }
     
-    /**
-     * Return payment object
-     * @return \Plane\Shop\PaymentInterface
-     */
-    public function getPayment()
+    public function getPayment(): PaymentInterface
     {
         return $this->payment;
     }
     
-    /**
-     * Add discount
-     * @param \Plane\Shop\CartDiscount $discount
-     */
-    public function addDiscount(CartDiscount $discount)
+    public function addDiscount(CartDiscount $discount): void
     {
         $discount->setPriceFormat($this->priceFormat);
         $this->discounts[] = $discount;
     }
     
-    /**
-     * Fill cart with items
-     * @param \Plane\Shop\CartItemCollection $collection
-     */
-    public function fill(CartItemCollection $collection)
+    public function fill(CartItemCollection $collection): void
     {
         array_map(function ($item) {
             $this->addItem($item);
         }, $collection->getItems());
     }
-    
-    /**
-     * Add cart item
-     * @param \Plane\Shop\CartItemInterface $item
-     */
-    public function add(CartItemInterface $item)
+
+    public function add(CartItemInterface $item): void
     {
         // if product already in the cart, increase quantity
         if ($this->has($item->getId())) {
@@ -126,12 +77,7 @@ class Cart implements CartInterface
         $this->addItem($item);
     }
     
-    /**
-     * Remove cart item
-     * @param int $itemId
-     * @throws \DomainException
-     */
-    public function remove($itemId)
+    public function remove(int $itemId): void
     {
         if (!$this->has($itemId)) {
             throw new DomainException('Item ' . $itemId . ' not found');
@@ -140,32 +86,17 @@ class Cart implements CartInterface
         unset($this->items[$itemId]);
     }
       
-    /**
-     * Replace cart item
-     * @param \Plane\Shop\CartItemInterface $item
-     */
-    public function update(CartItemInterface $item)
+    public function update(CartItemInterface $item): void
     {
         $this->addItem($item);
     }
     
-    /**
-     * Check if cart item with given id exists
-     * @param int $itemId
-     * @return boolean
-     */
-    public function has($itemId)
+    public function has(int $itemId): bool
     {
         return array_key_exists($itemId, $this->items);
     }
-    
-    /**
-     * Return cart item object
-     * @param int $itemId
-     * @return \Plane\Shop\CartItemInterface
-     * @throws \DomainException
-     */
-    public function get($itemId)
+
+    public function get(int $itemId): CartItemInterface
     {
         if (!$this->has($itemId)) {
             throw new DomainException('Item ' . $itemId . ' not found');
@@ -174,28 +105,17 @@ class Cart implements CartInterface
         return $this->items[$itemId];
     }
     
-    /**
-     * Return array of cart items
-     * @return array
-     */
-    public function all()
+    public function all(): array
     {
         return $this->items;
     }
     
-    /**
-     * Remove all cart items
-     */
-    public function clear()
+    public function clear(): void
     {
         $this->items = [];
     }
-    
-    /**
-     * Return sum of cart items prices with tax
-     * @return float
-     */
-    public function total()
+
+    public function total(): float
     {
         return (float) array_sum(
             array_map(function (CartItemInterface $item) {
@@ -204,11 +124,7 @@ class Cart implements CartInterface
         );
     }
     
-    /**
-     * Return number of cart items
-     * @return int
-     */
-    public function totalItems()
+    public function totalItems(): int
     {
         return array_sum(
             array_map(function (CartItemInterface $item) {
@@ -217,11 +133,7 @@ class Cart implements CartInterface
         );
     }
     
-    /**
-     * Return sum of cart items tax
-     * @return float
-     */
-    public function totalTax()
+    public function totalTax(): float
     {
         return (float) array_sum(
             array_map(function (CartItemInterface $item) {
@@ -230,11 +142,7 @@ class Cart implements CartInterface
         );
     }
     
-    /**
-     * Return total weight of all items
-     * return float
-     */
-    public function totalWeight()
+    public function totalWeight(): float
     {
         return (float) array_sum(
             array_map(function (CartItemInterface $item) {
@@ -243,22 +151,14 @@ class Cart implements CartInterface
         );
     }
     
-    /**
-     * Return price after discounts
-     * @return float
-     */
-    public function totalAfterDisconuts()
+    public function totalAfterDiscounts(): float
     {
         return !empty($this->discounts)
-            ? end($this->discounts)->getPriceAfterDiscount()
+            ? (float) end($this->discounts)->getPriceAfterDiscount()
             : $this->total();
     }
-    
-    /**
-     * Return shipping cost
-     * @return float
-     */
-    public function shippingCost()
+
+    public function shippingCost(): float
     {
         if (!is_object($this->shipping)) {
             return null;
@@ -267,24 +167,16 @@ class Cart implements CartInterface
         return $this->shipping->getCost();
     }
     
-    /**
-     * Return payment fee
-     * @return float
-     */
-    public function paymentFee()
+    public function paymentFee(): float
     {
         if (!is_object($this->payment)) {
             return null;
         }
         
-        return $this->payment->getFee($this->totalAfterDisconuts() + (float) $this->shippingCost());
+        return $this->payment->getFee($this->totalAfterDiscounts() + (float) $this->shippingCost());
     }
         
-    /**
-     * Cast object to array
-     * @return array
-     */
-    public function toArray()
+    public function toArray(): array
     {
         $array = [];
         $array['items'] = array_map(function (CartItemInterface $item) {
@@ -317,16 +209,12 @@ class Cart implements CartInterface
         $array['totalWeight']       = $this->totalWeight();
         $array['shippingCost']      = $this->shippingCost();
         $array['paymentFee']        = $this->paymentFee();
-        $array['totalAfterDisconuts'] = $this->totalAfterDisconuts();
+        $array['totalAfterDiscounts'] = $this->totalAfterDiscounts();
         
         return $array;
     }
     
-    /**
-     * Add new cart item and inject price format object if avaliable
-     * @param \Plane\Shop\CartItemInterface $item
-     */
-    protected function addItem(CartItemInterface $item)
+    private function addItem(CartItemInterface $item)
     {
         // override item's price format in order to make it consistent with cart's price format
         if (!is_null($this->priceFormat)) {

@@ -1,141 +1,57 @@
-<?php
+<?php declare(strict_types=1);
+
+/*
+ * This file is part of the Plane\Shop package.
+ *
+ * (c) Dariusz Korsak <dkorsak@gmail.com>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
 
 namespace Plane\Shop;
 
-/**
- * Interface for Cart classes
- *
- * @author Dariusz Korsak <dkorsak@gmail.com>
- * @package Plane\Shop;
- */
 interface CartInterface
 {
-    /**
-     * Set shipping object
-     * @param \Plane\Shop\ShippingInterface $shipping
-     */
-    public function setShipping(ShippingInterface $shipping);
+    public function setShipping(ShippingInterface $shipping): void;
     
-    /**
-     * Return shipping object
-     * @return \Plane\Shop\ShippingInterface
-     */
-    public function getShipping();
+    public function getShipping(): ShippingInterface;
     
-    /**
-     * Set payment object
-     * @param \Plane\Shop\PaymentInterface $payment
-     */
-    public function setPayment(PaymentInterface $payment);
+    public function setPayment(PaymentInterface $payment) : void;
     
-    /**
-     * Return payment object
-     * @return \Plane\Shop\PaymentInterface
-     */
-    public function getPayment();
+    public function getPayment(): PaymentInterface;
     
-    /**
-     * Add discount
-     * @param \Plane\Shop\CartDiscount $discount
-     */
-    public function addDiscount(CartDiscount $discount);
+    public function addDiscount(CartDiscount $discount): void;
     
-    /**
-     * Fill cart with items
-     * @param \Plane\Shop\CartItemCollection $collection
-     */
-    public function fill(CartItemCollection $collection);
+    public function fill(CartItemCollection $collection): void;
     
-    /**
-     * Add cart item
-     * @param \Plane\Shop\CartItemInterface $item
-     */
-    public function add(CartItemInterface $item);
+    public function add(CartItemInterface $item): void;
     
-    /**
-     * Remove cart item
-     * @param int $itemId
-     * @throws \DomainException
-     */
-    public function remove($itemId);
+    public function remove(int $itemId): void;
     
-    /**
-     * Replace cart item
-     * @param \Plane\Shop\CartItemInterface $item
-     */
-    public function update(CartItemInterface $item);
+    public function update(CartItemInterface $item): void;
     
-    /**
-     * Check if cart item with given id exists
-     * @param int $itemId
-     * @return boolean
-     */
-    public function has($itemId);
+    public function has(int $itemId): bool;
     
-    /**
-     * Return cart item object
-     * @param int $itemId
-     * @return \Plane\Shop\CartItemInterface
-     * @throws \DomainException
-     */
-    public function get($itemId);
+    public function get(int $itemId): CartItemInterface;
     
-    /**
-     * Return array of cart items
-     * @return array
-     */
-    public function all();
+    public function all(): array;
     
-    /**
-     * Remove all cart items
-     */
-    public function clear();
+    public function clear(): void;
     
-    /**
-     * Return sum of cart items prices with tax
-     * @return float
-     */
-    public function total();
+    public function total(): float;
     
-    /**
-     * Return number of cart items
-     * @return int
-     */
-    public function totalItems();
+    public function totalItems(): int;
     
-    /**
-     * Return sum of cart items tax
-     * @return float
-     */
-    public function totalTax();
+    public function totalTax(): float;
     
-    /**
-     * Return total weight of all items
-     * return float
-     */
-    public function totalWeight();
+    public function totalWeight(): float;
     
-    /**
-     * Return price after discounts
-     * @return float
-     */
-    public function totalAfterDisconuts();
+    public function totalAfterDiscounts(): float;
     
-    /**
-     * Return shipping cost
-     * @return float
-     */
-    public function shippingCost();
+    public function shippingCost(): float;
     
-    /**
-     * Return payment fee
-     * @return float
-     */
-    public function paymentFee();
+    public function paymentFee(): float;
     
-    /**
-     * Cast object to array
-     * @return array
-     */
-    public function toArray();
+    public function toArray(): array;
 }

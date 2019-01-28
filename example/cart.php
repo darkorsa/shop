@@ -9,8 +9,6 @@ use Plane\Shop\Payment;
 use Plane\Shop\Shipping;
 use Plane\Shop\CartItemCollection;
 
-use Plane\Shop\PriceFormat\EnglishFormat;
-
 use Plane\Shop\Discount\SecondItemFreeDiscount;
 use Plane\Shop\Discount\TotalPriceThresholdDiscount;
 
@@ -34,14 +32,15 @@ $cartItemCollection = new CartItemCollection;
 $cartItemCollection->addItem(new CartItem($product1, 4));
 $cartItemCollection->addItem(new CartItem($product2, 1));
 
-$priceFormat = new EnglishFormat();
-
 $shipping = new Shipping([
    'id'             => 9,
    'name'           => 'National Shipping Company',
    'description'    => 'Standart Ground Shipping',
-   'cost'           => 15
+   'cost'           => 15.15,
 ]);
+
+var_dump($shipping->getCost('PLN'));
+exit;
 
 $payment = new Payment([
    'id'             => 1,
@@ -51,7 +50,7 @@ $payment = new Payment([
 ]);
 $payment->setPercentage();
 
-$cart = new Cart($priceFormat);
+$cart = new Cart();
 $cart->fill($cartItemCollection);
 $cart->setShipping($shipping);
 $cart->setPayment($payment);
@@ -74,6 +73,6 @@ echo 'Total tax: ' . $discount2->totalTax() . "\n\n";
 echo 'Total weight: ' . $discount2->totalWeight() . "\n\n";
 echo 'Shipping cost: ' . $discount2->shippingCost() . "\n\n";
 echo 'Payment fee: ' . $discount2->paymentFee() . "\n\n";
-echo 'Total after discounts: ' . $discount2->totalAfterDisconuts() . "\n\n";
+echo 'Total after discounts: ' . $discount2->totalAfterDiscounts() . "\n\n";
 
 

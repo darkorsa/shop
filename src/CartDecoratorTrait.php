@@ -1,207 +1,121 @@
 <?php
 
+/*
+ * This file is part of the Plane\Shop package.
+ *
+ * (c) Dariusz Korsak <dkorsak@gmail.com>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 namespace Plane\Shop;
 
-use Plane\Shop\CartItemInterface;
-
-/**
- * Trait for common methods in cart decorators
- *
- * @author Dariusz Korsak <dkorsak@gmail.com>
- * @packate Plane\Shop
- */
 trait CartDecoratorTrait
 {
     protected $cart;
     
-    /**
-     * Set shipping object
-     * @param \Plane\Shop\ShippingInterface $shipping
-     */
-    public function setShipping(ShippingInterface $shipping)
+    public function setShipping(ShippingInterface $shipping): void
     {
         $this->cart->setShipping($shipping);
     }
     
-    /**
-     * Return shipping object
-     * @return \Plane\Shop\ShippingInterface
-     */
-    public function getShipping()
+    public function getShipping(): ShippingInterface
     {
         return $this->cart->getShipping();
     }
     
-    /**
-     * Set payment object
-     * @param \Plane\Shop\PaymentInterface $payment
-     */
-    public function setPayment(PaymentInterface $payment)
+    public function setPayment(PaymentInterface $payment): void
     {
         $this->cart->setPayment($payment);
     }
     
-    /**
-     * Return payment object
-     * @return \Plane\Shop\PaymentInterface
-     */
-    public function getPayment()
+    public function getPayment(): PaymentInterface
     {
         return $this->cart->getPayment();
     }
     
-    /**
-     * Add discount
-     * @param \Plane\Shop\CartDiscount $discount
-     */
-    public function addDiscount(CartDiscount $discount)
+    public function addDiscount(CartDiscount $discount): void
     {
         $this->cart->addDiscount($discount);
     }
-    
-    /**
-     * Fill cart with items
-     * @param \Plane\Shop\CartItemCollection $collection
-     */
-    public function fill(CartItemCollection $collection)
+
+    public function fill(CartItemCollection $collection): void
     {
         $this->cart->fill($collection);
     }
     
-    /**
-     * Add cart item
-     * @param \Plane\Shop\CartItemInterface $item
-     */
-    public function add(CartItemInterface $item)
+    public function add(CartItemInterface $item): void
     {
         $this->cart->add($item);
     }
     
-    /**
-     * Remove cart item
-     * @param int $itemId
-     * @throws \DomainException
-     */
-    public function remove($itemId)
+    public function remove($itemId): void
     {
         $this->cart->remove($itemId);
     }
-    
-    /**
-     * Replace cart item
-     * @param \Plane\Shop\CartItemInterface $item
-     */
-    public function update(CartItemInterface $item)
+
+    public function update(CartItemInterface $item): void
     {
         $this->cart->update($item);
     }
     
-    /**
-     * Check if cart item with given id exists
-     * @param int $itemId
-     * @return boolean
-     */
-    public function has($itemId)
+    public function has($itemId): bool
     {
         return $this->cart->has($itemId);
     }
     
-    /**
-     * Return cart item object
-     * @param int $itemId
-     * @return \Plane\Shop\CartItemInterface
-     * @throws \DomainException
-     */
-    public function get($itemId)
+    public function get($itemId): CartItemInterface
     {
         return $this->cart->get($itemId);
     }
     
-    /**
-     * Return array of cart items
-     * @return array
-     */
-    public function all()
+    public function all(): array
     {
         return $this->cart->all();
     }
     
-    /**
-     * Remove all cart items
-     */
-    public function clear()
+    public function clear(): void
     {
         $this->cart->clear();
     }
     
-    /**
-     * Return sum of cart items prices with tax
-     * @return float
-     */
-    public function total()
+    public function total(): float
     {
         return $this->cart->total();
     }
     
-    /**
-     * Return number of cart items
-     * @return int
-     */
-    public function totalItems()
+    public function totalItems(): int
     {
         return $this->cart->totalItems();
     }
 
-    /**
-     * Return sum of cart items tax
-     * @return float
-     */
-    public function totalTax()
+    public function totalTax(): float
     {
         return $this->cart->totalTax();
     }
     
-    /**
-     * Return total weight of all items
-     * return float
-     */
-    public function totalWeight()
+    public function totalWeight(): float
     {
         return $this->cart->totalWeight();
     }
     
-    /**
-     * Return price after discounts
-     * @return float
-     */
-    public function totalAfterDisconuts()
+    public function totalAfterDiscounts(): float
     {
-        return $this->cart->totalAfterDisconuts();
+        return $this->cart->totalAfterDiscounts();
     }
-    
-    /**
-     * Return shipping cost
-     * @return float
-     */
-    public function shippingCost()
+
+    public function shippingCost(): float
     {
         return $this->cart->shippingCost();
     }
     
-    /**
-     * Return payment fee
-     * @return float
-     */
-    public function paymentFee()
+    public function paymentFee(): float
     {
         return $this->cart->paymentFee();
     }
     
-    /**
-     * Cast object to array
-     * @return array
-     */
-    public function toArray()
+    public function toArray(): array
     {
         return $this->cart->toArray();
     }

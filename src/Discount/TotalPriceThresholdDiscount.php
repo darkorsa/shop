@@ -31,7 +31,7 @@ class TotalPriceThresholdDiscount extends DiscountAbstract implements CartInterf
      */
     protected function applyDiscount()
     {
-        $total = $this->totalAfterDisconuts();
+        $total = $this->totalAfterDiscounts();
         
         if ($total >= $this->threshold) {
             $total = $total - ($total * $this->discount);

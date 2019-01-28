@@ -1,50 +1,27 @@
-<?php
+<?php declare(strict_types=1);
+
+/*
+ * This file is part of the Plane\Shop package.
+ *
+ * (c) Dariusz Korsak <dkorsak@gmail.com>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
 
 namespace Plane\Shop;
 
-use Plane\Shop\PriceFormat\PriceFormatInterface;
+use Money\Money;
 
-/**
- * Interface for shipping classes
- *
- * @author Dariusz Korsak <dkorsak@gmail.com>
- * @package Plane\Shop
- */
 interface ShippingInterface
 {
-    /**
-     * Return id
-     * @return int
-     */
-    public function getId();
+    public function getId(): int;
     
-    /**
-     * Return name
-     * @return string
-     */
-    public function getName();
+    public function getName(): string;
     
-    /**
-     * Return description
-     * @return string
-     */
-    public function getDescription();
+    public function getDescription(): string;
     
-    /**
-     * Return cost
-     * @return float
-     */
-    public function getCost();
+    public function getCost(string $currency): Money;
     
-    /**
-     * Set cost
-     * @param int|float $cost
-     */
-    public function setCost($cost);
-    
-    /**
-     * Set price format object
-     * @param \Plane\Shop\PriceFormat\PriceFormatInterface $priceFormat
-     */
-    public function setPriceFormat(PriceFormatInterface $priceFormat);
+    public function setCost(float $cost);
 }
