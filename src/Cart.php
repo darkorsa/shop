@@ -11,7 +11,7 @@
 
 namespace Plane\Shop;
 
-use DomainException;
+use OutOfBoundsException;
 use Money\MoneyFormatter;
 use Money\Currencies\ISOCurrencies;
 use Money\Formatter\DecimalMoneyFormatter;
@@ -80,7 +80,7 @@ class Cart implements CartInterface
     public function remove(int $itemId): void
     {
         if (!$this->has($itemId)) {
-            throw new DomainException('Item ' . $itemId . ' not found');
+            throw new OutOfBoundsException('Item ' . $itemId . ' not found');
         }
         
         unset($this->items[$itemId]);
@@ -99,7 +99,7 @@ class Cart implements CartInterface
     public function get(int $itemId): CartItemInterface
     {
         if (!$this->has($itemId)) {
-            throw new DomainException('Item ' . $itemId . ' not found');
+            throw new OutOfBoundsException('Item ' . $itemId . ' not found');
         }
         
         return $this->items[$itemId];

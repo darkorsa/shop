@@ -4,10 +4,11 @@ sudo: false
 
 matrix:
   include:
-    - php: 5.6
-      env: COLLECT_COVERAGE=true
     - php: 7.0
+      env: COLLECT_COVERAGE=true
     - php: 7.1
+    - php: 7.2
+    - php: 7.3
     - php: hhvm
 
 install:
