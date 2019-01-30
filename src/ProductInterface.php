@@ -1,80 +1,39 @@
-<?php
+<?php declare(strict_types=1);
+
+/*
+ * This file is part of the Plane\Shop package.
+ *
+ * (c) Dariusz Korsak <dkorsak@gmail.com>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
 
 namespace Plane\Shop;
 
-use Plane\Shop\PriceFormat\PriceFormatInterface;
+use Money\Money;
 
-/**
- * Interface for Product class
- *
- * @author Dariusz Korsak <dkorsak@gmail.com>
- * @package Plane\Shop
- */
 interface ProductInterface
 {
-    /**
-     * Return id
-     * @return int
-     */
-    public function getId();
+    public function getId(): int;
     
-    /**
-     * Return name
-     * @return string
-     */
-    public function getName();
+    public function getName(): string;
 
-    /**
-     * Return price
-     * @return float
-     */
-    public function getPrice();
-    
-    /**
-     * Return weight
-     * @return float
-     */
-    public function getWeight();
-    
-    /**
-     * Set price
-     * @param int|float $price
-     */
-    public function setPrice($price);
+    public function setPrice(float $price): void;
 
-    /**
-     * Return image path
-     * @return string
-     */
-    public function getImagePath();
+    public function getPrice(string $currency): Money;
     
-    /**
-     * Return tax rate
-     * @return float
-     */
-    public function getTaxRate();
+    public function getWeight(): float;
+
+    public function getQuantity(): int;
+
+    public function getImagePath(): string;
+
+    public function getTaxRate(): float;
     
-    /**
-     * Return tax for single item
-     * @return float
-     */
-    public function getTax();
+    public function getTax(string $currency): Money;
     
-    /**
-     * Return price including tax for single item
-     * @return float
-     */
-    public function getPriceWithTax();
+    public function getPriceWithTax(string $currency): Money;
     
-    /**
-     * Set price format object
-     * @param \Plane\Shop\PriceFormat\PriceFormatInterface $priceFormat
-     */
-    public function setPriceFormat(PriceFormatInterface $priceFormat);
-    
-    /**
-     * Return object array representation
-     * @return array
-     */
-    public function toArray();
+    public function toArray(string $currency): array;
 }

@@ -1,176 +1,97 @@
-<?php
+<?php declare(strict_types=1);
+
+/*
+ * This file is part of the Plane\Shop package.
+ *
+ * (c) Dariusz Korsak <dkorsak@gmail.com>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
 
 namespace Plane\Shop;
 
-use Plane\Shop\PriceFormat\PriceFormatInterface;
+use Money\Money;
+use Money\Currency;
+use Money\Currencies\ISOCurrencies;
+use Money\Parser\DecimalMoneyParser;
 
-/**
- * Abstraction layer for product
- *
- * @author Dariusz Korsak <dkorsak@gmail.com>
- * @package Plane\Shop
- */
 class Product implements ProductInterface
 {
-    /**
-     * Product id
-     * @var int
-     */
     protected $id;
     
-    /**
-     * Product name
-     * @var string
-     */
     protected $name;
     
-    /**
-     * Product price
-     * @var int|float
-     */
     protected $price;
     
-    /**
-     * Product weight
-     * @var int|foat
-     */
     protected $weight;
     
-    /**
-     * Product quantity
-     * @var int
-     */
     protected $quantity;
     
-    /**
-     * Product path to image
-     * @var string
-     */
     protected $imagePath;
     
-    /**
-     * Product tax rate
-     * @var float
-     */
     protected $taxRate;
     
-    /**
-     * Price format object
-     * @var \Plane\Shop\PriceFormat\PriceFormatInterface
-     */
-    private $priceFormat;
-    
-    /**
-     * Constructor
-     * @param array $data
-     */
     public function __construct(array $data)
     {
-        foreach ($data as $k => $v) {
-            $this->$k = $v;
+        foreach ($data as $property => $value) {
+            $this->$property = $value;
         }
     }
     
-    /**
-     * Return id
-     * @return int
-     */
-    public function getId()
+    public function getId(): int
     {
         return $this->id;
     }
     
-    /**
-     * Return name
-     * @return string
-     */
-    public function getName()
+    public function getName(): string
     {
         return $this->name;
     }
-    
-    /**
-     * Return price
-     * @return float
-     */
-    public function getPrice()
-    {
-        return $this->formatPrice($this->price);
-    }
-    
-    /**
-     * Return weight
-     * @return float
-     */
-    public function getWeight()
-    {
-        return (float) $this->weight;
-    }
-    
-    /**
-     * Set price
-     * @param int|float $price
-     */
-    public function setPrice($price)
+
+    public function setPrice(float $price): void
     {
         $this->price = $price;
     }
+
+    public function getPrice(string $currency): Money
+    {
+        $moneyParser = new DecimalMoneyParser(new ISOCurrencies());
+        
+        return $moneyParser->parse((string) $this->price, new Currency($currency));
+    }
     
-    /**
-     * Return quantity
-     * @return int
-     */
-    public function getQuantity()
+    public function getWeight(): float
+    {
+        return $this->weight;
+    }
+    
+    public function getQuantity(): int
     {
         return (int) $this->quantity;
     }
     
-    /**
-     * Return image path
-     * @return string
-     */
-    public function getImagePath()
+    public function getImagePath(): string
     {
         return $this->imagePath;
     }
     
-    /**
-     * Return tax rate
-     * @return float
-     */
-    public function getTaxRate()
+    public function getTaxRate(): float
     {
-        return (float) $this->taxRate;
+        return $this->taxRate;
     }
     
-    /**
-     * Return tax for single item
-     * @return float
-     */
-    public function getTax()
+    public function getTax(string $currency): Money
     {
-        return $this->formatPrice($this->getPrice() * $this->getTaxRate());
+        return $this->getPrice($currency)->multiply($this->taxRate);
     }
     
-    /**
-     * Return price including tax for single item
-     * @return float
-     */
-    public function getPriceWithTax()
+    public function getPriceWithTax(string $currency): Money
     {
-        return $this->formatPrice($this->getPrice() + $this->getTax());
+        return $this->getPrice($currency)->add($this->getTax($currency));
     }
     
-    /**
-     * Set price format object
-     * @param \Plane\Shop\PriceFormat\PriceFormatInterface $priceFormat
-     */
-    public function setPriceFormat(PriceFormatInterface $priceFormat)
-    {
-        $this->priceFormat = $priceFormat;
-    }
-    
-    public function toArray()
+    public function toArray(string $currency): array
     {
         $array = [];
         $array['id']                = $this->getId();
@@ -178,25 +99,11 @@ class Product implements ProductInterface
         $array['imagePath']         = $this->getImagePath();
         $array['quantity']          = $this->getQuantity();
         $array['taxRate']           = $this->getTaxRate();
-        $array['tax']               = $this->getTax();
-        $array['price']             = $this->getPrice();
+        $array['tax']               = $this->getTax($currency);
+        $array['price']             = $this->getPrice($currency);
         $array['weight']            = $this->getWeight();
-        $array['priceWithTax']      = $this->getPriceWithTax();
+        $array['priceWithTax']      = $this->getPriceWithTax($currency);
 
         return $array;
-    }
-    
-    /**
-     * Format price with set price format object
-     * @param float $price
-     * @return float
-     */
-    protected function formatPrice($price)
-    {
-        if (is_null($this->priceFormat)) {
-            return (float) $price;
-        }
-        
-        return $this->priceFormat->formatPrice($price);
     }
 }
