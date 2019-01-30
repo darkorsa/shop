@@ -11,6 +11,8 @@
 
 namespace Plane\Shop;
 
+use Money\Money;
+
 interface PaymentInterface
 {
     public function getId(): int;

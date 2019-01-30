@@ -11,6 +11,7 @@
 
 namespace Plane\Shop;
 
+use Money\Money;
 use Money\Currency;
 use Money\Currencies\ISOCurrencies;
 use Money\Parser\DecimalMoneyParser;
@@ -31,8 +32,6 @@ class Payment implements PaymentInterface
     
     private $feeType = self::FEE_FIXED;
 
-    private $priceFormat;
-    
     public function __construct(array $data)
     {
         // waiting for typed properties in PHP 7.4
