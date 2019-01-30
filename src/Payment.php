@@ -1,151 +1,79 @@
 <?php
 
+/*
+ * This file is part of the Plane\Shop package.
+ *
+ * (c) Dariusz Korsak <dkorsak@gmail.com>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 namespace Plane\Shop;
 
-use Plane\Shop\PriceFormat\PriceFormatInterface;
+use Money\Currency;
+use Money\Currencies\ISOCurrencies;
+use Money\Parser\DecimalMoneyParser;
 
-/**
- * Payment class
- *
- * @author Dariusz Korsak <dkorsak@gmail.com>
- * @package Plane\Shop
- */
 class Payment implements PaymentInterface
 {
-    /**
-     * Fee is a fixed price
-     */
     const FEE_FIXED = 'fixed';
     
-    /**
-     * Fee is calculated as a percentage of total price
-     */
     const FEE_PERCENTAGE = 'percentage';
     
-    /**
-     * Payment id
-     * @var int
-     */
     private $id;
     
-    /**
-     * Payment name
-     * @var string
-     */
     private $name;
     
-    /**
-     * Payment description
-     * @var string
-     */
     private $description;
     
-    /**
-     * Payment fee
-     * @var int|float
-     */
     private $fee;
     
-    /**
-     * Payment fee type (fee_fixed|fee_percentage)
-     * @var string
-     */
     private $feeType = self::FEE_FIXED;
-    
-    /**
-     * Price format object
-     * @var \Plane\Shop\PriceFormat\PriceFormatInterface
-     */
+
     private $priceFormat;
     
-    /**
-     * Constructor
-     * @param array $data
-     */
     public function __construct(array $data)
     {
-        foreach ($data as $k => $v) {
-            $this->$k = $v;
+        // waiting for typed properties in PHP 7.4
+        foreach ($data as $property => $value) {
+            $this->$property = $value;
         }
     }
     
-    /**
-     * Return id
-     * @return int
-     */
-    public function getId()
+    public function getId(): int
     {
         return $this->id;
     }
     
-    /**
-     * Return name
-     * @return string
-     */
-    public function getName()
+    public function getName(): string
     {
         return $this->name;
     }
     
-    /**
-     * Return description
-     * @return string
-     */
-    public function getDescription()
+    public function getDescription(): string
     {
         return $this->description;
     }
     
-    /**
-     * Set fee as fixed price
-     */
-    public function setFixed()
+    public function setFixed(): void
     {
         $this->feeType = self::FEE_FIXED;
     }
     
-    /**
-     * Set fee as percentage of total price
-     */
-    public function setPercentage()
+    public function setPercentage(): void
     {
         $this->feeType = self::FEE_PERCENTAGE;
     }
     
-    /**
-     * Return fee
-     * @param float $totalPrice
-     * @return float
-     */
-    public function getFee($totalPrice)
-    {
-        if (!is_null($this->priceFormat)) {
-            return $this->priceFormat->formatPrice($this->calculateFee($totalPrice));
-        }
-        
-        return $this->calculateFee($totalPrice);
-    }
-    
-    /**
-     * Set price format object
-     * @param \Plane\Shop\PriceFormat\PriceFormatInterface $priceFormat
-     */
-    public function setPriceFormat(PriceFormatInterface $priceFormat)
-    {
-        $this->priceFormat = $priceFormat;
-    }
-    
-    /**
-     * Calculate fee based on feeType
-     * @param double $totalPrice
-     * @return float
-     */
-    protected function calculateFee($totalPrice)
+    public function getFee(Money $totalPrice, string $currency): Money
     {
         if ($this->feeType == self::FEE_PERCENTAGE) {
-            return (float) $totalPrice * $this->fee;
+            return $totalPrice->multiply($this->fee);
         }
+
+        $moneyParser = new DecimalMoneyParser(new ISOCurrencies());
         
-        return (float) $this->fee;
+        return $moneyParser->parse((string) $this->fee, new Currency($currency));
     }
 }

@@ -1,53 +1,27 @@
 <?php
 
+/*
+ * This file is part of the Plane\Shop package.
+ *
+ * (c) Dariusz Korsak <dkorsak@gmail.com>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 namespace Plane\Shop;
 
-use Plane\Shop\PriceFormat\PriceFormatInterface;
-
-/**
- * Interface for payment classes
- * @author Dariusz Korsak <dkorsak@gmail.com>
- */
 interface PaymentInterface
 {
-    /**
-     * Return id
-     * @return int
-     */
-    public function getId();
+    public function getId(): int;
    
-    /**
-     * Return name
-     * @return string
-     */
-    public function getName();
+    public function getName(): string;
 
-    /**
-     * Return description
-     * @return string
-     */
-    public function getDescription();
+    public function getDescription(): string;
     
-    /**
-     * Return fee
-     * @param float $totalPrice
-     * @return float
-     */
-    public function getFee($totalPrice);
+    public function getFee(Money $totalPrice, string $currency): Money;
     
-    /**
-     * Set fee as fixed price
-     */
     public function setFixed();
     
-    /**
-     * Set fee as percentage of total price
-     */
     public function setPercentage();
-
-    /**
-     * Set price format object
-     * @param \Plane\Shop\PriceFormat\PriceFormatInterface $priceFormat
-     */
-    public function setPriceFormat(PriceFormatInterface $priceFormat);
 }

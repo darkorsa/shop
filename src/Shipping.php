@@ -28,6 +28,7 @@ class Shipping implements ShippingInterface
 
     public function __construct(array $data)
     {
+        // waiting for typed properties in PHP 7.4
         foreach ($data as $property => $value) {
             $this->$property = $value;
         }

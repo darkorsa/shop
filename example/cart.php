@@ -39,8 +39,7 @@ $shipping = new Shipping([
    'cost'           => 15.15,
 ]);
 
-var_dump($shipping->getCost('PLN'));
-exit;
+
 
 $payment = new Payment([
    'id'             => 1,
@@ -54,6 +53,9 @@ $cart = new Cart();
 $cart->fill($cartItemCollection);
 $cart->setShipping($shipping);
 $cart->setPayment($payment);
+
+var_dump($cart->toArray());
+exit;
 
 $discount1 = new SecondItemFreeDiscount($cart, [
     'name' => 'Second item will be free',
