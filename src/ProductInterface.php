@@ -19,21 +19,21 @@ interface ProductInterface
     
     public function getName(): string;
 
+    public function getQuantity(): int;
+
     public function setPrice(float $price): void;
 
     public function getPrice(string $currency): Money;
     
-    public function getWeight(): float;
-
-    public function getQuantity(): int;
-
-    public function getImagePath(): string;
-
     public function getTaxRate(): float;
     
     public function getTax(string $currency): Money;
     
     public function getPriceWithTax(string $currency): Money;
+
+    public function getWeight(): string;
+
+    public function getImagePath(): string;
     
     public function toArray(string $currency): array;
 }

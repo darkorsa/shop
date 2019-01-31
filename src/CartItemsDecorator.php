@@ -1,48 +1,42 @@
 <?php
 
+/*
+ * This file is part of the Plane\Shop package.
+ *
+ * (c) Dariusz Korsak <dkorsak@gmail.com>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 namespace Plane\Shop;
 
 use InvalidArgumentException;
+use Plane\Shop\CartItemInterface;
 
-/**
- * Decorator class form CartItems objects
- *
- * @author Dariusz Korsak <dkorsak@gmail.com>
- */
 class CartItemsDecorator
 {
-    /**
-     * Collection of CartItem objects
-     * @var \Plane\Shop\CartItemCollection
-     */
     private $collection;
     
-    /**
-     * Decorator for CartItem object
-     * @var \Plane\Shop\CartItemInterface
-     */
     private $decorator;
     
-    /**
-     * Class constructor
-     * @param \Plane\Shop\CartItemCollection $collection
-     * @param \Plane\Shop\CartItemInterface $decorator
-     * @throws \InvalidArgumentException
-     */
-    public function __construct(CartItemCollection $collection, CartItemInterface $decorator)
+    public function __construct(array $collection, string $decoratorClass)
     {
-        if (!class_exists($decorator)) {
-            throw new InvalidArgumentException("Decorator class $decorator does not exist");
+        if (!class_exists($decoratorClass)) {
+            throw new InvalidArgumentException("Decorator class {$decoratorClass} does not exist");
+        }
+
+        $decorator = new $decoratorClass();
+
+        if (!$decorator instanceof CartItemInterface) {
+            throw new InvalidArgumentException("Decorator class {$decoratorClass} doesn't implement CartItemInterface");
         }
         
         $this->collection = $collection;
         $this->decorator = $decorator;
     }
     
-    /**
-     * Decorate collection items
-     */
-    public function decorate()
+    public function decorate(): void
     {
         foreach ($this->collection->keys() as $key) {
             $this->collection->replaceItem(new $this->decorator($this->collection->getItem($key)), $key);

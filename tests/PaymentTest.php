@@ -40,19 +40,4 @@ class PaymentTest extends \PHPUnit\Framework\TestCase
 
         $this->assertSame(2.0, $payment->getFee(10));
     }
-
-    public function testSetPriceFormat()
-    {
-        $priceFormat = $this->getMockBuilder(PriceFormat::class)
-            ->getMock();
-        
-        $priceFormat->expects($this->any())
-            ->method('formatPrice')
-            ->willReturn(2.00);
-        
-        $payment = new Payment($this->paymentInput);
-        $payment->setPriceFormat($priceFormat);
-        
-        $this->assertSame(2.00, $payment->getFee(10));
-    }
 }

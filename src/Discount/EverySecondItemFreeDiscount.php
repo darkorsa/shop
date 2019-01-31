@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 /*
  * This file is part of the Plane\Shop package.
@@ -12,30 +12,35 @@
 namespace Plane\Shop\Discount;
 
 use Plane\Shop\CartInterface;
-use Plane\Shop\CartDecoratorTrait;
+use Plane\Shop\DiscountAbstract;
+use Plane\Shop\CartCommonDecorator;
+use Plane\Shop\CartPricesDecorator;
 
-class SecondItemFreeDiscount extends DiscountAbstract implements CartInterface
+class EverySecondItemFreeDiscount extends DiscountAbstract implements CartInterface
 {
-    use CartDecoratorTrait;
+    use CartCommonDecorator;
+    use CartPricesDecorator;
     
     /**
      * Apply discount so that every even item price is set to 0
      */
-    protected function applyDiscount()
+    protected function applyDiscount(): void
     {
         $total = $this->totalAfterDiscounts();
+        $subctracts = [];
 
         $i = 1;
-        foreach ($this->all() as $item) {
+        foreach ($this->items() as $item) {
             // every even item is free
             if ($i % 2 == 0) {
-                $total -= $item->getPriceTotalWithTax();
+                $subctracts[] = $item->getPriceTotalWithTax($this->getCurrency());
             }
             $i++;
         }
+
+        $afterDiscount = call_user_func_array([$total, 'subtract'], $subctracts);
         
-        $this->cartDiscount->setDiscountText($this->description);
-        $this->cartDiscount->setPriceAfterDiscount($total);
+        $this->cartDiscount->setPriceAfterDiscount($afterDiscount);
         
         $this->addDiscount($this->cartDiscount);
     }

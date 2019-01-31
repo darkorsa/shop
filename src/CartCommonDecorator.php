@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 /*
  * This file is part of the Plane\Shop package.
@@ -11,16 +11,19 @@
 
 namespace Plane\Shop;
 
-trait CartDecoratorTrait
+trait CartCommonDecorator
 {
-    protected $cart;
-    
+    public function getCurrency(): string
+    {
+        return $this->cart->getCurrency();
+    }
+
     public function setShipping(ShippingInterface $shipping): void
     {
         $this->cart->setShipping($shipping);
     }
     
-    public function getShipping(): ShippingInterface
+    public function getShipping(): ?ShippingInterface
     {
         return $this->cart->getShipping();
     }
@@ -30,7 +33,7 @@ trait CartDecoratorTrait
         $this->cart->setPayment($payment);
     }
     
-    public function getPayment(): PaymentInterface
+    public function getPayment(): ?PaymentInterface
     {
         return $this->cart->getPayment();
     }
@@ -38,6 +41,11 @@ trait CartDecoratorTrait
     public function addDiscount(CartDiscount $discount): void
     {
         $this->cart->addDiscount($discount);
+    }
+
+    public function getDiscounts(): array
+    {
+        return $this->cart->getDiscounts();
     }
 
     public function fill(CartItemCollection $collection): void
@@ -55,6 +63,11 @@ trait CartDecoratorTrait
         $this->cart->remove($itemId);
     }
 
+    public function clear(): void
+    {
+        $this->cart->clear();
+    }
+
     public function update(CartItemInterface $item): void
     {
         $this->cart->update($item);
@@ -70,53 +83,18 @@ trait CartDecoratorTrait
         return $this->cart->get($itemId);
     }
     
-    public function all(): array
+    public function items(): array
     {
-        return $this->cart->all();
+        return $this->cart->items();
     }
     
-    public function clear(): void
+    public function itemsQuantity(): int
     {
-        $this->cart->clear();
+        return $this->cart->itemsQuantity();
     }
     
-    public function total(): float
+    public function weight(): string
     {
-        return $this->cart->total();
-    }
-    
-    public function totalItems(): int
-    {
-        return $this->cart->totalItems();
-    }
-
-    public function totalTax(): float
-    {
-        return $this->cart->totalTax();
-    }
-    
-    public function totalWeight(): float
-    {
-        return $this->cart->totalWeight();
-    }
-    
-    public function totalAfterDiscounts(): float
-    {
-        return $this->cart->totalAfterDiscounts();
-    }
-
-    public function shippingCost(): float
-    {
-        return $this->cart->shippingCost();
-    }
-    
-    public function paymentFee(): float
-    {
-        return $this->cart->paymentFee();
-    }
-    
-    public function toArray(): array
-    {
-        return $this->cart->toArray();
+        return $this->cart->weight();
     }
 }

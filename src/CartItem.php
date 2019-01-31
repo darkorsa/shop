@@ -1,49 +1,28 @@
-<?php
+<?php declare(strict_types=1);
+
+/*
+ * This file is part of the Plane\Shop package.
+ *
+ * (c) Dariusz Korsak <dkorsak@gmail.com>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
 
 namespace Plane\Shop;
 
-use DomainException;
+use Money\Money;
 use Plane\Shop\Validator\QuantityValidatorInterface;
-use Plane\Shop\PriceFormat\PriceFormatInterface;
+use Plane\Shop\Exception\QuanityException;
 
-/**
- * Description of CartItem
- *
- * @author Dariusz Korsak <dkorsak@gmail.com>
- * @package Plane\Shop
- */
 class CartItem implements CartItemInterface
 {
-    /**
-     * Product object
-     * @var \Plane\Shop\ProductInterface
-     */
     private $product;
     
-    /**
-     * Quantity validator object
-     * @var \Plane\Shop\Validator\QuantityValidatorInterface
-     */
     private $quantityValidator;
     
-    /**
-     * Item quantity
-     * @var int
-     */
     private $quantity;
     
-    /**
-     * Price format object
-     * @var \Plane\Shop\PriceFormat\PriceFormatInterface
-     */
-    private $priceFormat;
-    
-    /**
-     * Constructor
-     * @param \Plane\Shop\ProductInterface $product
-     * @param integer $quantity
-     * @param \Plane\Shop\Validator\QuantityValidatorInterface $quantityValidator
-     */
     public function __construct(
         ProductInterface $product,
         $quantity = 1,
@@ -51,222 +30,120 @@ class CartItem implements CartItemInterface
     ) {
         $this->product = $product;
         $this->quantityValidator = $quantityValidator;
-        $this->quantity = (int) $quantity;
+        $this->setQuantity((int) $quantity);
     }
     
-    /**
-     * Return product object
-     * @return \Plane\Shop\ProductInterface
-     */
-    public function getProduct()
+    public function getProduct(): ProductInterface
     {
         return $this->product;
     }
 
-    /**
-     * Return id
-     * @return int
-     */
-    public function getId()
+    public function getId(): int
     {
         return $this->product->getId();
     }
-        
-    /**
-     * Return name
-     * @return string
-     */
-    public function getName()
+    
+    public function getName(): string
     {
         return $this->product->getName();
     }
-    
-    /**
-     * Return path to image
-     * @return string
-     */
-    public function getImagePath()
+
+    public function getImagePath(): string
     {
         return $this->product->getImagePath();
     }
     
-    /**
-     * Return cart item quantity
-     * @return int
-     */
-    public function getQuantity()
+    public function getQuantity(): int
     {
         return $this->quantity;
     }
     
-    /**
-     * Set cart item quantity
-     * @param int $quantity
-     * @throws \DomainException
-     */
-    public function setQuantity($quantity)
+    public function setQuantity(int $quantity): void
     {
         if (!$this->validateQuantity($quantity)) {
-            throw new DomainException('Quantity of' . $quantity . ' is invalid');
+            throw new QuanityException('Invalid quantity: ' . $quantity);
         }
         
-        $this->quantity = (int) $quantity;
+        $this->quantity = $quantity;
     }
     
-    /**
-     * Increase cart item quantity
-     * @param int $quantity
-     */
-    public function increaseQuantity($quantity)
+    public function increaseQuantity(int $quantity): void
     {
-        $newQuantity = $this->quantity + (int) $quantity;
+        $newQuantity = $this->quantity + $quantity;
         
         $this->setQuantity($newQuantity);
     }
     
-    /**
-     * Decrease cart item quantity
-     * @param int $quantity
-     */
-    public function decreaseQuantity($quantity)
+    public function decreaseQuantity(int $quantity): void
     {
-        $newQuantity = $this->quantity - (int) $quantity;
+        $newQuantity = $this->quantity - $quantity;
         
         $this->setQuantity($newQuantity);
     }
-    
-    /**
-     * Return tax for single item
-     * @return float
-     */
-    public function getTax()
+
+    public function getWeight(): string
     {
-        return $this->product->getTax();
+        return $this->product->getWeight();
+    }
+    
+    public function getWeightTotal(): string
+    {
+        return bcmul($this->getWeight(), (string) $this->quantity, 2);
+    }
+
+    public function getTax(string $currency): Money
+    {
+        return $this->product->getTax($currency);
     }
             
-    /**
-     * Return tax for all items
-     * @return float
-     */
-    public function getTaxTotal()
+    public function getTaxTotal(string $currency): Money
     {
-        return $this->formatPrice((float) $this->getTax() * $this->quantity);
+        return $this->getTax($currency)->multiply($this->quantity);
     }
     
-    /**
-     * Return product weight
-     * @return float
-     */
-    public function getWeight()
+    public function getPrice(string $currency): Money
     {
-        return (float) $this->product->getWeight();
+        return $this->product->getPrice($currency);
     }
     
-    /**
-     * Return weight for all items
-     * @return float
-     */
-    public function getWeightTotal()
-    {
-        return (float) ($this->getWeight() * $this->quantity);
-    }
-    
-    /**
-     * Return single cart item price
-     * @return float
-     */
-    public function getPrice()
-    {
-        return $this->formatPrice((float) $this->product->getPrice());
-    }
-    
-    /**
-     * Set price for item
-     * @param float $price
-     */
-    public function setPrice($price)
+    public function setPrice(float $price): void
     {
         $this->product->setPrice($price);
     }
     
-    /**
-     * Return price for all items
-     * @return float
-     */
-    public function getPriceTotal()
+    public function getPriceTotal(string $currency): Money
     {
-        return $this->formatPrice((float) $this->getPrice() * $this->quantity);
+        return $this->getPrice($currency)->multiply($this->quantity);
     }
     
-    /**
-     * Return price including tax for single item
-     * @return float
-     */
-    public function getPriceWithTax()
+    public function getPriceWithTax(string $currency): Money
     {
-        return $this->product->getPriceWithTax();
+        return $this->product->getPriceWithTax($currency);
     }
     
-    /**
-     * Return price including tax for all items
-     * @return float
-     */
-    public function getPriceTotalWithTax()
+    public function getPriceTotalWithTax(string $currency): Money
     {
-        return $this->formatPrice((float) $this->getPriceTotal() + $this->getTaxTotal());
+        return $this->getPriceTotal($currency)->add($this->getTaxTotal($currency));
     }
     
-    /**
-     * Set price format object
-     * @param \Plane\Shop\PriceFormat\PriceFormatInterface $priceFormat
-     */
-    public function setPriceFormat(PriceFormatInterface $priceFormat)
-    {
-        $this->priceFormat = $priceFormat;
-        $this->product->setPriceFormat($priceFormat);
-    }
-    
-    /**
-     * Return object array representation
-     * @return array
-     */
-    public function toArray()
+    public function toArray(string $currency): array
     {
         $array = [];
         $array['quantity']          = $this->getQuantity();
-        $array['totalTax']          = $this->getTaxTotal();
-        $array['priceTotal']        = $this->getPriceTotal();
-        $array['priceTotalWithTax'] = $this->getPriceTotalWithTax();
-        $array['product']           = $this->product->toArray();
+        $array['totalTax']          = $this->getTaxTotal($currency);
+        $array['priceTotal']        = $this->getPriceTotal($currency);
+        $array['priceTotalWithTax'] = $this->getPriceTotalWithTax($currency);
+        $array['product']           = $this->product->toArray($currency);
         
         return $array;
     }
     
-    /**
-     * Validate quantity
-     * @param int $quantity
-     * @return boolean
-     */
-    protected function validateQuantity($quantity)
+    private function validateQuantity(int $quantity): bool
     {
         if (is_null($this->quantityValidator)) {
             return true;
         }
         
         return $this->quantityValidator->validate($this->product, $quantity);
-    }
-    
-    /**
-     * Format price with set price format object
-     * @param float $price
-     * @return float
-     */
-    protected function formatPrice($price)
-    {
-        if (is_null($this->priceFormat)) {
-            return $price;
-        }
-        
-        return $this->priceFormat->formatPrice($price);
     }
 }

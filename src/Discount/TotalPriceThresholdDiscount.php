@@ -1,45 +1,51 @@
-<?php
+<?php declare(strict_types=1);
+
+/*
+ * This file is part of the Plane\Shop package.
+ *
+ * (c) Dariusz Korsak <dkorsak@gmail.com>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
 
 namespace Plane\Shop\Discount;
 
+use Money\Money;
+use Money\Currency;
 use Plane\Shop\CartInterface;
+use Plane\Shop\DiscountAbstract;
+use Money\Currencies\ISOCurrencies;
+use Plane\Shop\CartCommonDecorator;
+use Plane\Shop\CartPricesDecorator;
+use Money\Parser\DecimalMoneyParser;
 
-/**
- * Description of SecondItemFreeDiscount
- *
- * @author Dariusz Korsak <dkorsak@gmail.com>
- * @package Plane\Shop;
- */
 class TotalPriceThresholdDiscount extends DiscountAbstract implements CartInterface
 {
-    use \Plane\Shop\CartDecoratorTrait;
+    use CartCommonDecorator;
+    use CartPricesDecorator;
     
-    /**
-     * Price treshiold
-     * @var int
-     */
-    protected $threshold;
+    protected $treshold;
     
-    /**
-     * Discount value
-     * @var float
-     */
     protected $discount;
-    
-    /**
-     * Apply discount so that after total price is over given treshold
-     */
-    protected function applyDiscount()
+
+    protected function applyDiscount(): void
     {
         $total = $this->totalAfterDiscounts();
-        
-        if ($total >= $this->threshold) {
-            $total = $total - ($total * $this->discount);
+
+        if ($total->greaterThanOrEqual($this->getTreshold($this->getCurrency()))) {
+            $total = $total->subtract($total->multiply($this->discount));
         }
-                
-        $this->cartDiscount->setDiscountText($this->description);
+
         $this->cartDiscount->setPriceAfterDiscount($total);
         
         $this->addDiscount($this->cartDiscount);
+    }
+
+    private function getTreshold(string $currency): Money
+    {
+        $moneyParser = new DecimalMoneyParser(new ISOCurrencies());
+        
+        return $moneyParser->parse((string) $this->treshold, new Currency($currency));
     }
 }

@@ -3,78 +3,86 @@
 require_once __DIR__ . '/../vendor/autoload.php'; // Autoload files using Composer autoload
 
 use Plane\Shop\Cart;
-use Plane\Shop\CartItem;
-use Plane\Shop\Product;
 use Plane\Shop\Payment;
+use Plane\Shop\Product;
+use Plane\Shop\CartItem;
 use Plane\Shop\Shipping;
+use Plane\Shop\CartDiscount;
+use Plane\Shop\CartPresentator;
 use Plane\Shop\CartItemCollection;
-
-use Plane\Shop\Discount\SecondItemFreeDiscount;
+use Plane\Shop\Discount\EverySecondItemFreeDiscount;
 use Plane\Shop\Discount\TotalPriceThresholdDiscount;
+use Plane\Shop\Validator\StockQuantityValidator;
 
 $product1 = new Product([
     'id'        => 1,
     'name'      => 'Product One',
+    'quantity'  => 8,
     'price'     => 10,
-    'taxRate'   => 0.0,
-    'weight'    => 5,
+    'taxRate'   => 0.10,
 ]);
 
 $product2 = new Product([
     'id'        => 2,
     'name'      => 'Product Two',
-    'price'     => 4.00,
-    'taxRate'   => 0.0,
-    'weight'    => 0.25,
+    'quantity'  => 6,
+    'price'     => 25,
+    'taxRate'   => 0.10,
 ]);
 
-$cartItemCollection = new CartItemCollection;
-$cartItemCollection->addItem(new CartItem($product1, 4));
-$cartItemCollection->addItem(new CartItem($product2, 1));
+try {
+    $cartItemCollection = new CartItemCollection;
+    $cartItemCollection->addItem(new CartItem($product1, 5, new StockQuantityValidator));
+    $cartItemCollection->addItem(new CartItem($product2, 2, new StockQuantityValidator));
+} catch (Exception $e) {
+    echo $e->getMessage() . PHP_EOL;
+    die;
+}
+
 
 $shipping = new Shipping([
    'id'             => 9,
    'name'           => 'National Shipping Company',
    'description'    => 'Standart Ground Shipping',
-   'cost'           => 15.15,
+   'cost'           => 0,
 ]);
-
-
 
 $payment = new Payment([
    'id'             => 1,
    'name'           => 'PayPal',
    'description'    => 'Payment with Paypal',
-   'fee'            => 0.02
+   'fee'            => 0.10
 ]);
 $payment->setPercentage();
 
-$cart = new Cart();
+$cart = new Cart('PLN');
 $cart->fill($cartItemCollection);
 $cart->setShipping($shipping);
 $cart->setPayment($payment);
 
-var_dump($cart->toArray());
-exit;
+$cartDisount1 = new TotalPriceThresholdDiscount(
+    $cart,
+    new CartDiscount('Jest to opis jakiegos discouta'),
+    ['treshold' => 160, 'discount' => 0.1]
+);
 
-$discount1 = new SecondItemFreeDiscount($cart, [
-    'name' => 'Second item will be free',
-    'description' => 'Some description'
-]);
+/*$cartDisount2 = new EverySecondItemFreeDiscount(
+    $cartDisount1,
+    new CartDiscount('Co drugi free!')
+);*/
 
-$discount2 = new TotalPriceThresholdDiscount($discount1, [
-    'name' => 'To percent off on discount',
-    'description' => '10% off on orders equal or above 40',
-    'threshold' => 40,
-    'discount' => 0.10
-]);
+$presentator = new CartPresentator($cartDisount1);
 
-echo 'Total items: ' . $discount2->totalItems() . "\n\n";
-echo 'Total: ' . $discount2->total() . "\n\n";
-echo 'Total tax: ' . $discount2->totalTax() . "\n\n";
-echo 'Total weight: ' . $discount2->totalWeight() . "\n\n";
-echo 'Shipping cost: ' . $discount2->shippingCost() . "\n\n";
-echo 'Payment fee: ' . $discount2->paymentFee() . "\n\n";
-echo 'Total after discounts: ' . $discount2->totalAfterDiscounts() . "\n\n";
+//var_dump($presentator->toArray());
+//exit;
+
+echo 'Total items: ' . $presentator->itemsQuantity() . "\n\n";
+echo 'Total net: ' . $presentator->totalNet() . "\n\n";
+echo 'Total gross: ' . $presentator->totalGross() . "\n\n";
+echo 'Total tax: ' . $presentator->tax() . "\n\n";
+echo 'Total weight: ' . $presentator->weight() . "\n\n";
+echo 'Shipping cost: ' . $presentator->shippingCost() . "\n\n";
+echo 'Payment fee: ' . $presentator->paymentFee() . "\n\n";
+echo 'Total after discounts: ' . $presentator->totalAfterDiscounts() . "\n\n";
 
 

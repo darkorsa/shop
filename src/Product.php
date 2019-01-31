@@ -21,19 +21,20 @@ class Product implements ProductInterface
     protected $id;
     
     protected $name;
+
+    protected $quantity;
     
     protected $price;
+
+    protected $taxRate;
     
     protected $weight;
     
-    protected $quantity;
-    
     protected $imagePath;
-    
-    protected $taxRate;
     
     public function __construct(array $data)
     {
+        // waiting for typed properties in PHP 7.4
         foreach ($data as $property => $value) {
             $this->$property = $value;
         }
@@ -49,6 +50,11 @@ class Product implements ProductInterface
         return $this->name;
     }
 
+    public function getQuantity(): int
+    {
+        return $this->quantity;
+    }
+
     public function setPrice(float $price): void
     {
         $this->price = $price;
@@ -59,21 +65,6 @@ class Product implements ProductInterface
         $moneyParser = new DecimalMoneyParser(new ISOCurrencies());
         
         return $moneyParser->parse((string) $this->price, new Currency($currency));
-    }
-    
-    public function getWeight(): float
-    {
-        return $this->weight;
-    }
-    
-    public function getQuantity(): int
-    {
-        return (int) $this->quantity;
-    }
-    
-    public function getImagePath(): string
-    {
-        return $this->imagePath;
     }
     
     public function getTaxRate(): float
@@ -89,6 +80,16 @@ class Product implements ProductInterface
     public function getPriceWithTax(string $currency): Money
     {
         return $this->getPrice($currency)->add($this->getTax($currency));
+    }
+
+    public function getWeight(): string
+    {
+        return (string) $this->weight;
+    }
+    
+    public function getImagePath(): string
+    {
+        return (string) $this->imagePath;
     }
     
     public function toArray(string $currency): array

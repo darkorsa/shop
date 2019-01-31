@@ -1,22 +1,19 @@
-<?php
+<?php declare(strict_types=1);
+
+/*
+ * This file is part of the Plane\Shop package.
+ *
+ * (c) Dariusz Korsak <dkorsak@gmail.com>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
 
 namespace Plane\Shop\Validator;
 
 use Plane\Shop\ProductInterface;
 
-/**
- * Interface for QuantityValidators
- *
- * @author Dariusz Korsak <dkorsak@gmail.com>
- * @package Plane\Shop
- */
 interface QuantityValidatorInterface
 {
-    /**
-     * Validate quantity
-     * @param \Plane\Shop\ProductInterface $product
-     * @param int $quantity
-     * @return boolean
-     */
-    public function validate(ProductInterface $product, $quantity);
+    public function validate(ProductInterface $product, int $quantity): bool;
 }

@@ -1,129 +1,54 @@
-<?php
+<?php declare(strict_types=1);
+
+/*
+ * This file is part of the Plane\Shop package.
+ *
+ * (c) Dariusz Korsak <dkorsak@gmail.com>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
 
 namespace Plane\Shop;
 
-use Plane\Shop\PriceFormat\PriceFormatInterface;
+use Money\Money;
+use Plane\Shop\ProductInterface;
 
-/**
- * Description of CartItem
- *
- * @author Dariusz Korsak <dkorsak@gmail.com>
- * @package Plane\Shop
- */
 interface CartItemInterface
 {
-    /**
-     * Return product object
-     * @return \Plane\Shop\ProductInterface
-     */
-    public function getProduct();
+    public function getProduct(): ProductInterface;
     
-    /**
-     * Return id
-     * @return int
-     */
-    public function getId();
+    public function getId(): int;
         
-    /**
-     * Return name
-     * @return string
-     */
-    public function getName();
+    public function getName(): string;
     
-    /**
-     * Return cart item quantity
-     * @return int
-     */
-    public function getQuantity();
+    public function getQuantity(): int;
     
-     /**
-      * Return cart item quantity
-      * @return int
-      */
-    public function getImagePath();
+    public function getImagePath(): string;
     
-    /**
-     * Set cart item quantity
-     * @param int $quantity
-     * @throws \DomainException
-     */
-    public function setQuantity($quantity);
+    public function setQuantity(int $quantity): void;
     
-    /**
-     * Increase cart item quantity
-     * @param int $quantity
-     */
-    public function increaseQuantity($quantity);
+    public function increaseQuantity(int $quantity): void;
     
-    /**
-     * Decrease cart item quantity
-     * @param int $quantity
-     */
-    public function decreaseQuantity($quantity);
+    public function decreaseQuantity(int $quantity): void;
+        
+    public function getWeight(): string;
     
-    /**
-     * Return tax for single item
-     * @return float
-     */
-    public function getTax();
+    public function getWeightTotal(): string;
     
-    /**
-     * Return tax for all items
-     * @return float
-     */
-    public function getTaxTotal();
+    public function getTax(string $currency): Money;
     
-    /**
-     * Return product weight
-     * @return float
-     */
-    public function getWeight();
+    public function getTaxTotal(string $currency): Money;
     
-    /**
-     * Return weight for all items
-     * @return float
-     */
-    public function getWeightTotal();
+    public function getPrice(string $currency): Money;
     
-    /**
-     * Return single cart item price
-     * @return float
-     */
-    public function getPrice();
+    public function setPrice(float $price): void;
     
-    /**
-     * Set price for item
-     * @param float $price
-     */
-    public function setPrice($price);
+    public function getPriceTotal(string $currency): Money;
+
+    public function getPriceWithTax(string $currency): Money;
     
-    /**
-     * Return price for all items
-     * @return float
-     */
-    public function getPriceTotal();
+    public function getPriceTotalWithTax(string $currency): Money;
     
-    /**
-     * Return price including tax for single item
-     * @return float
-     */
-    public function getPriceWithTax();
-    
-    /**
-     * Return price including tax for all items
-     * @return float
-     */
-    public function getPriceTotalWithTax();
-    
-    /**
-     * Set price format object
-     * @param \Plane\Shop\PriceFormat\PriceFormatInterface $priceFormat
-     */
-    public function setPriceFormat(PriceFormatInterface $priceFormat);
-    
-    /**
-     * Return object array representation
-     * @return array
-     */
-    public function toArray();
+    public function toArray(string $currency): array;
 }

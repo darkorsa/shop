@@ -11,16 +11,20 @@
 
 namespace Plane\Shop;
 
+use Money\Money;
+use Money\Currency;
 use OutOfBoundsException;
-use Money\MoneyFormatter;
-use Money\Currencies\ISOCurrencies;
-use Money\Formatter\DecimalMoneyFormatter;
+use Plane\Shop\CartDiscount;
+use Plane\Shop\PaymentInterface;
+use Plane\Shop\CartItemInterface;
+use Plane\Shop\ShippingInterface;
+use Plane\Shop\CartItemCollection;
 
-class Cart implements CartInterface
+final class Cart implements CartInterface
 {
     private $items = [];
-    
-    private $priceFormat;
+
+    private $currency;
     
     private $shipping;
     
@@ -28,9 +32,14 @@ class Cart implements CartInterface
     
     private $discounts = [];
     
-    public function __construct(MoneyFormatter $priceFormat = null)
+    public function __construct(string $currency)
     {
-        $this->priceFormat = $priceFormat ?: new DecimalMoneyFormatter(new ISOCurrencies());
+        $this->currency = $currency;
+    }
+
+    public function getCurrency(): string
+    {
+        return $this->currency;
     }
 
     public function setShipping(ShippingInterface $shipping): void
@@ -38,7 +47,7 @@ class Cart implements CartInterface
         $this->shipping = $shipping;
     }
     
-    public function getShipping(): ShippingInterface
+    public function getShipping(): ?ShippingInterface
     {
         return $this->shipping;
     }
@@ -48,15 +57,19 @@ class Cart implements CartInterface
         $this->payment = $payment;
     }
     
-    public function getPayment(): PaymentInterface
+    public function getPayment(): ?PaymentInterface
     {
         return $this->payment;
     }
     
     public function addDiscount(CartDiscount $discount): void
     {
-        $discount->setPriceFormat($this->priceFormat);
         $this->discounts[] = $discount;
+    }
+
+    public function getDiscounts(): array
+    {
+        return $this->discounts;
     }
     
     public function fill(CartItemCollection $collection): void
@@ -85,6 +98,11 @@ class Cart implements CartInterface
         
         unset($this->items[$itemId]);
     }
+
+    public function clear(): void
+    {
+        $this->items = [];
+    }
       
     public function update(CartItemInterface $item): void
     {
@@ -105,122 +123,90 @@ class Cart implements CartInterface
         return $this->items[$itemId];
     }
     
-    public function all(): array
+    public function items(): array
     {
         return $this->items;
     }
     
-    public function clear(): void
+    public function itemsQuantity(): int
     {
-        $this->items = [];
-    }
-
-    public function total(): float
-    {
-        return (float) array_sum(
-            array_map(function (CartItemInterface $item) {
-                return $item->getPriceTotalWithTax();
-            }, $this->items)
-        );
-    }
-    
-    public function totalItems(): int
-    {
-        return array_sum(
+        return (int) array_sum(
             array_map(function (CartItemInterface $item) {
                 return $item->getQuantity();
             }, $this->items)
         );
     }
-    
-    public function totalTax(): float
+
+    public function weight(): string
     {
-        return (float) array_sum(
-            array_map(function (CartItemInterface $item) {
-                return $item->getTaxTotal();
-            }, $this->items)
-        );
-    }
-    
-    public function totalWeight(): float
-    {
-        return (float) array_sum(
+        return (string) array_sum(
             array_map(function (CartItemInterface $item) {
                 return $item->getWeightTotal();
             }, $this->items)
         );
     }
-    
-    public function totalAfterDiscounts(): float
-    {
-        return !empty($this->discounts)
-            ? (float) end($this->discounts)->getPriceAfterDiscount()
-            : $this->total();
-    }
 
-    public function shippingCost(): float
+    public function totalNet(): Money
     {
-        if (!is_object($this->shipping)) {
-            return null;
-        }
-        
-        return $this->shipping->getCost();
-    }
-    
-    public function paymentFee(): float
-    {
-        if (!is_object($this->payment)) {
-            return null;
-        }
-        
-        return $this->payment->getFee($this->totalAfterDiscounts() + (float) $this->shippingCost());
-    }
-        
-    public function toArray(): array
-    {
-        $array = [];
-        $array['items'] = array_map(function (CartItemInterface $item) {
-            return $item->toArray();
+        $total = array_map(function (CartItemInterface $item) {
+            return $item->getPriceTotal($this->currency);
         }, $this->items);
         
+        return $this->sumPrices($total);
+    }
+
+    public function totalGross(): Money
+    {
+        $total = array_map(function (CartItemInterface $item) {
+            return $item->getPriceTotalWithTax($this->currency);
+        }, $this->items);
         
-        if (!is_null($this->shipping)) {
-            $array['shipping']['name']      = $this->shipping->getName();
-            $array['shipping']['desc']      = $this->shipping->getDescription();
-            $array['shipping']['cost']      = $this->shippingCost();
+        return $this->sumPrices($total);
+    }
+    
+    public function tax(): Money
+    {
+        $total = array_map(function (CartItemInterface $item) {
+            return $item->getTaxTotal($this->currency);
+        }, $this->items);
+
+        return $this->sumPrices($total);
+    }
+    
+    public function totalAfterDiscounts(): Money
+    {
+        return !empty($this->discounts)
+            ? end($this->discounts)->getPriceAfterDiscount()
+            : $this->totalGross();
+    }
+
+    public function shippingCost(): Money
+    {
+        if (!$this->shipping instanceof ShippingInterface) {
+            return new Money(0, $this->currency);
         }
         
-        if (!is_null($this->payment)) {
-            $array['payment']['name']       = $this->payment->getName();
-            $array['payment']['desc']       = $this->payment->getDescription();
-            $array['payment']['fee']        = $this->paymentFee();
+        return $this->shipping->getCost($this->currency);
+    }
+    
+    public function paymentFee(): Money
+    {
+        if (!$this->payment instanceof PaymentInterface) {
+            return new Money(0, $this->currency);
         }
-        
-        $array['discounts'] = array_map(function (CartDiscount $discount) {
-            return [
-                'text'  => $discount->getDiscountText(),
-                'price' => $discount->getPriceAfterDiscount()
-            ];
-        }, $this->discounts);
-        
-        $array['totalItems']        = $this->totalItems();
-        $array['total']             = $this->total();
-        $array['totalTax']          = $this->totalTax();
-        $array['totalWeight']       = $this->totalWeight();
-        $array['shippingCost']      = $this->shippingCost();
-        $array['paymentFee']        = $this->paymentFee();
-        $array['totalAfterDiscounts'] = $this->totalAfterDiscounts();
-        
-        return $array;
+
+        return $this->payment->getFee($this->totalAfterDiscounts()->add($this->shippingCost()), $this->currency);
     }
     
     private function addItem(CartItemInterface $item)
     {
-        // override item's price format in order to make it consistent with cart's price format
-        if (!is_null($this->priceFormat)) {
-            $item->setPriceFormat($this->priceFormat);
-        }
-        
         $this->items[$item->getId()] = $item;
+    }
+
+    private function sumPrices(array $prices): Money
+    {
+        $money = new Money(0, new Currency($this->currency));
+
+        return call_user_func_array([$money, 'add'], $prices);
     }
 }

@@ -1,91 +1,41 @@
-<?php
+<?php declare(strict_types=1);
+
+/*
+ * This file is part of the Plane\Shop package.
+ *
+ * (c) Dariusz Korsak <dkorsak@gmail.com>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
 
 namespace Plane\Shop;
 
-use Plane\Shop\PriceFormat\PriceFormatInterface;
+use Money\Money;
 
-/**
- * Discount class that can be applied to Cart
- *
- * @author Dariusz Korsak <dkorsak@gmail.com>
- * @package Plane\Shop
- */
 class CartDiscount
 {
-    /**
-     * Discount text
-     * @var string
-     */
     private $discountText;
-    
-    /**
-     * Price after discount
-     * @var int|float
-     */
+
     private $priceAfterDiscount;
-    
-    /**
-     * Price format object
-     * @var \Plane\Shop\PriceFormat\PriceFormatInterface
-     */
-    private $priceFormat;
-    
-    /**
-     * Set discount text
-     * @param string $discountText
-     */
-    public function setDiscountText($discountText)
+
+    public function __construct(string $text)
     {
-        $this->discountText = $discountText;
+        $this->discountText = $text;
     }
-    
-    /**
-     * Set price after discount
-     * @param double $priceAfterDiscount
-     */
-    public function setPriceAfterDiscount($priceAfterDiscount)
-    {
-        $this->priceAfterDiscount = $priceAfterDiscount;
-    }
-    
-    /**
-     * Return discount text
-     * @return string
-     */
-    public function getDiscountText()
+
+    public function getDiscountText(): string
     {
         return $this->discountText;
     }
-    
-    /**
-     * Return price after discount
-     * @return int|float
-     */
-    public function getPriceAfterDiscount()
+
+    public function setPriceAfterDiscount(Money $price): void
     {
-        return $this->formatPrice($this->priceAfterDiscount);
+        $this->priceAfterDiscount = $price;
     }
-    
-    /**
-     * Set price format object
-     * @param \Plane\Shop\PriceFormat\PriceFormatInterface $priceFormat
-     */
-    public function setPriceFormat(PriceFormatInterface $priceFormat)
+
+    public function getPriceAfterDiscount(): Money
     {
-        $this->priceFormat = $priceFormat;
-    }
-    
-    /**
-     * Format price with set price format object
-     * @param float $price
-     * @return float
-     */
-    protected function formatPrice($price)
-    {
-        if (is_null($this->priceFormat)) {
-            return $price;
-        }
-        
-        return $this->priceFormat->formatPrice($price);
+        return $this->priceAfterDiscount;
     }
 }
