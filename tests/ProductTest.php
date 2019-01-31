@@ -60,21 +60,6 @@ class ProductTest extends \PHPUnit\Framework\TestCase
         $this->assertSame(123.0, $product->getPrice());
     }
     
-    public function testSetPriceFormat()
-    {
-        $priceFormat = $this->getMockBuilder(PriceFormat::class)
-            ->getMock();
-        
-        $priceFormat->expects($this->any())
-            ->method('formatPrice')
-            ->willReturn(12.20);
-        
-        $product = new Product($this->productInput);
-        $product->setPriceFormat($priceFormat);
-        
-        $this->assertSame(12.20, $product->getPriceWithTax());
-    }
-    
     public function testToArray()
     {
         $product = new Product($this->productInput);

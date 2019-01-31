@@ -8,11 +8,11 @@ use Plane\Shop\Product;
 use Plane\Shop\CartItem;
 use Plane\Shop\Shipping;
 use Plane\Shop\CartDiscount;
-use Plane\Shop\CartPresentator;
 use Plane\Shop\CartItemCollection;
 use Plane\Shop\Discount\EverySecondItemFreeDiscount;
 use Plane\Shop\Discount\TotalPriceThresholdDiscount;
 use Plane\Shop\Validator\StockQuantityValidator;
+use Plane\Shop\CartPresenter;
 
 $product1 = new Product([
     'id'        => 1,
@@ -71,7 +71,7 @@ $cartDisount1 = new TotalPriceThresholdDiscount(
     new CartDiscount('Co drugi free!')
 );*/
 
-$presentator = new CartPresentator($cartDisount1);
+$presentator = new CartPresenter($cartDisount1);
 
 //var_dump($presentator->toArray());
 //exit;
