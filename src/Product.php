@@ -13,27 +13,42 @@ namespace Plane\Shop;
 
 use Money\Money;
 use Money\Currency;
+use InvalidArgumentException;
 use Money\Currencies\ISOCurrencies;
 use Money\Parser\DecimalMoneyParser;
 
-class Product implements ProductInterface
+final class Product implements ProductInterface
 {
-    protected $id;
+    private $id;
     
-    protected $name;
+    private $name;
 
-    protected $stock;
+    private $stock;
     
-    protected $price;
+    private $price;
 
-    protected $taxRate;
+    private $taxRate;
     
-    protected $weight;
+    private $weight;
     
-    protected $imagePath;
+    private $imagePath;
+
+    private $requiredFields = [
+        'id',
+        'name',
+        'price',
+        'stock',
+        'taxRate'
+    ];
     
     public function __construct(array $data)
     {
+        if (count(array_intersect_key(array_flip($this->requiredFields), $data)) !== count($this->requiredFields)) {
+            throw new InvalidArgumentException(
+                'Cannot create object, required array keys: '. implode($this->requiredFields, ', ')
+            );
+        }
+        
         // waiting for typed properties in PHP 7.4
         foreach ($data as $property => $value) {
             $this->$property = $value;

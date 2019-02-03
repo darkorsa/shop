@@ -26,8 +26,20 @@ class Shipping implements ShippingInterface
     
     private $cost;
 
+    private $requiredFields = [
+        'id',
+        'name',
+        'cost',
+    ];
+
     public function __construct(array $data)
     {
+        if (count(array_intersect_key(array_flip($this->requiredFields), $data)) !== count($this->requiredFields)) {
+            throw new InvalidArgumentException(
+                'Cannot create object, required array keys: '. implode($this->requiredFields, ', ')
+            );
+        }
+        
         // waiting for typed properties in PHP 7.4
         foreach ($data as $property => $value) {
             $this->$property = $value;
