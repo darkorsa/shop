@@ -17,7 +17,7 @@ use Plane\Shop\CartPresenter;
 $product1 = new Product([
     'id'        => 1,
     'name'      => 'Product One',
-    'quantity'  => 8,
+    'stock'  => 8,
     'price'     => 10,
     'taxRate'   => 0.10,
 ]);
@@ -25,7 +25,7 @@ $product1 = new Product([
 $product2 = new Product([
     'id'        => 2,
     'name'      => 'Product Two',
-    'quantity'  => 6,
+    'stock'  => 6,
     'price'     => 25,
     'taxRate'   => 0.10,
 ]);

@@ -22,7 +22,7 @@ class Product implements ProductInterface
     
     protected $name;
 
-    protected $quantity;
+    protected $stock;
     
     protected $price;
 
@@ -50,9 +50,9 @@ class Product implements ProductInterface
         return $this->name;
     }
 
-    public function getQuantity(): int
+    public function getStock(): int
     {
-        return $this->quantity;
+        return $this->stock;
     }
 
     public function setPrice(float $price): void
@@ -98,7 +98,7 @@ class Product implements ProductInterface
         $array['id']                = $this->getId();
         $array['name']              = $this->getName();
         $array['imagePath']         = $this->getImagePath();
-        $array['quantity']          = $this->getQuantity();
+        $array['stock']             = $this->getStock();
         $array['taxRate']           = $this->getTaxRate();
         $array['tax']               = $this->getTax($currency);
         $array['price']             = $this->getPrice($currency);

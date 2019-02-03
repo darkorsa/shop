@@ -17,7 +17,7 @@ class StockQuantityValidator implements QuantityValidatorInterface
 {
     public function validate(ProductInterface $product, int $quantity): bool
     {
-        if ($product->getQuantity() < (int) $quantity) {
+        if ($product->getStock() < (int) $quantity) {
             return false;
         }
         

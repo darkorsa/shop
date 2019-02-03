@@ -19,7 +19,7 @@ interface ProductInterface
     
     public function getName(): string;
 
-    public function getQuantity(): int;
+    public function getStock(): int;
 
     public function setPrice(float $price): void;
 
