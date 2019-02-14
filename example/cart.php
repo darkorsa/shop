@@ -15,7 +15,7 @@ use Plane\Shop\Validator\StockQuantityValidator;
 use Plane\Shop\CartPresenter;
 
 $product1 = new Product([
-    'id'        => 1,
+    'id'        => '1_a',
     'name'      => 'Product One',
     'stock'     => 8,
     'price'     => 10,
@@ -23,7 +23,7 @@ $product1 = new Product([
 ]);
 
 $product2 = new Product([
-    'id'        => 2,
+    'id'        => '2_a',
     'name'      => 'Product Two',
     'stock'     => 6,
     'price'     => 25,

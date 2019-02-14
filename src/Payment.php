@@ -13,6 +13,7 @@ namespace Plane\Shop;
 
 use Money\Money;
 use Money\Currency;
+use InvalidArgumentException;
 use Money\Currencies\ISOCurrencies;
 use Money\Parser\DecimalMoneyParser;
 

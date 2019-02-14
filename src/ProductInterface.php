@@ -15,7 +15,7 @@ use Money\Money;
 
 interface ProductInterface
 {
-    public function getId(): int;
+    public function getId(): string;
     
     public function getName(): string;
 

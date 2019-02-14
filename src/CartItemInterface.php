@@ -18,7 +18,7 @@ interface CartItemInterface
 {
     public function getProduct(): ProductInterface;
     
-    public function getId(): int;
+    public function getId(): string;
         
     public function getName(): string;
     

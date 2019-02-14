@@ -90,7 +90,7 @@ final class Cart implements CartInterface
         $this->addItem($item);
     }
     
-    public function remove(int $itemId): void
+    public function remove(string $itemId): void
     {
         if (!$this->has($itemId)) {
             throw new OutOfBoundsException('Item ' . $itemId . ' not found');
@@ -109,12 +109,12 @@ final class Cart implements CartInterface
         $this->addItem($item);
     }
     
-    public function has(int $itemId): bool
+    public function has(string $itemId): bool
     {
         return array_key_exists($itemId, $this->items);
     }
 
-    public function get(int $itemId): CartItemInterface
+    public function get(string $itemId): CartItemInterface
     {
         if (!$this->has($itemId)) {
             throw new OutOfBoundsException('Item ' . $itemId . ' not found');

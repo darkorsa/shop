@@ -38,7 +38,7 @@ class CartItem implements CartItemInterface
         return $this->product;
     }
 
-    public function getId(): int
+    public function getId(): string
     {
         return $this->product->getId();
     }

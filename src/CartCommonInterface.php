@@ -31,15 +31,15 @@ interface CartCommonInterface
     
     public function add(CartItemInterface $item): void;
     
-    public function remove(int $itemId): void;
+    public function remove(string $itemId): void;
 
     public function clear(): void;
     
     public function update(CartItemInterface $item): void;
     
-    public function has(int $itemId): bool;
+    public function has(string $itemId): bool;
     
-    public function get(int $itemId): CartItemInterface;
+    public function get(string $itemId): CartItemInterface;
     
     public function items(): array;
 
