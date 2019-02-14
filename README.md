@@ -7,8 +7,20 @@
 [![Quality Score][ico-code-quality]][link-code-quality]
 [![Total Downloads][ico-downloads]][link-downloads]
 
-This package includes full shop experience including support for discounts, price formats, and stock validators. 
-Package is PSR-4 compliant.
+The shopping cart is present in practically every online store. This library is a convenient to use implementation of the shopping cart with the following features:
+
+- calculation of the total price of the order
+- tax calculation
+- variable price formats
+- shipping costs
+- payment costs
+- customized discounts
+- stock validation
+- increasing / decreasing items quantity
+
+Also you do not have to worry about the correctness of operations on the amounts of money, this is carried out with the help of the Money for PHP library (http://moneyphp.org/en/stable) which is the implementation of the Money pattern by Martin Fowler. 
+
+Package is PSR-2 and PSR-4 compliant.
 
 ## Install
 
@@ -20,80 +32,39 @@ $ composer require darkorsa/shop
 
 ## Usage
 
+A few steps are required to create a cart object.
+
+### Products
+
+The products represent the goods sold in the shop. The required parameters are:
+
+- id
+- name
+- stock (how much of that product is available on stock)
+- price
+- taxRate
+
+optional params:
+
+- weight
+- imagePath
+
+Excemple:
+
 ``` php
-require_once __DIR__ . '/../vendor/autoload.php'; // Autoload files using Composer autoload
-
-use Plane\Shop\Cart;
-use Plane\Shop\CartItem;
 use Plane\Shop\Product;
-use Plane\Shop\Payment;
-use Plane\Shop\Shipping;
-use Plane\Shop\CartItemCollection;
 
-use Plane\Shop\PriceFormat\EnglishFormat;
-
-use Plane\Shop\Discount\SecondItemFreeDiscount;
-use Plane\Shop\Discount\TotalPriceThresholdDiscount;
-
-$product1 = new Product([
-    'id'        => 1,
-    'name'      => 'Product One',
-    'price'     => 10,
-    'taxRate'   => 0.2
+$someProduct = new Product([
+    'id'        => '1',
+    'name'      => 'Some product',
+    'stock'     => 8,
+    'price'     => 2.8,
+    'taxRate'   => 0.10,
 ]);
-
-$product2 = new Product([
-    'id'        => 2,
-    'name'      => 'Product Two',
-    'price'     => 4.00,
-    'taxRate'   => 0.2
-]);
-
-$cartItemCollection = new CartItemCollection;
-$cartItemCollection->addItem(new CartItem($product1, 4));
-$cartItemCollection->addItem(new CartItem($product2, 1));
-
-$priceFormat = new EnglishFormat();
-
-$shipping = new Shipping([
-   'id'             => 9,
-   'name'           => 'National Shipping Company',
-   'description'    => 'Standart Ground Shipping',
-   'cost'           => 15
-]);
-
-$payment = new Payment([
-   'id'             => 1,
-   'name'           => 'PayPal',
-   'description'    => 'Payment with Paypal',
-   'fee'            => 5
-]);
-
-$cart = new Cart($priceFormat);
-$cart->fill($cartItemCollection);
-$cart->setShipping($shipping);
-$cart->setPayment($payment);
-
-$discount1 = new SecondItemFreeDiscount($cart, [
-    'name' => 'Second item will be free',
-    'description' => 'Some description'
-]);
-
-$discount2 = new TotalPriceThresholdDiscount($discount1, [
-    'name' => 'To percent off on discount',
-    'description' => '10% off on orders equal or above 40',
-    'threshold' => 40,
-    'discount' => 0.10
-]);
-
-echo 'Total items: ' . $discount2->totalItems() . "\n\n";
-echo 'Total: ' . $discount2->total() . "\n\n";
-echo 'Total tax: ' . $discount2->totalTax() . "\n\n";
-echo 'Shipping cost: ' . $discount2->shippingCost() . "\n\n";
-echo 'Payment fee: ' . $discount2->paymentFee() . "\n\n";
-echo 'Total after discounts: ' . $discount2->totalAfterDisconuts() . "\n\n";
-...
 ```
+
+If you need to include additional product data in your shopping cart, you can extend its functionality by using the decorator pattern.
+
 
 ## Security
 
