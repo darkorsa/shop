@@ -9,14 +9,14 @@
 
 The shopping cart is present in practically every online store. This library is a convenient to use implementation of the shopping cart with the following features:
 
-- calculation of the total price of the order
+- prices calculation (gross/net)
 - tax calculation
-- variable price formats
+- multiple price formats
 - shipping costs
 - payment costs
 - customized discounts
 - stock validation
-- increasing / decreasing items quantity
+- increasing/decreasing items quantity
 
 Also you do not have to worry about the correctness of operations on the amounts of money, this is carried out with the help of the Money for PHP library (http://moneyphp.org/en/stable) which is the implementation of the Money pattern by Martin Fowler. 
 
@@ -63,8 +63,53 @@ $someProduct = new Product([
 ]);
 ```
 
-If you need to include additional product data in your shopping cart, you can extend its functionality by using the decorator pattern.
+If you need to include additional product data in your shopping cart, you can extend Product functionality by using the decorator pattern.
 
+### Cart items
+
+Those are items in the shopping cart that are injected into Cart object. You can inject items one by one or with use of collection object.
+
+``` php
+use Plane\Shop\CartItem;
+use Plane\Shop\CartItemCollection;
+
+$firstCartItem = new CartItem($someProduct); // cart item with 1 product
+$secondCartItem = new CartItem($someOtherProduct, 2); // cart item with 2 products
+
+$cartItemCollection = new CartItemCollection;
+
+$cartItemCollection->addItem($firstCartItem);
+$cartItemCollection->addItem($secondCartItem);
+```
+
+To ensure that the amount of products in the cart is not greater than the amount in stock, a validator can be used.
+
+``` php
+use Plane\Shop\Exception\QuanityException;
+use Plane\Shop\Validator\StockQuantityValidator;
+
+try {
+    $cartItem = new CartItem($someProduct, 10, new StockQuantityValidator));
+} catch (QuanityException $e) {
+    // handle exception
+}
+```
+
+### Cart
+
+Cart is an object representing a shopping basket and provides all the necessary methods to manage it or obtain information.
+
+#### Creation
+
+``` php
+use Plane\Shop\Cart;
+
+$cart = new Cart('USD');
+$cart->fill($cartItemCollection); // fill cart with many items at once
+$cart->add($cartItem); // add single cart item
+```
+
+Currency must be in ISO standard.
 
 ## Security
 

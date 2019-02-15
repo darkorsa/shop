@@ -58,7 +58,7 @@ trait CartCommonDecorator
         $this->cart->add($item);
     }
     
-    public function remove($itemId): void
+    public function remove(string $itemId): void
     {
         $this->cart->remove($itemId);
     }
@@ -73,12 +73,12 @@ trait CartCommonDecorator
         $this->cart->update($item);
     }
     
-    public function has($itemId): bool
+    public function has(string $itemId): bool
     {
         return $this->cart->has($itemId);
     }
     
-    public function get($itemId): CartItemInterface
+    public function get(string $itemId): CartItemInterface
     {
         return $this->cart->get($itemId);
     }
