@@ -53,11 +53,10 @@ $payment = new Payment([
    'id'             => 1,
    'name'           => 'PayPal',
    'description'    => 'Payment with Paypal',
-   'fee'            => 0.10
+   'fee'            => 12
 ]);
-$payment->setPercentage();
 
-$cart = new Cart('PLN');
+$cart = new Cart('USD');
 $cart->fill($cartItemCollection);
 $cart->setShipping($shipping);
 $cart->setPayment($payment);
@@ -73,13 +72,13 @@ $cartDisount1 = new TotalPriceThresholdDiscount(
     new CartDiscount('Co drugi free!')
 );*/
 
-$numberFormatter = new \NumberFormatter('pl_PL', \NumberFormatter::CURRENCY);
+$numberFormatter = new \NumberFormatter('us_US', \NumberFormatter::CURRENCY);
 $moneyFormatter = new IntlMoneyFormatter($numberFormatter, new ISOCurrencies());
 
 $presentator = new CartPresenter($cartDisount1, $moneyFormatter);
 
-//var_dump($presentator->toArray());
-//exit;
+var_dump($presentator->toArray());
+exit;
 
 echo 'Total items: ' . $presentator->itemsQuantity() . "\n\n";
 echo 'Total net: ' . $presentator->totalNet() . "\n\n";

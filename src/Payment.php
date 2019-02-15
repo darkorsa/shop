@@ -22,7 +22,7 @@ class Payment implements PaymentInterface
     const FEE_FIXED = 'fixed';
     
     const FEE_PERCENTAGE = 'percentage';
-    
+
     private $id;
     
     private $name;
@@ -31,7 +31,12 @@ class Payment implements PaymentInterface
     
     private $fee;
     
-    private $feeType = self::FEE_FIXED;
+    private $feeType;
+
+    private $feeTypes = [
+        self:: FEE_FIXED,
+        self::FEE_PERCENTAGE,
+    ];
 
     private $requiredFields = [
         'id',
@@ -39,18 +44,24 @@ class Payment implements PaymentInterface
         'fee',
     ];
 
-    public function __construct(array $data)
+    public function __construct(array $data, string $feeType = self::FEE_FIXED)
     {
         if (count(array_intersect_key(array_flip($this->requiredFields), $data)) !== count($this->requiredFields)) {
             throw new InvalidArgumentException(
                 'Cannot create object, required array keys: '. implode($this->requiredFields, ', ')
             );
         }
+
+        if (!in_array($feeType, $this->feeTypes)) {
+            throw new InvalidArgumentException('Invalid fee type');
+        }
         
         // waiting for typed properties in PHP 7.4
         foreach ($data as $property => $value) {
             $this->$property = $value;
         }
+
+        $this->feeType = $feeType;
     }
     
     public function getId(): int
@@ -66,16 +77,6 @@ class Payment implements PaymentInterface
     public function getDescription(): string
     {
         return $this->description;
-    }
-    
-    public function setFixed(): void
-    {
-        $this->feeType = self::FEE_FIXED;
-    }
-    
-    public function setPercentage(): void
-    {
-        $this->feeType = self::FEE_PERCENTAGE;
     }
     
     public function getFee(Money $totalPrice, string $currency): Money
