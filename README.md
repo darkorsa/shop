@@ -188,7 +188,7 @@ echo $cartPresenter->tax(); // 0.22
 
 ##### Other formatters
 
-One can use other formatters shipped with [Money for PHP](http://moneyphp.org/en/stable) library or write own custom formmatter
+One can use other formatters shipped with [Money for PHP](http://moneyphp.org/en/stable) library or write own custom formmatter.
 
 ``` php
 use Money\Currencies\ISOCurrencies;

@@ -23,7 +23,8 @@
         "phpstan/phpstan": "^0.11.1",
         "phpunit/php-code-coverage": "4.0.*",
         "phpunit/phpunit": "^5.7",
-        "squizlabs/php_codesniffer": "^2.8"
+        "squizlabs/php_codesniffer": "^2.8",
+        "symfony/var-dumper": "^4.2"
     },
     "autoload": {
         "psr-4": {

@@ -77,8 +77,7 @@ $moneyFormatter = new IntlMoneyFormatter($numberFormatter, new ISOCurrencies());
 
 $presentator = new CartPresenter($cartDisount1, $moneyFormatter);
 
-var_dump($presentator->toArray());
-exit;
+dump($presentator->toArray());
 
 echo 'Total items: ' . $presentator->itemsQuantity() . "\n\n";
 echo 'Total net: ' . $presentator->totalNet() . "\n\n";
