@@ -65,7 +65,7 @@ If you need to include additional product data in your shopping cart, you can ex
 
 ### Cart items
 
-Cart items represent the content of the shopping cart. You can inject items one by one or with use of collection object.
+Cart items represent the content of the shopping cart. Items can be injected into Cart object one by one or with use of collection.
 
 ``` php
 use Plane\Shop\CartItem;
@@ -92,6 +92,18 @@ try {
     // handle exception
 }
 ```
+
+Validation also takes place when you add an item to the Cart. When the same item is added again (i.e. an item with the same product ID), the item is not added twice, but it's quantity is incremented.
+
+``` php
+try {
+    $cart->add($cartItem);
+    $cart->add($cartItem); // if it exceeds product stock this time the exception is thrown
+} catch (QuanityException $e) {
+    // handle exception
+}
+```
+
 
 ### Shipping
 
@@ -134,7 +146,7 @@ $payment = new Payment([
 
 ### Cart
 
-Cart is an object representing a shopping cart and provides all the necessary methods to manage it or obtain information.
+Cart is an object representing a shopping cart and provides all the necessary methods to manage it or obtain data.
 
 #### Creation
 
@@ -165,11 +177,25 @@ Note that all prices are represented as [Money](https://github.com/moneyphp/mone
 
 #### Discounts
 
-@TODO
+Discount can be applied to the Cart object. This library comes with 2 discounts:
+
+- TotalPriceThresholdDiscount - the discount will be applied when the total price exceeds a certain price threshold
+- EverySecondItemFreeDiscount - every second cart item is free
+
+Discount example:
+
+``` php
+use Plane\Shop\CartDiscount;
+use Plane\Shop\Discount\TotalPriceThresholdDiscount;
+
+$discount = new CartDiscount('Discount description');
+
+$discountedCart = new TotalPriceThresholdDiscount($cart, $discount, ['treshold' => 160, 'discount' => 0.1]); // ten percent discount for total gross price above 160
+```
 
 #### Presenation
 
-By default prices are returned as  [Money](https://github.com/moneyphp/money/blob/master/src/Money.php) object but one can easly format all the prices within Cart with use of CartPresenter.
+By default the prices are returned as  [Money](https://github.com/moneyphp/money/blob/master/src/Money.php) object but one can easly format all the prices within Cart with use of CartPresenter.
 
 ##### Default formatter
 

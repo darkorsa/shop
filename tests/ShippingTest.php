@@ -2,8 +2,8 @@
 
 namespace Plane\Shop\Tests;
 
+use Money\Money;
 use Plane\Shop\Shipping;
-use Plane\Shop\PriceFormat\EnglishFormat as PriceFormat;
 
 /**
  * Shipping test suite
@@ -24,33 +24,10 @@ class ShippingTest extends \PHPUnit\Framework\TestCase
     {
         $shipping = new Shipping($this->shippingInput);
 
-        $this->assertSame($this->shippingInput, [
-            'id'                => $shipping->getId(),
-            'name'              => $shipping->getName(),
-            'description'       => $shipping->getDescription(),
-            'cost'              => $shipping->getCost(),
-        ]);
-    }
-    
-    public function testSetCost()
-    {
-        $shipping = new Shipping($this->shippingInput);
-        $shipping->setCost(2);
-        
-        $this->assertSame(2.00, $shipping->getCost());
-    }
+        $this->assertSame($this->shippingInput['id'], $shipping->getId());
+        $this->assertSame($this->shippingInput['name'], $shipping->getName());
+        $this->assertSame($this->shippingInput['description'], $shipping->getDescription());
 
-    public function testSetPriceFormat()
-    {
-        $priceFormat = $this->getMockBuilder(PriceFormat::class)->getMock();
-        
-        $priceFormat->expects($this->any())
-            ->method('formatPrice')
-            ->willReturn(3.40);
-        
-        $shipping = new Shipping($this->shippingInput);
-        $shipping->setPriceFormat($priceFormat);
-        
-        $this->assertSame(3.40, $shipping->getCost());
+        //$this->assertInstanceOf(Money::class, $shipping->getCost());
     }
 }

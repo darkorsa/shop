@@ -22,6 +22,4 @@ interface ShippingInterface
     public function getDescription(): string;
     
     public function getCost(string $currency): Money;
-    
-    public function setCost(float $cost);
 }

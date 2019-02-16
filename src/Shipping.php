@@ -68,9 +68,4 @@ class Shipping implements ShippingInterface
         
         return $moneyParser->parse((string) $this->cost, new Currency($currency));
     }
-    
-    public function setCost(float $cost): void
-    {
-        $this->cost = $cost;
-    }
 }
