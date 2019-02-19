@@ -16,7 +16,7 @@
         }
     ],
     "require": {
-        "php": "~7.1.3",
+        "php": ">=7.1.3",
         "moneyphp/money": "^3.2"
     },
     "require-dev": {
@@ -33,7 +33,7 @@
     },
     "autoload-dev": {
         "psr-4": {
-            "Plane\\Shop\\": "tests"
+            "Plane\\Shop\\Tests\\": "tests"
         }
     },
     "scripts": {

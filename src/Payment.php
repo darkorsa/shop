@@ -82,7 +82,7 @@ class Payment implements PaymentInterface
     public function getFee(Money $totalPrice, string $currency): Money
     {
         if ($this->feeType == self::FEE_PERCENTAGE) {
-            return $totalPrice->multiply($this->fee);
+            return $totalPrice->multiply($this->fee / 100, Money::ROUND_HALF_DOWN);
         }
 
         $moneyParser = new DecimalMoneyParser(new ISOCurrencies());

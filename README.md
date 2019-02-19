@@ -36,7 +36,7 @@ A few steps are required to create a cart object.
 
 ### Products
 
-The products represent the goods sold in the shop. The required parameters are:
+Products represent the goods sold in the shop. The required parameters are:
 
 - id
 - name
@@ -72,7 +72,7 @@ use Plane\Shop\CartItem;
 use Plane\Shop\CartItemCollection;
 
 $firstCartItem = new CartItem($someProduct); // cart item with 1 product
-$secondCartItem = new CartItem($someOtherProduct, 2); // cart item with 2 products
+$secondCartItem = new CartItem($someOtherProduct, 4); // cart item with 4 products
 
 $cartItemCollection = new CartItemCollection;
 
@@ -98,7 +98,7 @@ Validation also takes place when you add an item to the Cart. When the same item
 ``` php
 try {
     $cart->add($cartItem);
-    $cart->add($cartItem); // if it exceeds product stock this time the exception is thrown
+    $cart->add($cartItem); // if sum of items exceeds product stock an exception is thrown
 } catch (QuanityException $e) {
     // handle exception
 }
@@ -140,13 +140,13 @@ $payment = new Payment([
    'id'             => 1,
    'name'           => 'PayPal',
    'description'    => 'Payment with Paypal',
-   'fee'            => 0.02 // 2%
+   'fee'            => 2 // 2%
 ], Payment::FEE_PERCENTAGE);
 ```
 
 ### Cart
 
-Cart is an object representing a shopping cart and provides all the necessary methods to manage it or obtain data.
+Cart is an object representing a shopping cart and provides all the necessary methods to manage it or obtain calculated data.
 
 #### Creation
 
@@ -177,7 +177,7 @@ Note that all prices are represented as [Money](https://github.com/moneyphp/mone
 
 #### Discounts
 
-Discount can be applied to the Cart object. This library comes with 2 discounts:
+Discount can be applied to the Cart object. This library comes with  2 predefined discounts, however custom discounts can be applied as well.
 
 - TotalPriceThresholdDiscount - the discount will be applied when the total price exceeds a certain price threshold
 - EverySecondItemFreeDiscount - every second cart item is free
