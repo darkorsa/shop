@@ -97,9 +97,9 @@ final class Product implements ProductInterface
         return $this->getPrice($currency)->add($this->getTax($currency));
     }
 
-    public function getWeight(): string
+    public function getWeight(): float
     {
-        return (string) $this->weight;
+        return $this->weight;
     }
     
     public function getImagePath(): string

@@ -12,42 +12,46 @@ use Plane\Shop\Product;
  */
 class ProductTest extends \PHPUnit\Framework\TestCase
 {
+    use MoneyTrait;
+    
+    const CURRENCY = 'USD';
+    
     protected $productInput = [
-        'id'            => '1',
+        'id'            => 'someID',
         'name'          => 'Test product',
-        'price'         => 10,
-        'weight'        => 5,
+        'price'         => 10.5665,
         'stock'         => 4,
         'taxRate'       => 0.22,
+        'weight'        => 5.1,
         'imagePath'     => '/path_to_file/file.jpg',
     ];
     
     protected $productOutput = [
-        'id'            => '1',
+        'id'            => 'someID',
         'name'          => 'Test product',
+        'price'         => '10.57',
+        'stock'         => 4,
+        'taxRate'       => 0.22,
+        'tax'           => '2.33',
+        'priceWithTax'  => '12.90',
+        'weight'        => 5.1,
         'imagePath'     => '/path_to_file/file.jpg',
-        'stock'         => 4,       
-        'taxRate'       => 0.22,    
-        'tax'           => 2.2,     
-        'price'         => 10.0,    
-        'weight'        => 5.0,     
-        'priceWithTax'  => 12.2,  
     ];
     
-    public function _testCreateObject()
+    public function testCreateObject()
     {
         $product = new Product($this->productInput);
         
         $this->assertSame($this->productOutput, [
             'id'                => $product->getId(),
             'name'              => $product->getName(),
-            'imagePath'         => $product->getImagePath(),
-            'quantity'          => $product->getQuantity(),
+            'price'             => $this->getAmount($product->getPrice(self::CURRENCY)),
+            'stock'             => $product->getStock(),
             'taxRate'           => $product->getTaxRate(),
-            'tax'               => $product->getTax(),
-            'price'             => $product->getPrice(),
+            'tax'               => $this->getAmount($product->getTax(self::CURRENCY)),
+            'priceWithTax'      => $this->getAmount($product->getPriceWithTax(self::CURRENCY)),
             'weight'            => $product->getWeight(),
-            'priceWithTax'      => $product->getPriceWithTax(),
+            'imagePath'         => $product->getImagePath(),
         ]);
     }
     
