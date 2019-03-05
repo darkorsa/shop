@@ -3,6 +3,7 @@
 namespace Plane\Shop\Tests;
 
 use Plane\Shop\Product;
+use InvalidArgumentException;
 
 /**
  * Product test suite
@@ -16,7 +17,7 @@ class ProductTest extends \PHPUnit\Framework\TestCase
     
     const CURRENCY = 'USD';
     
-    protected $productInput = [
+    const PRODUCT_INPUT = [
         'id'            => 'someID',
         'name'          => 'Test product',
         'price'         => 10.5665,
@@ -26,7 +27,7 @@ class ProductTest extends \PHPUnit\Framework\TestCase
         'imagePath'     => '/path_to_file/file.jpg',
     ];
     
-    protected $productOutput = [
+    const PRODUCT_OUTPUT = [
         'id'            => 'someID',
         'name'          => 'Test product',
         'price'         => '10.57',
@@ -40,9 +41,9 @@ class ProductTest extends \PHPUnit\Framework\TestCase
     
     public function testCreateObject()
     {
-        $product = new Product($this->productInput);
+        $product = new Product(self::PRODUCT_INPUT);
         
-        $this->assertSame($this->productOutput, [
+        $this->assertSame(self::PRODUCT_OUTPUT, [
             'id'                => $product->getId(),
             'name'              => $product->getName(),
             'price'             => $this->getAmount($product->getPrice(self::CURRENCY)),
@@ -54,11 +55,32 @@ class ProductTest extends \PHPUnit\Framework\TestCase
             'imagePath'         => $product->getImagePath(),
         ]);
     }
-    
-    public function _testToArray()
+
+    public function testCreateIncompleteObject()
     {
-        $product = new Product($this->productInput);
+        $input = self::PRODUCT_INPUT;
+        unset($input['price']);
+
+        $this->expectException(InvalidArgumentException::class);
+
+        $payment = new Product($input);
+    }
+    
+    public function testToArray()
+    {
+        $product = new Product(self::PRODUCT_INPUT);
+
+        $array = $product->toArray(self::CURRENCY);
         
-        $this->assertSame($product->toArray(), $this->productOutput);
+        $this->assertSame(self::PRODUCT_OUTPUT['id'],           $array['id']);
+        $this->assertSame(self::PRODUCT_OUTPUT['name'],         $array['name']);
+        $this->assertSame(self::PRODUCT_OUTPUT['price'],        $this->getAmount($array['price']));
+        $this->assertSame(self::PRODUCT_OUTPUT['stock'],        $array['stock']);
+        $this->assertSame(self::PRODUCT_OUTPUT['taxRate'],      $array['taxRate']);
+        $this->assertSame(self::PRODUCT_OUTPUT['tax'],          $this->getAmount($array['tax']));
+        $this->assertSame(self::PRODUCT_OUTPUT['priceWithTax'], $this->getAmount($array['priceWithTax']));
+        $this->assertSame(self::PRODUCT_OUTPUT['weight'],       $array['weight']);
+        $this->assertSame(self::PRODUCT_OUTPUT['imagePath'],    $array['imagePath']);
+        
     }
 }

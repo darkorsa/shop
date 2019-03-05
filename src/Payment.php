@@ -48,7 +48,7 @@ class Payment implements PaymentInterface
     {
         if (count(array_intersect_key(array_flip($this->requiredFields), $data)) !== count($this->requiredFields)) {
             throw new InvalidArgumentException(
-                'Cannot create object, required array keys: '. implode(', ', $this->requiredFields, ', ')
+                'Cannot create object, required array keys: '. implode(', ', $this->requiredFields)
             );
         }
 

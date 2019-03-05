@@ -107,13 +107,13 @@ final class Product implements ProductInterface
         $array = [];
         $array['id']                = $this->getId();
         $array['name']              = $this->getName();
-        $array['imagePath']         = $this->getImagePath();
+        $array['price']             = $this->getPrice($currency);
         $array['stock']             = $this->getStock();
         $array['taxRate']           = $this->getTaxRate();
         $array['tax']               = $this->getTax($currency);
-        $array['price']             = $this->getPrice($currency);
-        $array['weight']            = $this->getWeight();
         $array['priceWithTax']      = $this->getPriceWithTax($currency);
+        $array['weight']            = $this->getWeight();
+        $array['imagePath']         = $this->getImagePath();
 
         return $array;
     }
