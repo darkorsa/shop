@@ -3,12 +3,8 @@
 namespace Plane\Shop\Tests;
 
 use Money\Money;
-use Money\Currency;
 use Plane\Shop\Payment;
 use InvalidArgumentException;
-use Money\Currencies\ISOCurrencies;
-use Money\Parser\DecimalMoneyParser;
-use Money\Formatter\DecimalMoneyFormatter;
 
 /**
  * Payment test suite
@@ -18,8 +14,10 @@ use Money\Formatter\DecimalMoneyFormatter;
  */
 class PaymentTest extends \PHPUnit\Framework\TestCase
 {
+    use MoneyTrait;
+
     const CURRENCY = 'USD';
-    
+
     const PAYMENT_INPUT = [
        'id'             => 1,
        'name'           => 'PayPal',
@@ -70,19 +68,5 @@ class PaymentTest extends \PHPUnit\Framework\TestCase
         $fee = $payment->getFee($this->getMoney(10), self::CURRENCY);
 
         $this->assertEquals(0.40, $this->getAmount($fee));
-    }
-
-    protected function getMoney($amount)
-    {
-        $moneyParser = new DecimalMoneyParser(new ISOCurrencies());
-        
-        return $moneyParser->parse((string) $amount, new Currency(self::CURRENCY));
-    }
-
-    protected function getAmount(Money $money)
-    {
-        $priceFormatter = new DecimalMoneyFormatter(new ISOCurrencies());
-
-        return $priceFormatter->format($money);
     }
 }

@@ -31,7 +31,7 @@ interface ProductInterface
     
     public function getPriceWithTax(string $currency): Money;
 
-    public function getWeight(): string;
+    public function getWeight(): float;
 
     public function getImagePath(): string;
     
