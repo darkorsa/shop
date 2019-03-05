@@ -81,14 +81,14 @@ class CartItem implements CartItemInterface
         $this->setQuantity($newQuantity);
     }
 
-    public function getWeight(): string
+    public function getWeight(): float
     {
         return $this->product->getWeight();
     }
     
-    public function getWeightTotal(): string
+    public function getWeightTotal(): float
     {
-        return bcmul($this->getWeight(), (string) $this->quantity, 2);
+        return (float) bcmul((string) $this->getWeight(), (string) $this->quantity, 2);
     }
 
     public function getTax(string $currency): Money
@@ -104,11 +104,6 @@ class CartItem implements CartItemInterface
     public function getPrice(string $currency): Money
     {
         return $this->product->getPrice($currency);
-    }
-    
-    public function setPrice(float $price): void
-    {
-        $this->product->setPrice($price);
     }
     
     public function getPriceTotal(string $currency): Money

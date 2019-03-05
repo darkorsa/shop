@@ -32,17 +32,15 @@ interface CartItemInterface
     
     public function decreaseQuantity(int $quantity): void;
         
-    public function getWeight(): string;
+    public function getWeight(): float;
     
-    public function getWeightTotal(): string;
+    public function getWeightTotal(): float;
     
     public function getTax(string $currency): Money;
     
     public function getTaxTotal(string $currency): Money;
     
     public function getPrice(string $currency): Money;
-    
-    public function setPrice(float $price): void;
     
     public function getPriceTotal(string $currency): Money;
 

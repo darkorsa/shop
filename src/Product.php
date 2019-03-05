@@ -70,11 +70,6 @@ final class Product implements ProductInterface
         return $this->stock;
     }
 
-    public function setPrice(float $price): void
-    {
-        $this->price = $price;
-    }
-
     public function getPrice(string $currency): Money
     {
         $moneyParser = new DecimalMoneyParser(new ISOCurrencies());
@@ -99,7 +94,7 @@ final class Product implements ProductInterface
 
     public function getWeight(): float
     {
-        return $this->weight;
+        return (float) $this->weight;
     }
     
     public function getImagePath(): string

@@ -21,8 +21,6 @@ interface ProductInterface
 
     public function getStock(): int;
 
-    public function setPrice(float $price): void;
-
     public function getPrice(string $currency): Money;
     
     public function getTaxRate(): float;
