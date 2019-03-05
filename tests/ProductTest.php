@@ -55,14 +55,6 @@ class ProductTest extends \PHPUnit\Framework\TestCase
         ]);
     }
     
-    public function _testSetPrice()
-    {
-        $product = new Product($this->productInput);
-        $product->setPrice(123);
-        
-        $this->assertSame(123.0, $product->getPrice());
-    }
-    
     public function _testToArray()
     {
         $product = new Product($this->productInput);
