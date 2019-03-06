@@ -15,14 +15,14 @@ use Money\Money;
 use Money\MoneyFormatter;
 use Plane\Shop\CartInterface;
 use Plane\Shop\CartItemInterface;
+use Plane\Shop\Traits\CartCommon;
 use Money\Currencies\ISOCurrencies;
-use Plane\Shop\CartCommonDecorator;
 use Plane\Shop\CartPresenterInterface;
 use Money\Formatter\DecimalMoneyFormatter;
 
 class CartPresenter implements CartPresenterInterface
 {
-    use CartCommonDecorator;
+    use CartCommon;
     
     private $cart;
 

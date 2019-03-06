@@ -9,9 +9,15 @@
  * file that was distributed with this source code.
  */
 
-namespace Plane\Shop;
+namespace Plane\Shop\Traits;
 
-trait CartCommonDecorator
+use Plane\Shop\CartDiscount;
+use Plane\Shop\PaymentInterface;
+use Plane\Shop\CartItemInterface;
+use Plane\Shop\ShippingInterface;
+use Plane\Shop\CartItemCollection;
+
+trait CartCommon
 {
     public function getCurrency(): string
     {

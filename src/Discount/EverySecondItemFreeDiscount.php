@@ -13,13 +13,13 @@ namespace Plane\Shop\Discount;
 
 use Plane\Shop\CartInterface;
 use Plane\Shop\DiscountAbstract;
-use Plane\Shop\CartCommonDecorator;
-use Plane\Shop\CartPricesDecorator;
+use Plane\Shop\Traits\CartCommon;
+use Plane\Shop\Traits\CartPrices;
 
 class EverySecondItemFreeDiscount extends DiscountAbstract implements CartInterface
 {
-    use CartCommonDecorator;
-    use CartPricesDecorator;
+    use CartCommon;
+    use CartPrices;
     
     /**
      * Apply discount so that every even item price is set to 0

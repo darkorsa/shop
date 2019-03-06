@@ -15,15 +15,15 @@ use Money\Money;
 use Money\Currency;
 use Plane\Shop\CartInterface;
 use Plane\Shop\DiscountAbstract;
+use Plane\Shop\Traits\CartCommon;
+use Plane\Shop\Traits\CartPrices;
 use Money\Currencies\ISOCurrencies;
-use Plane\Shop\CartCommonDecorator;
-use Plane\Shop\CartPricesDecorator;
 use Money\Parser\DecimalMoneyParser;
 
 class TotalPriceThresholdDiscount extends DiscountAbstract implements CartInterface
 {
-    use CartCommonDecorator;
-    use CartPricesDecorator;
+    use CartCommon;
+    use CartPrices;
     
     protected $treshold;
     

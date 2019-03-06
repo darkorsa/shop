@@ -9,11 +9,11 @@
  * file that was distributed with this source code.
  */
 
-namespace Plane\Shop;
+namespace Plane\Shop\Traits;
 
 use Money\Money;
 
-trait CartPricesDecorator
+trait CartPrices
 {
     public function totalNet(): Money
     {
