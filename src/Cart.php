@@ -183,7 +183,7 @@ final class Cart implements CartInterface
     public function shippingCost(): Money
     {
         if (!$this->shipping instanceof ShippingInterface) {
-            return new Money(0, $this->currency);
+            return new Money(0, new Currency($this->currency));
         }
         
         return $this->shipping->getCost($this->currency);
@@ -192,7 +192,7 @@ final class Cart implements CartInterface
     public function paymentFee(): Money
     {
         if (!$this->payment instanceof PaymentInterface) {
-            return new Money(0, $this->currency);
+            return new Money(0, new Currency($this->currency));
         }
 
         return $this->payment->getFee($this->totalAfterDiscounts()->add($this->shippingCost()), $this->currency);
