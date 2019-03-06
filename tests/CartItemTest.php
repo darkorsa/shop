@@ -15,7 +15,7 @@ class CartItemTest extends \PHPUnit\Framework\TestCase
     
     protected $product;
     
-    protected function setUp()
+    protected function setUp(): void
     {
         $this->product = new Product([
             'id'            => 'someID',
@@ -48,6 +48,13 @@ class CartItemTest extends \PHPUnit\Framework\TestCase
         $this->assertSame($this->getAmount($cartItem->getPriceTotal(self::CURRENCY)), '31.71');
         $this->assertSame($this->getAmount($cartItem->getPriceWithTax(self::CURRENCY)), '12.90');
         $this->assertSame($this->getAmount($cartItem->getPriceTotalWithTax(self::CURRENCY)), '38.70');
+    }
+
+    public function testCreateObjectWithStockQuantityValidator()
+    {
+        $this->expectException(QuanityException::class);
+
+        new CartItem($this->product, 5, new StockQuantityValidator);
     }
 
     public function testToArray()
@@ -109,10 +116,11 @@ class CartItemTest extends \PHPUnit\Framework\TestCase
         $cartItem->decreaseQuantity(1);
     }
 
-    public function testStockQuantityValidator()
+    public function testDecreaseQuantityWithStockQuantityValidator()
     {
         $this->expectException(QuanityException::class);
 
-        new CartItem($this->product, 5, new StockQuantityValidator);
+        $cartItem = new CartItem($this->product, 3, new StockQuantityValidator);
+        $cartItem->decreaseQuantity(3);
     }
 }

@@ -135,11 +135,11 @@ class CartItem implements CartItemInterface
     
     private function validateQuantity(int $quantity): bool
     {
-        if ($quantity < 1) {
-            return false;
-        }
-        
         if (is_null($this->quantityValidator)) {
+            if ($quantity < 1) {
+                return false;
+            }
+
             return true;
         }
         
