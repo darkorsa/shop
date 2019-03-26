@@ -11,6 +11,8 @@ use Plane\Shop\CartItemCollection;
 
 class CartTest extends \PHPUnit\Framework\TestCase
 {
+    use MoneyTrait;
+    
     const CURRENCY = 'USD';
 
     protected $firstCartItem;
@@ -22,10 +24,18 @@ class CartTest extends \PHPUnit\Framework\TestCase
         $this->firstCartItem  = $this->createMock(CartItem::class);
         $this->firstCartItem->method('getId')->willReturn(1);
         $this->firstCartItem->method('getQuantity')->willReturn(1);
+        $this->firstCartItem->method('getWeightTotal')->willReturn(5.33);
+        $this->firstCartItem->method('getPriceTotal')->willReturn($this->getMoney('3.5'));
+        $this->firstCartItem->method('getPriceTotalWithTax')->willReturn($this->getMoney('4.27'));
+        $this->firstCartItem->method('getTaxTotal')->willReturn($this->getMoney('0.77'));
 
         $this->secondCartItem = $this->createMock(CartItem::class);
         $this->secondCartItem->method('getId')->willReturn(2);
         $this->secondCartItem->method('getQuantity')->willReturn(2);
+        $this->secondCartItem->method('getWeightTotal')->willReturn(4.67);
+        $this->secondCartItem->method('getPriceTotal')->willReturn($this->getMoney('8'));
+        $this->secondCartItem->method('getPriceTotalWithTax')->willReturn($this->getMoney('9.76'));
+        $this->secondCartItem->method('getTaxTotal')->willReturn($this->getMoney('1.76'));
     }
     
     public function testGetCurrency()
@@ -166,6 +176,60 @@ class CartTest extends \PHPUnit\Framework\TestCase
         $cart->add($this->firstCartItem);
         $cart->add($this->secondCartItem);
 
-        $this->assertTrue(($cart->itemsQuantity()) == 3);
+        $this->assertTrue($cart->itemsQuantity() == 3);
+    }
+
+    public function testWeight()
+    {
+        $cart = new Cart(self::CURRENCY);
+        $cart->add($this->firstCartItem);
+        $cart->add($this->secondCartItem);
+
+        $this->assertTrue($cart->weight() == 10.00);
+    }
+
+    public function testTotalNet()
+    {
+        $cart = new Cart(self::CURRENCY);
+        $cart->add($this->firstCartItem);
+        $cart->add($this->secondCartItem);
+
+        $this->assertTrue($this->getAmount($cart->totalNet()) == 11.50);
+    }
+
+    public function testTotalGross()
+    {
+        $cart = new Cart(self::CURRENCY);
+        $cart->add($this->firstCartItem);
+        $cart->add($this->secondCartItem);
+
+        $this->assertTrue($this->getAmount($cart->totalGross()) == 14.03);
+    }
+
+    public function testTax()
+    {
+        $cart = new Cart(self::CURRENCY);
+        $cart->add($this->firstCartItem);
+        $cart->add($this->secondCartItem);
+
+        $this->assertTrue($this->getAmount($cart->tax()) == 2.53);
+    }
+
+    public function testShippingCost()
+    {
+        $shipping  = $this->createMock(Shipping::class);
+        $shipping->method('getCost')->willReturn($this->getMoney('4.00'));
+        
+        $cart = new Cart(self::CURRENCY);
+        $cart->setShipping($shipping);
+
+        $this->assertTrue($this->getAmount($cart->shippingCost()) == 4.00);
+    }
+
+    public function testShippingCostWhenNoShippingSet()
+    {
+        $cart = new Cart(self::CURRENCY);
+
+        $this->assertTrue($this->getAmount($cart->shippingCost()) == 0.00);
     }
 }
