@@ -7,7 +7,9 @@ use Plane\Shop\Payment;
 use Plane\Shop\CartItem;
 use Plane\Shop\Shipping;
 use OutOfBoundsException;
+use Plane\Shop\ShippingInterface;
 use Plane\Shop\CartItemCollection;
+use Plane\Shop\PaymentInterface;
 
 class CartTest extends \PHPUnit\Framework\TestCase
 {
@@ -15,11 +17,25 @@ class CartTest extends \PHPUnit\Framework\TestCase
     
     const CURRENCY = 'USD';
 
+    protected $cart;
+
     protected $firstCartItem;
 
     protected $secondCartItem;
 
     protected function setUp(): void
+    {
+        $this->createFirstCartItem();
+        $this->createSecondCartItem();
+        
+        $this->cart = new Cart(self::CURRENCY);
+        $this->cart->add($this->firstCartItem);
+        $this->cart->add($this->secondCartItem);
+        $this->cart->setShipping($this->getShippingMock());
+        $this->cart->setPayment($this->getPaymentMock());
+    }
+
+    protected function createFirstCartItem()
     {
         $this->firstCartItem  = $this->createMock(CartItem::class);
         $this->firstCartItem->method('getId')->willReturn(1);
@@ -28,7 +44,10 @@ class CartTest extends \PHPUnit\Framework\TestCase
         $this->firstCartItem->method('getPriceTotal')->willReturn($this->getMoney('3.5'));
         $this->firstCartItem->method('getPriceTotalWithTax')->willReturn($this->getMoney('4.27'));
         $this->firstCartItem->method('getTaxTotal')->willReturn($this->getMoney('0.77'));
+    }
 
+    protected function createSecondCartItem()
+    {
         $this->secondCartItem = $this->createMock(CartItem::class);
         $this->secondCartItem->method('getId')->willReturn(2);
         $this->secondCartItem->method('getQuantity')->willReturn(2);
@@ -37,32 +56,36 @@ class CartTest extends \PHPUnit\Framework\TestCase
         $this->secondCartItem->method('getPriceTotalWithTax')->willReturn($this->getMoney('9.76'));
         $this->secondCartItem->method('getTaxTotal')->willReturn($this->getMoney('1.76'));
     }
+
+    protected function getPaymentMock()
+    {
+        $payment = $this->createMock(Payment::class);
+        $payment->method('getFee')->willReturn($this->getMoney('5.50'));
+
+        return $payment;
+    }
+
+    protected function getShippingMock()
+    {
+        $shipping  = $this->createMock(Shipping::class);
+        $shipping->method('getCost')->willReturn($this->getMoney('4.00'));
+
+        return $shipping;
+    }
     
     public function testGetCurrency()
     {
-        $cart = new Cart(self::CURRENCY);
-
-        $this->assertSame(self::CURRENCY, $cart->getCurrency());
+        $this->assertSame(self::CURRENCY, $this->cart->getCurrency());
     }
 
-    public function testSetShipping()
+    public function testGetShipping()
     {
-        $shipping = $this->createMock(Shipping::class);
-        
-        $cart = new Cart(self::CURRENCY);
-        $cart->setShipping($shipping);
-
-        $this->assertSame($shipping, $cart->getShipping());
+        $this->assertInstanceOf(ShippingInterface::class, $this->cart->getShipping());
     }
 
-    public function testSetPayment()
+    public function testGetPayment()
     {
-        $payment = $this->createMock(Payment::class);
-        
-        $cart = new Cart(self::CURRENCY);
-        $cart->setPayment($payment);
-
-        $this->assertSame($payment, $cart->getPayment());
+        $this->assertInstanceOf(PaymentInterface::class, $this->cart->getPayment());
     }
 
     public function testFill()
@@ -78,42 +101,32 @@ class CartTest extends \PHPUnit\Framework\TestCase
             1 => $this->firstCartItem,
             2 => $this->secondCartItem
         ], $cart->items());
-        
+
         $this->assertTrue(count($cart->items()) == 2);
     }
 
     public function testAdd()
     {
-        $cart = new Cart(self::CURRENCY);
-        $cart->add($this->firstCartItem);
-        $cart->add($this->secondCartItem);
-        $cart->add($this->secondCartItem); // increase quantity
+        $this->cart->add($this->secondCartItem);
 
         $this->assertSame([
             1 => $this->firstCartItem,
             2 => $this->secondCartItem
-        ], $cart->items());
+        ], $this->cart->items());
         
-        $this->assertTrue(count($cart->items()) == 2);
+        $this->assertTrue(count($this->cart->items()) == 2);
     }
 
     public function testGet()
     {
-        $cart = new Cart(self::CURRENCY);
-        $cart->add($this->firstCartItem);
-        $cart->add($this->secondCartItem);
-
-        $this->assertSame($this->secondCartItem, $cart->get($this->secondCartItem->getId()));
+        $this->assertSame($this->secondCartItem, $this->cart->get($this->secondCartItem->getId()));
     }
 
     public function testFailedGet()
     {
-        $cart = new Cart(self::CURRENCY);
-        $cart->add($this->firstCartItem);
-
         $this->expectException(OutOfBoundsException::class);
 
-        $cart->get('4');
+        $this->cart->get('4');
     }
 
     public function testUpdate()
@@ -134,96 +147,58 @@ class CartTest extends \PHPUnit\Framework\TestCase
 
     public function testRemove()
     {
-        $cart = new Cart(self::CURRENCY);
-        $cart->add($this->firstCartItem);
-        $cart->add($this->secondCartItem);
-
-        $cart->remove($this->firstCartItem->getId());
+        $this->cart->remove($this->firstCartItem->getId());
 
         $this->assertSame([
             2 => $this->secondCartItem
-        ], $cart->items());
+        ], $this->cart->items());
 
-        $this->assertTrue(count($cart->items()) == 1);
+        $this->assertTrue(count($this->cart->items()) == 1);
     }
 
     public function testFailedRemove()
     {
-        $cart = new Cart(self::CURRENCY);
-        $cart->add($this->firstCartItem);
-        $cart->add($this->secondCartItem);
-
         $this->expectException(OutOfBoundsException::class);
 
-        $cart->remove('3');
+        $this->cart->remove('3');
     }
 
     public function testClear()
     {
-        $cart = new Cart(self::CURRENCY);
-        $cart->add($this->firstCartItem);
-        $cart->add($this->secondCartItem);
+        $this->cart->clear();
 
-        $cart->clear();
-
-        $this->assertSame([], $cart->items());
-        $this->assertTrue(count($cart->items()) == 0);
+        $this->assertSame([], $this->cart->items());
+        $this->assertTrue(count($this->cart->items()) == 0);
     }
 
     public function testItemsQuantity()
     {
-        $cart = new Cart(self::CURRENCY);
-        $cart->add($this->firstCartItem);
-        $cart->add($this->secondCartItem);
-
-        $this->assertTrue($cart->itemsQuantity() == 3);
+        $this->assertTrue($this->cart->itemsQuantity() == 3);
     }
 
     public function testWeight()
     {
-        $cart = new Cart(self::CURRENCY);
-        $cart->add($this->firstCartItem);
-        $cart->add($this->secondCartItem);
-
-        $this->assertTrue($cart->weight() == 10.00);
+        $this->assertTrue($this->cart->weight() == 10.00);
     }
 
     public function testTotalNet()
     {
-        $cart = new Cart(self::CURRENCY);
-        $cart->add($this->firstCartItem);
-        $cart->add($this->secondCartItem);
-
-        $this->assertTrue($this->getAmount($cart->totalNet()) == 11.50);
+        $this->assertTrue($this->getAmount($this->cart->totalNet()) == 11.50);
     }
 
     public function testTotalGross()
     {
-        $cart = new Cart(self::CURRENCY);
-        $cart->add($this->firstCartItem);
-        $cart->add($this->secondCartItem);
-
-        $this->assertTrue($this->getAmount($cart->totalGross()) == 14.03);
+        $this->assertTrue($this->getAmount($this->cart->totalGross()) == 14.03);
     }
 
     public function testTax()
     {
-        $cart = new Cart(self::CURRENCY);
-        $cart->add($this->firstCartItem);
-        $cart->add($this->secondCartItem);
-
-        $this->assertTrue($this->getAmount($cart->tax()) == 2.53);
+        $this->assertTrue($this->getAmount($this->cart->tax()) == 2.53);
     }
 
     public function testShippingCost()
     {
-        $shipping  = $this->createMock(Shipping::class);
-        $shipping->method('getCost')->willReturn($this->getMoney('4.00'));
-        
-        $cart = new Cart(self::CURRENCY);
-        $cart->setShipping($shipping);
-
-        $this->assertTrue($this->getAmount($cart->shippingCost()) == 4.00);
+        $this->assertTrue($this->getAmount($this->cart->shippingCost()) == 4.00);
     }
 
     public function testShippingCostWhenNoShippingSet()
@@ -231,5 +206,17 @@ class CartTest extends \PHPUnit\Framework\TestCase
         $cart = new Cart(self::CURRENCY);
 
         $this->assertTrue($this->getAmount($cart->shippingCost()) == 0.00);
+    }
+
+    public function testPaymentFee()
+    {
+        $this->assertTrue($this->getAmount($this->cart->paymentFee()) == 5.50);
+    }
+
+    public function testPaymentFeeWhenNoPaymentSet()
+    {
+        $cart = new Cart(self::CURRENCY);
+
+        $this->assertTrue($this->getAmount($cart->paymentFee()) == 0.00);
     }
 }
