@@ -7,7 +7,6 @@ use Plane\Shop\Payment;
 use Plane\Shop\Product;
 use Plane\Shop\CartItem;
 use Plane\Shop\Shipping;
-use Plane\Shop\CartDiscount;
 use Plane\Shop\CartPresenter;
 use Plane\Shop\CartItemCollection;
 use Money\Currencies\ISOCurrencies;
@@ -61,21 +60,23 @@ $cart->fill($cartItemCollection);
 $cart->setShipping($shipping);
 $cart->setPayment($payment);
 
-$cartDisount1 = new TotalPriceThresholdDiscount(
-    $cart,
-    new CartDiscount('Jest to opis jakiegos discouta'),
-    ['treshold' => 160, 'discount' => 0.1]
-);
+// first discount
+$secondFreeDisount = new EverySecondItemFreeDiscount('Every second product is free', $cart, [
+    'items' => $cart->items()
+]);
+$cart->addDiscount($secondFreeDisount);
 
-/*$cartDisount2 = new EverySecondItemFreeDiscount(
-    $cartDisount1,
-    new CartDiscount('Co drugi free!')
-);*/
+// second discount
+$priceTresholdDiscount = new TotalPriceThresholdDiscount('Jest to opis jakiegos discouta', $cart, [
+    'treshold' => 100,
+    'discount' => 0.1
+]);
+$cart->addDiscount($priceTresholdDiscount);
 
 $numberFormatter = new \NumberFormatter('us_US', \NumberFormatter::CURRENCY);
 $moneyFormatter = new IntlMoneyFormatter($numberFormatter, new ISOCurrencies());
 
-$presentator = new CartPresenter($cartDisount1, $moneyFormatter);
+$presentator = new CartPresenter($cart, $moneyFormatter);
 
 dump($presentator->toArray());
 

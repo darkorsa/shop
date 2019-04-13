@@ -17,6 +17,7 @@ use Plane\Shop\CartInterface;
 use Plane\Shop\CartItemInterface;
 use Plane\Shop\Traits\CartCommon;
 use Money\Currencies\ISOCurrencies;
+use Plane\Shop\CartDiscountInterface;
 use Plane\Shop\CartPresenterInterface;
 use Money\Formatter\DecimalMoneyFormatter;
 
@@ -93,9 +94,9 @@ class CartPresenter implements CartPresenterInterface
             $array['payment']['fee']        = $this->paymentFee();
         }
         
-        $array['discounts'] = array_map(function (CartDiscount $discount) {
+        $array['discounts'] = array_map(function (CartDiscountInterface $discount) {
             return [
-                'text'  => $discount->getDiscountText(),
+                'text'  => $discount->getDescription(),
                 'price' => $this->priceFormatter->format($discount->getPriceAfterDiscount())
             ];
         }, $this->getDiscounts());

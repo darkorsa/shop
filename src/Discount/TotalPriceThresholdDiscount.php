@@ -13,33 +13,23 @@ namespace Plane\Shop\Discount;
 
 use Money\Money;
 use Money\Currency;
-use Plane\Shop\CartInterface;
-use Plane\Shop\DiscountAbstract;
-use Plane\Shop\Traits\CartCommon;
-use Plane\Shop\Traits\CartPrices;
 use Money\Currencies\ISOCurrencies;
 use Money\Parser\DecimalMoneyParser;
+use Plane\Shop\CartDiscountAbstract;
 
-class TotalPriceThresholdDiscount extends DiscountAbstract implements CartInterface
+class TotalPriceThresholdDiscount extends CartDiscountAbstract
 {
-    use CartCommon;
-    use CartPrices;
-    
     protected $treshold;
     
     protected $discount;
 
     protected function applyDiscount(): void
     {
-        $total = $this->totalAfterDiscounts();
-
-        if ($total->greaterThanOrEqual($this->getTreshold($this->getCurrency()))) {
-            $total = $total->subtract($total->multiply($this->discount));
-        }
-
-        $this->cartDiscount->setPriceAfterDiscount($total);
+        $this->priceAfterDiscount = $this->price;
         
-        $this->addDiscount($this->cartDiscount);
+        if ($this->price->greaterThanOrEqual($this->getTreshold($this->currency))) {
+            $this->priceAfterDiscount = $this->price->subtract($this->price->multiply($this->discount));
+        }
     }
 
     private function getTreshold(string $currency): Money

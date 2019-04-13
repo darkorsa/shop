@@ -14,11 +14,11 @@ namespace Plane\Shop;
 use Money\Money;
 use Money\Currency;
 use OutOfBoundsException;
-use Plane\Shop\CartDiscount;
 use Plane\Shop\PaymentInterface;
 use Plane\Shop\CartItemInterface;
 use Plane\Shop\ShippingInterface;
 use Plane\Shop\CartItemCollection;
+use Plane\Shop\CartDiscountInterface;
 
 final class Cart implements CartInterface
 {
@@ -62,7 +62,7 @@ final class Cart implements CartInterface
         return $this->payment;
     }
     
-    public function addDiscount(CartDiscount $discount): void
+    public function addDiscount(CartDiscountInterface $discount): void
     {
         $this->discounts[] = $discount;
     }

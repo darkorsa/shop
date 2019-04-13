@@ -11,37 +11,29 @@
 
 namespace Plane\Shop\Discount;
 
-use Plane\Shop\CartInterface;
-use Plane\Shop\DiscountAbstract;
-use Plane\Shop\Traits\CartCommon;
-use Plane\Shop\Traits\CartPrices;
+use Plane\Shop\CartDiscountAbstract;
 
-class EverySecondItemFreeDiscount extends DiscountAbstract implements CartInterface
+class EverySecondItemFreeDiscount extends CartDiscountAbstract
 {
-    use CartCommon;
-    use CartPrices;
+    protected $items;
     
     /**
      * Apply discount so that every even item price is set to 0
      */
     protected function applyDiscount(): void
     {
-        $total = $this->totalAfterDiscounts();
         $subctracts = [];
-
         $i = 1;
-        foreach ($this->items() as $item) {
+        foreach ($this->items as $item) {
             // every even item is free
             if ($i % 2 == 0) {
-                $subctracts[] = $item->getPriceTotalWithTax($this->getCurrency());
+                $subctracts[] = $item->getPriceTotalWithTax($this->currency);
             }
             $i++;
         }
 
-        $afterDiscount = call_user_func_array([$total, 'subtract'], $subctracts);
-        
-        $this->cartDiscount->setPriceAfterDiscount($afterDiscount);
-        
-        $this->addDiscount($this->cartDiscount);
+        $afterDiscount = call_user_func_array([$this->price, 'subtract'], $subctracts);
+
+        $this->priceAfterDiscount = $afterDiscount;
     }
 }

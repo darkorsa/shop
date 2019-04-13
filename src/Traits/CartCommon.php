@@ -11,11 +11,11 @@
 
 namespace Plane\Shop\Traits;
 
-use Plane\Shop\CartDiscount;
 use Plane\Shop\PaymentInterface;
 use Plane\Shop\CartItemInterface;
 use Plane\Shop\ShippingInterface;
 use Plane\Shop\CartItemCollection;
+use Plane\Shop\CartDiscountInterface;
 
 trait CartCommon
 {
@@ -44,7 +44,7 @@ trait CartCommon
         return $this->cart->getPayment();
     }
     
-    public function addDiscount(CartDiscount $discount): void
+    public function addDiscount(CartDiscountInterface $discount): void
     {
         $this->cart->addDiscount($discount);
     }

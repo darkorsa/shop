@@ -23,7 +23,7 @@ interface CartCommonInterface
     
     public function getPayment(): ?PaymentInterface;
     
-    public function addDiscount(CartDiscount $discount): void;
+    public function addDiscount(CartDiscountInterface $discount): void;
 
     public function getDiscounts(): array;
     

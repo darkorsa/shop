@@ -7,9 +7,12 @@ use Plane\Shop\Payment;
 use Plane\Shop\CartItem;
 use Plane\Shop\Shipping;
 use OutOfBoundsException;
+use Plane\Shop\CartDiscount;
+use Plane\Shop\PaymentInterface;
 use Plane\Shop\ShippingInterface;
 use Plane\Shop\CartItemCollection;
-use Plane\Shop\PaymentInterface;
+use Plane\Shop\Discount\EverySecondItemFreeDiscount;
+use Plane\Shop\Discount\TotalPriceThresholdDiscount;
 
 class CartTest extends \PHPUnit\Framework\TestCase
 {
@@ -218,5 +221,32 @@ class CartTest extends \PHPUnit\Framework\TestCase
         $cart = new Cart(self::CURRENCY);
 
         $this->assertTrue($this->getAmount($cart->paymentFee()) == 0.00);
+    }
+
+    public function testDiscounts()
+    {
+        $cartDiscount = new TotalPriceThresholdDiscount('Discount description', $this->cart, [
+            'treshold' => 14,
+            'discount' => 0.1
+        ]);
+        $this->cart->addDiscount($cartDiscount);
+
+        $this->assertTrue($this->cart->getDiscounts() == [0 => $cartDiscount]);
+    }
+
+    public function testTotalAfterDiscounts()
+    {
+        $secondFreeDisount = new EverySecondItemFreeDiscount('Every second product is free', $this->cart, [
+            'items' => $this->cart->items()
+        ]);
+        $this->cart->addDiscount($secondFreeDisount);
+        
+        $priceTresholdDiscount = new TotalPriceThresholdDiscount('Discount description', $this->cart, [
+            'treshold' => 4,
+            'discount' => 0.5
+        ]);
+        $this->cart->addDiscount($priceTresholdDiscount);
+
+        $this->assertTrue($this->getAmount($this->cart->totalAfterDiscounts()) == 2.13);
     }
 }
