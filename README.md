@@ -7,7 +7,7 @@
 [![Quality Score][ico-code-quality]][link-code-quality]
 [![Total Downloads][ico-downloads]][link-downloads]
 
-The shopping cart is present in practically every online store. This library is a convenient to use implementation of the shopping cart with the following features:
+This library is a convenient to use implementation of the shopping cart with the following features:
 
 - prices calculation (gross/net)
 - tax calculation
@@ -20,7 +20,7 @@ The shopping cart is present in practically every online store. This library is 
 
 Also you do not have to worry about the correctness of operations on the amounts of money, this is carried out with the help of the [Money for PHP](http://moneyphp.org/en/stable) library  which is the implementation of the Money pattern by Martin Fowler. 
 
-Package is PSR-2 and PSR-4 compliant.
+This package is PSR-2 and PSR-4 compliant.
 
 ## Install
 
@@ -57,7 +57,7 @@ $someProduct = new Product([
     'name'      => 'Some product',
     'stock'     => 8,
     'price'     => 2.8,
-    'taxRate'   => 0.10,
+    'taxRate'   => 0.10, // 10%
 ]);
 ```
 
@@ -71,13 +71,15 @@ Cart items represent the content of the shopping cart. Items can be injected int
 use Plane\Shop\CartItem;
 use Plane\Shop\CartItemCollection;
 
-$firstCartItem = new CartItem($someProduct); // cart item with 1 product
-$secondCartItem = new CartItem($someOtherProduct, 4); // cart item with 4 products
+$firstCartItem = new CartItem($someProduct); // cart item with 1 piece of product
+$secondCartItem = new CartItem($someOtherProduct, 4); // cart item with 4 pieces of product
 
 $cartItemCollection = new CartItemCollection;
 
 $cartItemCollection->addItem($firstCartItem);
 $cartItemCollection->addItem($secondCartItem);
+
+$cart->fill($cartItemCollection);
 ```
 
 To ensure that the amount of products in the cart is not greater than the amount in stock, a validator can be used.
@@ -103,7 +105,6 @@ try {
     // handle exception
 }
 ```
-
 
 ### Shipping
 
@@ -185,12 +186,13 @@ Discount can be applied to the Cart object. This library comes with  2 predefine
 Discount example:
 
 ``` php
-use Plane\Shop\CartDiscount;
 use Plane\Shop\Discount\TotalPriceThresholdDiscount;
 
-$discount = new CartDiscount('Discount description');
-
-$discountedCart = new TotalPriceThresholdDiscount($cart, $discount, ['treshold' => 160, 'discount' => 0.1]); // ten percent discount for total gross price above 160
+$priceTresholdDiscount = new TotalPriceThresholdDiscount('Discount description', $cart, [
+    'treshold' => 100,
+    'discount' => 0.1 // ten percent discount for total gross price above 100
+]);
+$cart->addDiscount($priceTresholdDiscount); 
 ```
 
 #### Presenation

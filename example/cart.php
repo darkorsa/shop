@@ -67,7 +67,7 @@ $secondFreeDisount = new EverySecondItemFreeDiscount('Every second product is fr
 $cart->addDiscount($secondFreeDisount);
 
 // second discount
-$priceTresholdDiscount = new TotalPriceThresholdDiscount('Jest to opis jakiegos discouta', $cart, [
+$priceTresholdDiscount = new TotalPriceThresholdDiscount('Treshold disconut', $cart, [
     'treshold' => 100,
     'discount' => 0.1
 ]);
@@ -77,8 +77,6 @@ $numberFormatter = new \NumberFormatter('us_US', \NumberFormatter::CURRENCY);
 $moneyFormatter = new IntlMoneyFormatter($numberFormatter, new ISOCurrencies());
 
 $presentator = new CartPresenter($cart, $moneyFormatter);
-
-dump($presentator->toArray());
 
 echo 'Total items: ' . $presentator->itemsQuantity() . "\n\n";
 echo 'Total net: ' . $presentator->totalNet() . "\n\n";

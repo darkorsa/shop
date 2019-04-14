@@ -3,11 +3,8 @@
 namespace Plane\Shop\Tests;
 
 use Plane\Shop\Cart;
-use Plane\Shop\Payment;
 use Plane\Shop\CartItem;
-use Plane\Shop\Shipping;
 use OutOfBoundsException;
-use Plane\Shop\CartDiscount;
 use Plane\Shop\PaymentInterface;
 use Plane\Shop\ShippingInterface;
 use Plane\Shop\CartItemCollection;
@@ -17,65 +14,17 @@ use Plane\Shop\Discount\TotalPriceThresholdDiscount;
 class CartTest extends \PHPUnit\Framework\TestCase
 {
     use MoneyTrait;
+    use CartTrait;
     
     const CURRENCY = 'USD';
-
-    protected $cart;
-
-    protected $firstCartItem;
-
-    protected $secondCartItem;
 
     protected function setUp(): void
     {
         $this->createFirstCartItem();
         $this->createSecondCartItem();
-        
-        $this->cart = new Cart(self::CURRENCY);
-        $this->cart->add($this->firstCartItem);
-        $this->cart->add($this->secondCartItem);
-        $this->cart->setShipping($this->getShippingMock());
-        $this->cart->setPayment($this->getPaymentMock());
+        $this->createCart();       
     }
 
-    protected function createFirstCartItem()
-    {
-        $this->firstCartItem  = $this->createMock(CartItem::class);
-        $this->firstCartItem->method('getId')->willReturn(1);
-        $this->firstCartItem->method('getQuantity')->willReturn(1);
-        $this->firstCartItem->method('getWeightTotal')->willReturn(5.33);
-        $this->firstCartItem->method('getPriceTotal')->willReturn($this->getMoney('3.5'));
-        $this->firstCartItem->method('getPriceTotalWithTax')->willReturn($this->getMoney('4.27'));
-        $this->firstCartItem->method('getTaxTotal')->willReturn($this->getMoney('0.77'));
-    }
-
-    protected function createSecondCartItem()
-    {
-        $this->secondCartItem = $this->createMock(CartItem::class);
-        $this->secondCartItem->method('getId')->willReturn(2);
-        $this->secondCartItem->method('getQuantity')->willReturn(2);
-        $this->secondCartItem->method('getWeightTotal')->willReturn(4.67);
-        $this->secondCartItem->method('getPriceTotal')->willReturn($this->getMoney('8'));
-        $this->secondCartItem->method('getPriceTotalWithTax')->willReturn($this->getMoney('9.76'));
-        $this->secondCartItem->method('getTaxTotal')->willReturn($this->getMoney('1.76'));
-    }
-
-    protected function getPaymentMock()
-    {
-        $payment = $this->createMock(Payment::class);
-        $payment->method('getFee')->willReturn($this->getMoney('5.50'));
-
-        return $payment;
-    }
-
-    protected function getShippingMock()
-    {
-        $shipping  = $this->createMock(Shipping::class);
-        $shipping->method('getCost')->willReturn($this->getMoney('4.00'));
-
-        return $shipping;
-    }
-    
     public function testGetCurrency()
     {
         $this->assertSame(self::CURRENCY, $this->cart->getCurrency());
@@ -181,7 +130,7 @@ class CartTest extends \PHPUnit\Framework\TestCase
 
     public function testWeight()
     {
-        $this->assertTrue($this->cart->weight() == 10.00);
+        $this->assertTrue($this->cart->weight() == 9.99);
     }
 
     public function testTotalNet()
