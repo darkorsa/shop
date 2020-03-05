@@ -15,17 +15,17 @@ class CartItemCollection
 {
     private $items = [];
 
-    public function addItem(CartItemInterface $cartItem)
+    public function addItem(CartItemInterface $cartItem): void
     {
         $this->items[] = $cartItem;
     }
 
-    public function getItems()
+    public function getItems(): array
     {
         return $this->items;
     }
-    
-    public function length()
+
+    public function length(): int
     {
         return count($this->items);
     }

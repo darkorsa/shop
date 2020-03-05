@@ -24,7 +24,7 @@ use Money\Formatter\DecimalMoneyFormatter;
 class CartPresenter implements CartPresenterInterface
 {
     use CartCommon;
-    
+
     private $cart;
 
     private $priceFormatter;
@@ -44,22 +44,22 @@ class CartPresenter implements CartPresenterInterface
     {
         return $this->priceFormatter->format($this->cart->totalGross());
     }
-    
+
     public function tax(): string
     {
         return $this->priceFormatter->format($this->cart->tax());
     }
-    
+
     public function totalAfterDiscounts(): string
     {
         return $this->priceFormatter->format($this->cart->totalAfterDiscounts());
     }
-    
+
     public function shippingCost(): string
     {
         return $this->priceFormatter->format($this->cart->shippingCost());
     }
-    
+
     public function paymentFee(): string
     {
         return $this->priceFormatter->format($this->cart->paymentFee());
@@ -79,37 +79,39 @@ class CartPresenter implements CartPresenterInterface
 
             return $itemArray;
         }, $this->items());
-        
-        if (!is_null($this->getShipping())) {
-            $array['shipping']['id']        = $this->getShipping()->getId();
-            $array['shipping']['name']      = $this->getShipping()->getName();
-            $array['shipping']['desc']      = $this->getShipping()->getDescription();
-            $array['shipping']['cost']      = $this->shippingCost();
+
+        $shipping = $this->getShipping();
+        if ($shipping !== null) {
+            $array['shipping']['id'] = $shipping->getId();
+            $array['shipping']['name'] = $shipping->getName();
+            $array['shipping']['desc'] = $shipping->getDescription();
+            $array['shipping']['cost'] = $this->shippingCost();
         }
-        
-        if (!is_null($this->getPayment())) {
-            $array['payment']['id']         = $this->getPayment()->getId();
-            $array['payment']['name']       = $this->getPayment()->getName();
-            $array['payment']['desc']       = $this->getPayment()->getDescription();
-            $array['payment']['fee']        = $this->paymentFee();
+
+        $payment = $this->getPayment();
+        if ($payment !== null) {
+            $array['payment']['id'] = $payment->getId();
+            $array['payment']['name'] = $payment->getName();
+            $array['payment']['desc'] = $payment->getDescription();
+            $array['payment']['fee'] = $this->paymentFee();
         }
-        
+
         $array['discounts'] = array_map(function (CartDiscountInterface $discount) {
             return [
                 'text'  => $discount->getDescription(),
                 'price' => $this->priceFormatter->format($discount->getPriceAfterDiscount())
             ];
         }, $this->getDiscounts());
-        
-        $array['itemsQuantity']         = $this->itemsQuantity();
-        $array['totalNet']              = $this->totalNet();
-        $array['totalGross']            = $this->totalGross();
-        $array['tax']                   = $this->tax();
-        $array['totalWeight']           = $this->weight();
-        $array['shippingCost']          = $this->shippingCost();
-        $array['paymentFee']            = $this->paymentFee();
-        $array['totalAfterDiscounts']   = $this->totalAfterDiscounts();
-        
+
+        $array['itemsQuantity'] = $this->itemsQuantity();
+        $array['totalNet'] = $this->totalNet();
+        $array['totalGross'] = $this->totalGross();
+        $array['tax'] = $this->tax();
+        $array['totalWeight'] = $this->weight();
+        $array['shippingCost'] = $this->shippingCost();
+        $array['paymentFee'] = $this->paymentFee();
+        $array['totalAfterDiscounts'] = $this->totalAfterDiscounts();
+
         return $array;
     }
 }

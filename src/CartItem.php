@@ -13,7 +13,7 @@ namespace Plane\Shop;
 
 use Money\Money;
 use Plane\Shop\Validator\QuantityValidatorInterface;
-use Plane\Shop\Exception\QuanityException;
+use Plane\Shop\Exception\QuantityException;
 
 class CartItem implements CartItemInterface
 {
@@ -61,7 +61,7 @@ class CartItem implements CartItemInterface
     public function setQuantity(int $quantity): void
     {
         if (!$this->validateQuantity($quantity)) {
-            throw new QuanityException('Invalid quantity: ' . $quantity);
+            throw new QuantityException('Invalid quantity: ' . $quantity);
         }
 
         $this->quantity = $quantity;

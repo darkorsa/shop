@@ -4,7 +4,7 @@ namespace Plane\Shop\Tests;
 
 use Plane\Shop\Product;
 use Plane\Shop\CartItem;
-use Plane\Shop\Exception\QuanityException;
+use Plane\Shop\Exception\QuantityException;
 use Plane\Shop\Validator\StockQuantityValidator;
 
 class CartItemTest extends \PHPUnit\Framework\TestCase
@@ -12,9 +12,9 @@ class CartItemTest extends \PHPUnit\Framework\TestCase
     use MoneyTrait;
 
     const CURRENCY = 'USD';
-    
+
     protected $product;
-    
+
     protected function setUp(): void
     {
         $this->product = new Product([
@@ -52,7 +52,7 @@ class CartItemTest extends \PHPUnit\Framework\TestCase
 
     public function testCreateObjectWithStockQuantityValidator()
     {
-        $this->expectException(QuanityException::class);
+        $this->expectException(QuantityException::class);
 
         new CartItem($this->product, 5, new StockQuantityValidator);
     }
@@ -81,7 +81,7 @@ class CartItemTest extends \PHPUnit\Framework\TestCase
 
         // now check with stock validator
 
-        $this->expectException(QuanityException::class);
+        $this->expectException(QuantityException::class);
 
         $cartItem = new CartItem($this->product, $quantity, new StockQuantityValidator);
         $cartItem->setQuantity(8);
@@ -97,7 +97,7 @@ class CartItemTest extends \PHPUnit\Framework\TestCase
 
         // now check with stock validator
 
-        $this->expectException(QuanityException::class);
+        $this->expectException(QuantityException::class);
 
         $cartItem = new CartItem($this->product, $quantity, new StockQuantityValidator);
         $cartItem->increaseQuantity(3);
@@ -111,14 +111,14 @@ class CartItemTest extends \PHPUnit\Framework\TestCase
 
         $this->assertSame($cartItem->getQuantity(), 1);
 
-        $this->expectException(QuanityException::class);
+        $this->expectException(QuantityException::class);
 
         $cartItem->decreaseQuantity(1);
     }
 
     public function testDecreaseQuantityWithStockQuantityValidator()
     {
-        $this->expectException(QuanityException::class);
+        $this->expectException(QuantityException::class);
 
         $cartItem = new CartItem($this->product, 3, new StockQuantityValidator);
         $cartItem->decreaseQuantity(3);
