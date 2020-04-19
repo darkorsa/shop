@@ -69,11 +69,11 @@ class CartPresenterTest extends \PHPUnit\Framework\TestCase
     public function testUpdate()
     {
         $firstAltered  = $this->createMock(CartItem::class);
-        $firstAltered->method('getId')->willReturn(1);
+        $firstAltered->method('getId')->willReturn('1');
         $firstAltered->method('getQuantity')->willReturn(5);
-        
+
         $this->assertTrue($this->cartPresenter->itemsQuantity() == 3);
-        
+
         $this->cartPresenter->update($firstAltered);
 
         $this->assertTrue($this->cartPresenter->itemsQuantity() == 7);
@@ -82,7 +82,7 @@ class CartPresenterTest extends \PHPUnit\Framework\TestCase
     public function testRemove()
     {
         $this->cartPresenter->remove($this->firstCartItem->getId());
-        
+
         $this->assertSame([
             2 => $this->secondCartItem
         ], $this->cartPresenter->items());
@@ -104,7 +104,7 @@ class CartPresenterTest extends \PHPUnit\Framework\TestCase
         $this->assertSame([], $this->cartPresenter->items());
         $this->assertTrue(count($this->cartPresenter->items()) == 0);
     }
-    
+
     public function testToArray()
     {
         $discount = $this->createMock(TotalPriceThresholdDiscount::class);

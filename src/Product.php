@@ -20,17 +20,17 @@ use Money\Parser\DecimalMoneyParser;
 final class Product implements ProductInterface
 {
     private $id;
-    
+
     private $name;
 
     private $stock;
-    
+
     private $price;
 
     private $taxRate;
-    
+
     private $weight;
-    
+
     private $imagePath;
 
     private $requiredFields = [
@@ -40,7 +40,7 @@ final class Product implements ProductInterface
         'stock',
         'taxRate'
     ];
-    
+
     public function __construct(array $data)
     {
         if (count(array_intersect_key(array_flip($this->requiredFields), $data)) !== count($this->requiredFields)) {
@@ -48,18 +48,18 @@ final class Product implements ProductInterface
                 'Cannot create object, required array keys: '. implode(', ', $this->requiredFields)
             );
         }
-        
+
         // waiting for typed properties in PHP 7.4
         foreach ($data as $property => $value) {
             $this->$property = $value;
         }
     }
-    
+
     public function getId(): string
     {
         return $this->id;
     }
-    
+
     public function getName(): string
     {
         return $this->name;
@@ -73,20 +73,20 @@ final class Product implements ProductInterface
     public function getPrice(string $currency): Money
     {
         $moneyParser = new DecimalMoneyParser(new ISOCurrencies());
-        
+
         return $moneyParser->parse((string) $this->price, new Currency($currency));
     }
-    
+
     public function getTaxRate(): float
     {
         return $this->taxRate;
     }
-    
+
     public function getTax(string $currency): Money
     {
         return $this->getPrice($currency)->multiply($this->taxRate);
     }
-    
+
     public function getPriceWithTax(string $currency): Money
     {
         return $this->getPrice($currency)->add($this->getTax($currency));
@@ -96,24 +96,24 @@ final class Product implements ProductInterface
     {
         return (float) $this->weight;
     }
-    
+
     public function getImagePath(): string
     {
         return (string) $this->imagePath;
     }
-    
+
     public function toArray(string $currency): array
     {
         $array = [];
-        $array['id']                = $this->getId();
-        $array['name']              = $this->getName();
-        $array['price']             = $this->getPrice($currency);
-        $array['stock']             = $this->getStock();
-        $array['taxRate']           = $this->getTaxRate();
-        $array['tax']               = $this->getTax($currency);
-        $array['priceWithTax']      = $this->getPriceWithTax($currency);
-        $array['weight']            = $this->getWeight();
-        $array['imagePath']         = $this->getImagePath();
+        $array['id'] = $this->getId();
+        $array['name'] = $this->getName();
+        $array['price'] = $this->getPrice($currency);
+        $array['stock'] = $this->getStock();
+        $array['taxRate'] = $this->getTaxRate();
+        $array['tax'] = $this->getTax($currency);
+        $array['priceWithTax'] = $this->getPriceWithTax($currency);
+        $array['weight'] = $this->getWeight();
+        $array['imagePath'] = $this->getImagePath();
 
         return $array;
     }

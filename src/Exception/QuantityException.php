@@ -13,7 +13,7 @@ namespace Plane\Shop\Exception;
 
 use Exception;
 
-class QuanityException extends Exception
+class QuantityException extends Exception
 {
-    
+
 }
