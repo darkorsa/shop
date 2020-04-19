@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 /*
  * This file is part of the Plane\Shop package.
@@ -19,9 +21,9 @@ use Money\Parser\DecimalMoneyParser;
 
 class Payment implements PaymentInterface
 {
-    private const FEE_FIXED = 'fixed';
+    public const FEE_FIXED = 'fixed';
 
-    private const FEE_PERCENTAGE = 'percentage';
+    public const FEE_PERCENTAGE = 'percentage';
 
     private $id;
 
@@ -48,7 +50,7 @@ class Payment implements PaymentInterface
     {
         if (count(array_intersect_key(array_flip($this->requiredFields), $data)) !== count($this->requiredFields)) {
             throw new InvalidArgumentException(
-                'Cannot create object, required array keys: '. implode(', ', $this->requiredFields)
+                'Cannot create object, required array keys: ' . implode(', ', $this->requiredFields)
             );
         }
 
