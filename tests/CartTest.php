@@ -15,14 +15,14 @@ class CartTest extends \PHPUnit\Framework\TestCase
 {
     use MoneyTrait;
     use CartTrait;
-    
+
     const CURRENCY = 'USD';
 
     protected function setUp(): void
     {
         $this->createFirstCartItem();
         $this->createSecondCartItem();
-        $this->createCart();       
+        $this->createCart();
     }
 
     public function testGetCurrency()
@@ -45,7 +45,7 @@ class CartTest extends \PHPUnit\Framework\TestCase
         $cartItemCollection = new CartItemCollection;
         $cartItemCollection->addItem($this->firstCartItem);
         $cartItemCollection->addItem($this->secondCartItem);
-        
+
         $cart = new Cart(self::CURRENCY);
         $cart->fill($cartItemCollection);
 
@@ -65,7 +65,7 @@ class CartTest extends \PHPUnit\Framework\TestCase
             1 => $this->firstCartItem,
             2 => $this->secondCartItem
         ], $this->cart->items());
-        
+
         $this->assertTrue(count($this->cart->items()) == 2);
     }
 
@@ -84,14 +84,14 @@ class CartTest extends \PHPUnit\Framework\TestCase
     public function testUpdate()
     {
         $firstAltered  = $this->createMock(CartItem::class);
-        $firstAltered->method('getId')->willReturn(1);
+        $firstAltered->method('getId')->willReturn('1');
         $firstAltered->method('getQuantity')->willReturn(5);
-        
+
         $cart = new Cart(self::CURRENCY);
         $cart->add($this->firstCartItem);
 
         $this->assertTrue($cart->itemsQuantity() == 1);
-        
+
         $cart->update($firstAltered);
 
         $this->assertTrue($cart->itemsQuantity() == 5);
@@ -189,7 +189,7 @@ class CartTest extends \PHPUnit\Framework\TestCase
             'items' => $this->cart->items()
         ]);
         $this->cart->addDiscount($secondFreeDisount);
-        
+
         $priceTresholdDiscount = new TotalPriceThresholdDiscount('Discount description', $this->cart, [
             'treshold' => 4,
             'discount' => 0.5
