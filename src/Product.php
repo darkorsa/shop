@@ -104,17 +104,16 @@ final class Product implements ProductInterface
 
     public function toArray(string $currency): array
     {
-        $array = [];
-        $array['id'] = $this->getId();
-        $array['name'] = $this->getName();
-        $array['price'] = $this->getPrice($currency);
-        $array['stock'] = $this->getStock();
-        $array['taxRate'] = $this->getTaxRate();
-        $array['tax'] = $this->getTax($currency);
-        $array['priceWithTax'] = $this->getPriceWithTax($currency);
-        $array['weight'] = $this->getWeight();
-        $array['imagePath'] = $this->getImagePath();
-
-        return $array;
+        return [
+            'id' => $this->getId(),
+            'name' => $this->getName(),
+            'price' => $this->getPrice($currency),
+            'stock' => $this->getStock(),
+            'taxRate' => $this->getTaxRate(),
+            'tax' => $this->getTax($currency),
+            'priceWithTax' => $this->getPriceWithTax($currency),
+            'weight' => $this->getWeight(),
+            'imagePath' => $this->getImagePath(),
+        ];
     }
 }

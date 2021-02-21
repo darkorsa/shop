@@ -22,4 +22,6 @@ interface ShippingInterface
     public function getDescription(): string;
     
     public function getCost(string $currency): Money;
+
+    public function toArray(): array;
 }

@@ -80,19 +80,13 @@ class CartPresenter implements CartPresenterInterface
             return $itemArray;
         }, $this->items());
 
-        $shipping = $this->getShipping();
-        if ($shipping !== null) {
-            $array['shipping']['id'] = $shipping->getId();
-            $array['shipping']['name'] = $shipping->getName();
-            $array['shipping']['desc'] = $shipping->getDescription();
+        if ($this->getShipping()) {
+            $array['shipping'] = $this->getShipping()->toArray();
             $array['shipping']['cost'] = $this->shippingCost();
         }
 
-        $payment = $this->getPayment();
-        if ($payment !== null) {
-            $array['payment']['id'] = $payment->getId();
-            $array['payment']['name'] = $payment->getName();
-            $array['payment']['desc'] = $payment->getDescription();
+        if ($this->getPayment()) {
+            $array['payment'] = $this->getPayment()->toArray();
             $array['payment']['fee'] = $this->paymentFee();
         }
 

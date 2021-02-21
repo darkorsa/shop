@@ -71,13 +71,13 @@ Cart items represent the content of the shopping cart. Items can be injected int
 use Plane\Shop\CartItem;
 use Plane\Shop\CartItemCollection;
 
-$firstCartItem = new CartItem($someProduct); // cart item with 1 piece of product
-$secondCartItem = new CartItem($someOtherProduct, 4); // cart item with 4 pieces of product
+// one by one
+$cart->add(new CartItem($someProduct));
 
-$cartItemCollection = new CartItemCollection;
-
-$cartItemCollection->addItem($firstCartItem);
-$cartItemCollection->addItem($secondCartItem);
+// collection
+$cartItemCollection = new CartItemCollection();
+$cartItemCollection->addItem(new CartItem($someProduct)); // cart item with 1 piece of a product
+$cartItemCollection->addItem(new CartItem($someOtherProduct, 4)); // cart item with 4 pieces of a product
 
 $cart->fill($cartItemCollection);
 ```
@@ -119,6 +119,8 @@ $shipping = new Shipping([
    'description'    => 'Standart Ground Shipping',
    'cost'           => 7.50,
 ]);
+
+$cart->setShipping($shipping);
 ```
 
 ### Payment
@@ -129,7 +131,7 @@ Payment can be defined in order to calculate payment fee. There are two methods 
 use Plane\Shop\Payment;
 
 // fixed price
-$payment = new Payment([
+$payment = Payment::createWithFixedFee([
    'id'             => 1,
    'name'           => 'PayPal',
    'description'    => 'Payment with Paypal',
@@ -137,12 +139,14 @@ $payment = new Payment([
 ]);
 
 // percentage of the total gross price after discounts
-$payment = new Payment([
+$payment = Payment::createWithPercentageFee([
    'id'             => 1,
    'name'           => 'PayPal',
    'description'    => 'Payment with Paypal',
    'fee'            => 2 // 2%
-], Payment::FEE_PERCENTAGE);
+]);
+
+$cart->setPayment($payment);
 ```
 
 ### Cart
@@ -164,19 +168,19 @@ Currency must be in ISO standard.
 #### Usage
 
 ``` php
-echo $cart->itemsQuantity(); // total quantity of cart items
-echo $cart->totalNet(); // total net price
-echo $cart->totalGross(); // total gross price
-echo $cart->tax() // sum of taxes for all items;
-echo $cart->weight(); // total items weight
-echo $cart->shippingCost() // shipping cost;
-echo $cart->paymentFee(); // payment fee (percentage or fixed)
-echo $cart->totalAfterDiscounts(); // total gross price after applying all discounts
+$cart->itemsQuantity(); // total quantity of cart items
+$cart->totalNet(); // total net price
+$cart->totalGross(); // total gross price
+$cart->tax() // sum of taxes for all items;
+$cart->weight(); // total items weight
+$cart->shippingCost() // shipping cost;
+$cart->paymentFee(); // payment fee (percentage or fixed)
+$cart->totalAfterDiscounts(); // total gross price after applying all discounts
 ```
 
 Note that all prices are represented as [Money](https://github.com/moneyphp/money/blob/master/src/Money.php) object.
 
-#### Discounts
+### Discounts
 
 Discount can be applied to the Cart object. This library comes with  2 predefined discounts, however custom discounts can be applied as well.
 
@@ -195,7 +199,7 @@ $priceTresholdDiscount = new TotalPriceThresholdDiscount('Discount description',
 $cart->addDiscount($priceTresholdDiscount); 
 ```
 
-#### Presenation
+### Presenation
 
 By default the prices are returned as  [Money](https://github.com/moneyphp/money/blob/master/src/Money.php) object but one can easly format all the prices within Cart with use of CartPresenter.
 

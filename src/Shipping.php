@@ -68,4 +68,12 @@ class Shipping implements ShippingInterface
         
         return $moneyParser->parse((string) $this->cost, new Currency($currency));
     }
+    public function toArray(): array
+    {
+        return [
+            'id' => $this->getId(),
+            'name' => $this->getName(),
+            'desc' => $this->getDescription(),
+        ];
+    }
 }

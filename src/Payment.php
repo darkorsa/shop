@@ -66,6 +66,16 @@ class Payment implements PaymentInterface
         $this->feeType = $feeType;
     }
 
+    public static function createWithFixedFee(array $data): Payment
+    {
+        return new Payment($data, self::FEE_FIXED);
+    }
+
+    public static function createWithPercentageFee(array $data): Payment
+    {
+        return new Payment($data, self::FEE_PERCENTAGE);
+    }
+
     public function getId(): int
     {
         return $this->id;
@@ -90,5 +100,14 @@ class Payment implements PaymentInterface
         $moneyParser = new DecimalMoneyParser(new ISOCurrencies());
 
         return $moneyParser->parse((string) $this->fee, new Currency($currency));
+    }
+
+    public function toArray(): array
+    {
+        return [
+            'id' => $this->getId(),
+            'name' => $this->getName(),
+            'desc' => $this->getDescription(),
+        ];
     }
 }

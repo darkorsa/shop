@@ -22,4 +22,6 @@ interface PaymentInterface
     public function getDescription(): string;
     
     public function getFee(Money $totalPrice, string $currency): Money;
+
+    public function toArray(): array;
 }

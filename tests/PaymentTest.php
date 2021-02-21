@@ -54,7 +54,7 @@ class PaymentTest extends \PHPUnit\Framework\TestCase
 
     public function testFixedFee()
     {
-        $payment = new Payment(self::PAYMENT_INPUT, Payment::FEE_FIXED);
+        $payment = Payment::createWithFixedFee(self::PAYMENT_INPUT);
         
         $fee = $payment->getFee($this->getMoney(10), self::CURRENCY);
  
@@ -63,7 +63,7 @@ class PaymentTest extends \PHPUnit\Framework\TestCase
 
     public function testPercentageFee()
     {
-        $payment = new Payment(self::PAYMENT_INPUT, Payment::FEE_PERCENTAGE);
+        $payment = Payment::createWithPercentageFee(self::PAYMENT_INPUT);
 
         $fee = $payment->getFee($this->getMoney(10), self::CURRENCY);
 

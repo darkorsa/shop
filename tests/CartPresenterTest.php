@@ -115,7 +115,19 @@ class CartPresenterTest extends \PHPUnit\Framework\TestCase
 
         $cartPresenter = new CartPresenter($this->cart);
 
-        $this->assertTrue(is_array($cartPresenter->toArray()));
+        $array = $cartPresenter->toArray();
+
+        $this->assertTrue(is_array($array));
+        $this->assertEmpty(array_diff(['id', 'name', 'desc', 'cost'], array_keys($array['shipping'])));
+        $this->assertEmpty(array_diff(['id', 'name', 'desc', 'fee'], array_keys($array['payment'])));
+        $this->assertTrue(array_key_exists('itemsQuantity', $array));
+        $this->assertTrue(array_key_exists('totalNet', $array));
+        $this->assertTrue(array_key_exists('totalGross', $array));
+        $this->assertTrue(array_key_exists('tax', $array));
+        $this->assertTrue(array_key_exists('totalWeight', $array));
+        $this->assertTrue(array_key_exists('shippingCost', $array));
+        $this->assertTrue(array_key_exists('paymentFee', $array));
+        $this->assertTrue(array_key_exists('totalAfterDiscounts', $array));
     }
 
     public function testDecoratorMethods()

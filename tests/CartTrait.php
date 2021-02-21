@@ -41,7 +41,7 @@ trait CartTrait
             'weight'        => 2.33,
         ]);
 
-       $this->secondCartItem = new CartItem($product, 2);
+        $this->secondCartItem = new CartItem($product, 2);
     }
 
     protected function getPaymentMock()
@@ -51,6 +51,11 @@ trait CartTrait
         $payment->method('getName')->willReturn('Test payment');
         $payment->method('getDescription')->willReturn('Payment description');
         $payment->method('getFee')->willReturn($this->getMoney('5.50'));
+        $payment->method('toArray')->willReturn([
+            'id' => 1,
+            'name' => 'Test payment',
+            'desc' => 'Payment description',
+        ]);
 
         return $payment;
     }
@@ -62,6 +67,11 @@ trait CartTrait
         $shipping->method('getName')->willReturn('Test shipping');
         $shipping->method('getDescription')->willReturn('Shipping description');
         $shipping->method('getCost')->willReturn($this->getMoney('4.00'));
+        $shipping->method('toArray')->willReturn([
+            'id' => 1,
+            'name' => 'Test shipping',
+            'desc' => 'Shipping description',
+        ]);
 
         return $shipping;
     }
