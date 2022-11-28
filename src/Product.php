@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 /*
  * This file is part of the Plane\Shop package.
@@ -45,7 +47,7 @@ final class Product implements ProductInterface
     {
         if (count(array_intersect_key(array_flip($this->requiredFields), $data)) !== count($this->requiredFields)) {
             throw new InvalidArgumentException(
-                'Cannot create object, required array keys: '. implode(', ', $this->requiredFields)
+                'Cannot create object, required array keys: ' . implode(', ', $this->requiredFields)
             );
         }
 
@@ -84,7 +86,7 @@ final class Product implements ProductInterface
 
     public function getTax(string $currency): Money
     {
-        return $this->getPrice($currency)->multiply($this->taxRate);
+        return $this->getPrice($currency)->multiply((string) $this->taxRate);
     }
 
     public function getPriceWithTax(string $currency): Money
