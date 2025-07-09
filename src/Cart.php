@@ -25,13 +25,13 @@ final class Cart implements CartInterface
     private $items = [];
 
     private $currency;
-    
+
     private $shipping;
-    
+
     private $payment;
-    
+
     private $discounts = [];
-    
+
     public function __construct(string $currency)
     {
         $this->currency = $currency;
@@ -46,22 +46,22 @@ final class Cart implements CartInterface
     {
         $this->shipping = $shipping;
     }
-    
+
     public function getShipping(): ?ShippingInterface
     {
         return $this->shipping;
     }
-    
+
     public function setPayment(PaymentInterface $payment): void
     {
         $this->payment = $payment;
     }
-    
+
     public function getPayment(): ?PaymentInterface
     {
         return $this->payment;
     }
-    
+
     public function addDiscount(CartDiscountInterface $discount): void
     {
         $this->discounts[] = $discount;
@@ -71,7 +71,7 @@ final class Cart implements CartInterface
     {
         return $this->discounts;
     }
-    
+
     public function fill(CartItemCollection $collection): void
     {
         array_map(function ($item) {
@@ -86,16 +86,16 @@ final class Cart implements CartInterface
             $this->get($item->getId())->increaseQuantity($item->getQuantity());
             return;
         }
-        
+
         $this->addItem($item);
     }
-    
+
     public function remove(string $itemId): void
     {
         if (!$this->has($itemId)) {
             throw new OutOfBoundsException('Item ' . $itemId . ' not found');
         }
-        
+
         unset($this->items[$itemId]);
     }
 
@@ -103,12 +103,12 @@ final class Cart implements CartInterface
     {
         $this->items = [];
     }
-      
+
     public function update(CartItemInterface $item): void
     {
         $this->addItem($item);
     }
-    
+
     public function has(string $itemId): bool
     {
         return array_key_exists($itemId, $this->items);
@@ -119,15 +119,15 @@ final class Cart implements CartInterface
         if (!$this->has($itemId)) {
             throw new OutOfBoundsException('Item ' . $itemId . ' not found');
         }
-        
+
         return $this->items[$itemId];
     }
-    
+
     public function items(): array
     {
         return $this->items;
     }
-    
+
     public function itemsQuantity(): int
     {
         return (int) array_sum(
@@ -151,7 +151,7 @@ final class Cart implements CartInterface
         $total = array_map(function (CartItemInterface $item) {
             return $item->getPriceTotal($this->currency);
         }, $this->items);
-        
+
         return $this->sumPrices($total);
     }
 
@@ -160,10 +160,10 @@ final class Cart implements CartInterface
         $total = array_map(function (CartItemInterface $item) {
             return $item->getPriceTotalWithTax($this->currency);
         }, $this->items);
-        
+
         return $this->sumPrices($total);
     }
-    
+
     public function tax(): Money
     {
         $total = array_map(function (CartItemInterface $item) {
@@ -172,7 +172,7 @@ final class Cart implements CartInterface
 
         return $this->sumPrices($total);
     }
-    
+
     public function totalAfterDiscounts(): Money
     {
         return !empty($this->discounts)
@@ -185,10 +185,10 @@ final class Cart implements CartInterface
         if (!$this->shipping instanceof ShippingInterface) {
             return new Money(0, new Currency($this->currency));
         }
-        
+
         return $this->shipping->getCost($this->currency);
     }
-    
+
     public function paymentFee(): Money
     {
         if (!$this->payment instanceof PaymentInterface) {
@@ -197,7 +197,7 @@ final class Cart implements CartInterface
 
         return $this->payment->getFee($this->totalAfterDiscounts()->add($this->shippingCost()), $this->currency);
     }
-    
+
     private function addItem(CartItemInterface $item)
     {
         $this->items[$item->getId()] = $item;
@@ -207,6 +207,10 @@ final class Cart implements CartInterface
     {
         $money = new Money(0, new Currency($this->currency));
 
-        return call_user_func_array([$money, 'add'], $prices);
+        foreach ($prices as $price) {
+            $money = $money->add($price);
+        }
+
+        return $money;
     }
 }
